@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00">
+  <infDPS Id="DPS-TEST-0001">
+    <identificacaoDPS>
+      <numero>1</numero>
+      <serie>A</serie>
+      <competencia>2025-01</competencia>
+      <dataEmissao>2025-01-15T12:00:00-03:00</dataEmissao>
+    </identificacaoDPS>
+    <prestadorServico>
+      <cpfCnpj><cnpj>59910672000187</cnpj></cpfCnpj>
+      <inscricaoMunicipal>123456</inscricaoMunicipal>
+      <codigoMunicipio>4205407</codigoMunicipio>
+    </prestadorServico>
+    <tomadorServico>
+      <identificacaoTomador>
+        <cpfCnpj><cnpj>01234567000189</cnpj></cpfCnpj>
+      </identificacaoTomador>
+      <razaoSocial>Cliente Teste</razaoSocial>
+      <endereco>
+        <logradouro>Rua Principal</logradouro>
+        <numero>100</numero>
+        <bairro>Centro</bairro>
+        <codigoMunicipio>4205407</codigoMunicipio>
+        <uf>SC</uf>
+        <cep>88000000</cep>
+        <complemento>Sala 1</complemento>
+      </endereco>
+      <email>cliente@example.com</email>
+    </tomadorServico>
+    <servico>
+      <codigoMunicipio>4205407</codigoMunicipio>
+      <codigoTributacaoMunicipio>1234</codigoTributacaoMunicipio>
+      <itemListaLC116>7.02</itemListaLC116>
+      <codigoCNAE>6201500</codigoCNAE>
+      <discriminacao>Servico de desenvolvimento</discriminacao>
+      <valores>
+        <valorServicos>1500.00</valorServicos>
+        <valorDeducoes>0.00</valorDeducoes>
+        <valorIss>30.00</valorIss>
+        <aliquota>2.00</aliquota>
+      </valores>
+    </servico>
+    <regimeEspecialTributacao>MEI</regimeEspecialTributacao>
+    <optanteSimplesNacional>1</optanteSimplesNacional>
+    <incentivoFiscal>2</incentivoFiscal>
+  </infDPS>
+</DPS>

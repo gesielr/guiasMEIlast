@@ -1,0 +1,27 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           targetNamespace="http://www.sped.fazenda.gov.br/nfse"
+           xmlns="http://www.sped.fazenda.gov.br/nfse"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified">
+
+
+<!-- tipos simples -->
+[INSERIR TODOS OS <xs:simpleType> DE tiposSimples_v1.00.xsd AQUI]
+
+<!-- xmldsig-core-schema -->
+[INSERIR TODOS OS TIPOS E ELEMENTOS DE xmldsig-core-schema_v1.00.xsd AQUI]
+
+<!-- tipos complexos -->
+[INSERIR TODOS OS <xs:complexType> DE tiposComplexos_v1.00.xsd AQUI]
+
+<!-- elementos principais DPS -->
+<xs:element name="DPS" type="TCDPS">
+  <xs:annotation>
+    <xs:documentation>Schema XML da Declaração de Prestação de Serviços - DPS</xs:documentation>
+  </xs:annotation>
+</xs:element>
+
+</xs:schema>

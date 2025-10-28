@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00">
+  <infDPS Id="DPS123456">
+    <tpAmb>2</tpAmb>
+    <dhEmi>2025-10-27T12:00:00-03:00</dhEmi>
+    <verAplic>1.0.0</verAplic>
+    <serie>1</serie>
+    <nDPS>123456</nDPS>
+    <dCompet>20251027</dCompet>
+    <tpEmit>1</tpEmit>
+    <cLocEmi>3550308</cLocEmi>
+    <prest>
+      <CNPJ>12345678000199</CNPJ>
+      <regTrib>
+        <opSimpNac>2</opSimpNac>
+        <regEspTrib>0</regEspTrib>
+      </regTrib>
+    </prest>
+    <serv>
+      <locPrest>
+        <cLocPrestacao>3550308</cLocPrestacao>
+      </locPrest>
+      <cServ>
+        <cTribNac>010101</cTribNac>
+        <xDescServ>Servico de teste</xDescServ>
+      </cServ>
+    </serv>
+    <valores>
+      <vServPrest>
+        <vServ>100.00</vServ>
+      </vServPrest>
+      <trib>
+        <tribMun>
+          <tribISSQN>1</tribISSQN>
+          <tpRetISSQN>1</tpRetISSQN>
+        </tribMun>
+        <totTrib>
+          <vTotTrib>
+            <vTotTribFed>0.00</vTotTribFed>
+            <vTotTribEst>0.00</vTotTribEst>
+            <vTotTribMun>0.00</vTotTribMun>
+          </vTotTrib>
+        </totTrib>
+      </trib>
+    </valores>
+  </infDPS>
+</DPS>

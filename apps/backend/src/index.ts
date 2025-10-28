@@ -6,6 +6,7 @@ import { env } from "./env";
 import { registerAuthRoutes } from "../routes/auth";
 import { registerDashboardRoutes } from "../routes/dashboard";
 import { registerNfseController } from "./nfse/controllers/nfse.controller";
+import { registerNfseRoutes } from "../routes/nfse";
 import { startScheduler } from "./nfse/workers/scheduler";
 import { registerGpsRoutes } from "../routes/gps";
 import { registerPaymentRoutes } from "../routes/payments";
@@ -34,6 +35,7 @@ async function buildServer() {
   await registerAuthRoutes(app);
   await registerDashboardRoutes(app);
   await registerNfseController(app);
+  await registerNfseRoutes(app);
   await registerGpsRoutes(app);
   await registerPaymentRoutes(app);
   await registerWhatsappRoutes(app);

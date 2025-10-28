@@ -1,6 +1,8 @@
 {
   "name": "@guiasmei/backend",
   "version": "0.1.0",
+   "main": "src/index.ts",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {

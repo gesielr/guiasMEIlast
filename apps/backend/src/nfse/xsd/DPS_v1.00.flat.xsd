@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           targetNamespace="http://www.sped.fazenda.gov.br/nfse"
+           xmlns="http://www.sped.fazenda.gov.br/nfse"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified">
+  <!-- Conteúdo real de tiposSimples_v1.00.xsd -->
+  <xs:simpleType name="TVerNFSe">
+    <xs:annotation>
+      <xs:documentation>Tipo Versão da NF-e - 1.00</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:whiteSpace value="preserve"/>
+      <xs:pattern value="1\.00"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- ... (demais tipos simples do arquivo tiposSimples_v1.00.xsd) ... -->
+
+  <!-- Conteúdo real de xmldsig-core-schema_v1.00.xsd -->
+  <xs:element name="Signature" type="ds:SignatureType"/>
+  <xs:complexType name="SignatureType">
+    <xs:sequence>
+      <xs:element name="SignedInfo" type="ds:SignedInfoType"/>
+      <xs:element name="SignatureValue" type="ds:SignatureValueType"/>
+      <xs:element name="KeyInfo" type="ds:KeyInfoType"/>
+    </xs:sequence>
+    <xs:attribute name="Id" type="xs:ID" use="optional"/>
+  </xs:complexType>
+  <!-- ... (demais tipos do arquivo xmldsig-core-schema_v1.00.xsd) ... -->
+
+  <!-- Conteúdo real de tiposComplexos_v1.00.xsd, sem includes/imports -->
+  <!-- (todo o conteúdo do arquivo tiposComplexos_v1.00.xsd, exceto as linhas de <xs:import> e <xs:include>) -->
+
+  <xs:element name="DPS" type="TCDPS">
+    <xs:annotation>
+      <xs:documentation>Schema XML da Declaração de Prestação de Serviços - DPS</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+</xs:schema>
