@@ -21,7 +21,25 @@ type GetQuery = z.infer<typeof getQuerySchema>;
 export async function registerNfseRoutes(app: FastifyInstance) {
   const supabase = createSupabaseClients();
 
-  // ...apenas o endpoint de simulação permanece...
+  // Endpoint de emissão real
+  app.post("/nfse/emit", async (request, reply) => {
+    try {
+      const { NfseService } = await import("../src/nfse/services/nfse.service");
+      const service = new NfseService();
+      const body = request.body as { versao: string, userId: string, dps_xml_gzip_b64: string };
+      if (!body?.dps_xml_gzip_b64) {
+        return reply.status(400).send({ ok: false, error: "Campo dps_xml_gzip_b64 ausente no corpo da requisição." });
+      }
+      const result = await service.emit({
+        versao: body.versao,
+        userId: body.userId,
+        dps_xml_gzip_b64: body.dps_xml_gzip_b64
+      });
+      return reply.send(result);
+    } catch (err) {
+      return reply.status(500).send({ ok: false, error: (err as Error).message });
+    }
+  });
   // Endpoint de simulação ponta a ponta
   app.post("/nfse/test-sim", async (request, reply) => {
     try {

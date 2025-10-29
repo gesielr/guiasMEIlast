@@ -264,7 +264,9 @@ export class NfseService {
 
     const xmlHash = hashXml(xml);
 
-         const { http, endpoint } = await createAdnClient({ module: 'contribuintes', tpAmb });
+        // Usar o endpoint oficial da API Nacional conforme .env
+        const endpoint = process.env.NFSE_API_URL || 'https://homolog.api.nfse.io/v2/';
+        const { http } = await createAdnClient({ module: 'contribuintes', tpAmb });
               // Logo antes desta linha:
           // const payload = { versao: dto.versao, dpsXmlGzipB64: ... };
 
@@ -294,22 +296,34 @@ export class NfseService {
 
     let response: any;
     try {
+      logger.info('[NFSe] Enviando request para API Nacional', {
+        endpoint,
+        payload,
+        headers: { Accept: 'application/json' }
+      });
       response = await http.post(endpoint, payload, {
         headers: {
           Accept: 'application/json'
         }
       });
+      logger.info('[NFSe] Resposta da API Nacional', {
+        status: response.status,
+        headers: response.headers,
+        data: response.data
+      });
     } catch (err) {
       const error = err as AxiosError;
       if (error.response) {
+        logger.error('[NFSe] Erro na comunicação com API Nacional', {
+          userId: dto.userId,
+          statusCode: error.response.status,
+          headers: error.response.headers,
+          data: error.response.data
+        });
         const upstreamError = new Error('Falha ao comunicar com a API Nacional de NFS-e');
         (upstreamError as any).statusCode = error.response.status;
         (upstreamError as any).data = error.response.data ?? null;
-        logger.error('[NFSe] Erro na comunicação com API Nacional', { 
-          userId: dto.userId, 
-          statusCode: error.response.status, 
-          data: error.response.data 
-        });
+        (upstreamError as any).headers = error.response.headers ?? null;
         throw upstreamError;
       }
       logger.error('[NFSe] Erro de rede na comunicação com API Nacional', { userId: dto.userId, error: error.message });

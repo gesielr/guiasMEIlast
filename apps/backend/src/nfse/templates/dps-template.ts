@@ -37,6 +37,81 @@ export function buildDpsXml(dto: CreateDpsDto): string {
   const valorDeducoes = dto.servico.valorDeducoes ?? 0;
   const valorIss = dto.servico.valorIss ?? ((valorServicos - valorDeducoes) * dto.servico.aliquota) / 100;
 
+  // Campos adicionais conforme manual
+  const obraXml = dto.obra ? `
+    <obra>
+      <codigoObra>${escapeXml(dto.obra.codigoObra)}</codigoObra>
+      <cep>${escapeXml(dto.obra.cep)}</cep>
+      <municipio>${escapeXml(dto.obra.municipio)}</municipio>
+      <bairro>${escapeXml(dto.obra.bairro)}</bairro>
+      <logradouro>${escapeXml(dto.obra.logradouro)}</logradouro>
+      <numero>${escapeXml(dto.obra.numero)}</numero>
+      ${dto.obra.complemento ? `<complemento>${escapeXml(dto.obra.complemento)}</complemento>` : ""}
+      <inscricaoImobiliaria>${escapeXml(dto.obra.inscricaoImobiliaria)}</inscricaoImobiliaria>
+    </obra>
+  ` : "";
+
+  const eventoXml = dto.evento ? `
+    <evento>
+      <identificacao>${escapeXml(dto.evento.identificacao)}</identificacao>
+      <dataInicial>${escapeXml(dto.evento.dataInicial)}</dataInicial>
+      <dataFinal>${escapeXml(dto.evento.dataFinal)}</dataFinal>
+      <descricao>${escapeXml(dto.evento.descricao)}</descricao>
+      <cep>${escapeXml(dto.evento.cep)}</cep>
+      <municipio>${escapeXml(dto.evento.municipio)}</municipio>
+      <bairro>${escapeXml(dto.evento.bairro)}</bairro>
+      <logradouro>${escapeXml(dto.evento.logradouro)}</logradouro>
+      <numero>${escapeXml(dto.evento.numero)}</numero>
+      ${dto.evento.complemento ? `<complemento>${escapeXml(dto.evento.complemento)}</complemento>` : ""}
+    </evento>
+  ` : "";
+
+  const exportacaoXml = dto.exportacao ? `
+    <exportacao>
+      <modalidade>${escapeXml(dto.exportacao.modalidade)}</modalidade>
+      <vinculo>${escapeXml(dto.exportacao.vinculo)}</vinculo>
+      <moeda>${escapeXml(dto.exportacao.moeda)}</moeda>
+      <valorServicoMoedaEstrangeira>${money(dto.exportacao.valorServicoMoedaEstrangeira)}</valorServicoMoedaEstrangeira>
+      <paisResultado>${escapeXml(dto.exportacao.paisResultado)}</paisResultado>
+      <mecanismoApoio>${escapeXml(dto.exportacao.mecanismoApoio)}</mecanismoApoio>
+      <mecanismoApoioTomador>${escapeXml(dto.exportacao.mecanismoApoioTomador)}</mecanismoApoioTomador>
+      <vinculoOperacao>${escapeXml(dto.exportacao.vinculoOperacao)}</vinculoOperacao>
+      ${dto.exportacao.numeroDeclaracaoImportacao ? `<numeroDeclaracaoImportacao>${escapeXml(dto.exportacao.numeroDeclaracaoImportacao)}</numeroDeclaracaoImportacao>` : ""}
+      ${dto.exportacao.numeroRegistroExportacao ? `<numeroRegistroExportacao>${escapeXml(dto.exportacao.numeroRegistroExportacao)}</numeroRegistroExportacao>` : ""}
+      <compartilharComMDIC>${dto.exportacao.compartilharComMDIC ? "1" : "2"}</compartilharComMDIC>
+    </exportacao>
+  ` : "";
+
+  const deducoesXml = dto.deducoes && dto.deducoes.length > 0 ? `
+    <deducoes>
+      ${dto.deducoes.map(ded => `
+        <deducao>
+          <tipoDocumento>${escapeXml(ded.tipoDocumento)}</tipoDocumento>
+          <chaveAcesso>${escapeXml(ded.chaveAcesso)}</chaveAcesso>
+          <dataEmissao>${escapeXml(ded.dataEmissao)}</dataEmissao>
+          <valorDedutivel>${money(ded.valorDedutivel)}</valorDedutivel>
+          <valorDeducao>${money(ded.valorDeducao)}</valorDeducao>
+        </deducao>
+      `).join('')}
+    </deducoes>
+  ` : "";
+
+  const beneficioXml = dto.beneficioMunicipal ? `
+    <beneficioMunicipal>
+      <identificacao>${escapeXml(dto.beneficioMunicipal.identificacao)}</identificacao>
+      <valorReducao>${money(dto.beneficioMunicipal.valorReducao)}</valorReducao>
+      <percentualReducao>${dto.beneficioMunicipal.percentualReducao}</percentualReducao>
+    </beneficioMunicipal>
+  ` : "";
+
+  const retencaoXml = dto.retencaoIssqn ? `
+    <retencaoIssqn>
+      <retidoPor>${escapeXml(dto.retencaoIssqn.retidoPor)}</retidoPor>
+      <valorRetido>${money(dto.retencaoIssqn.valorRetido)}</valorRetido>
+    </retencaoIssqn>
+  ` : "";
+
+  // ...existing code...
   return `<?xml version="1.0" encoding="UTF-8"?>
 <DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00">
   <infDPS Id="${id}">
@@ -84,6 +159,12 @@ export function buildDpsXml(dto: CreateDpsDto): string {
         <aliquota>${dto.servico.aliquota.toFixed(2)}</aliquota>
       </valores>
     </servico>
+    ${obraXml}
+    ${eventoXml}
+    ${exportacaoXml}
+    ${deducoesXml}
+    ${beneficioXml}
+    ${retencaoXml}
     <regimeEspecialTributacao>${escapeXml(dto.regime.regimeEspecialTributacao)}</regimeEspecialTributacao>
     <optanteSimplesNacional>${dto.regime.optanteSimples ? "1" : "2"}</optanteSimplesNacional>
     <incentivoFiscal>${dto.regime.incentivoFiscal ? "1" : "2"}</incentivoFiscal>

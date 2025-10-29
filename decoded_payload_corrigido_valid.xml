@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00">
+  <infDPS Id="DPS599106720001870000000000000000000000000001">
+    <tpAmb>2</tpAmb>
+    <dhEmi>2025-01-15T12:00:00-03:00</dhEmi>
+    <verAplic>1.0.0</verAplic>
+    <serie>1</serie>
+    <nDPS>1</nDPS>
+    <dCompet>2025-01-01</dCompet>
+    <tpEmit>1</tpEmit>
+    <cLocEmi>4205407</cLocEmi>
+    <prest>
+      <CNPJ>59910672000187</CNPJ>
+      <IM>123456</IM>
+      <xNome>Empresa Prestadora Teste LTDA</xNome>
+      <end>
+        <endNac>
+          <cMun>4205407</cMun>
+          <CEP>88000000</CEP>
+        </endNac>
+        <xLgr>Rua Principal</xLgr>
+        <nro>100</nro>
+        <xCpl>Sala 1</xCpl>
+        <xBairro>Centro</xBairro>
+      </end>
+      <email>prestador@example.com</email>
+      <regTrib>
+        <opSimpNac>2</opSimpNac>
+        <regApTribSN>1</regApTribSN>
+        <regEspTrib>0</regEspTrib>
+      </regTrib>
+    </prest>
+    <toma>
+      <CNPJ>01234567000189</CNPJ>
+      <xNome>Cliente Teste</xNome>
+      <end>
+        <endNac>
+          <cMun>4205407</cMun>
+          <CEP>88000000</CEP>
+        </endNac>
+        <xLgr>Rua Principal</xLgr>
+        <nro>100</nro>
+        <xCpl>Sala 1</xCpl>
+        <xBairro>Centro</xBairro>
+      </end>
+      <email>cliente@example.com</email>
+    </toma>
+    <serv>
+      <locPrest>
+        <cLocPrestacao>4205407</cLocPrestacao>
+      </locPrest>
+      <cServ>
+        <cTribNac>070201</cTribNac>
+        <cTribMun>123</cTribMun>
+        <xDescServ>Servico de desenvolvimento</xDescServ>
+      </cServ>
+    </serv>
+    <valores>
+      <vServPrest>
+        <vServ>1500.00</vServ>
+      </vServPrest>
+      <trib>
+        <tribMun>
+          <tribISSQN>1</tribISSQN>
+          <tpRetISSQN>1</tpRetISSQN>
+        </tribMun>
+        <totTrib>
+          <indTotTrib>0</indTotTrib>
+        </totTrib>
+      </trib>
+    </valores>
+  </infDPS>
+</DPS>
