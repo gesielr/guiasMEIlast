@@ -329,3 +329,39 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 ---
 
 **GuiasMEI** - Transformando a gestão fiscal através da tecnologia! 🚀
+
+---
+
+## Novos ajustes do backend (inss) – Atualização 2025
+
+### 1. Atualização e correção de dependências Python
+- Remoção do pacote obsoleto `gotrue` do ambiente virtual e do `requirements.txt`.
+- Instalação correta dos pacotes `supabase` e `supabase_auth` (>=2.22.3), compatíveis com o SDK atual.
+- Recomenda-se excluir `.venv` e criar novo ambiente virtual antes de instalar dependências.
+
+### 2. Ajustes de configuração Pydantic V2
+- Uso de `SettingsConfigDict` e `from_attributes = True` nos modelos, conforme padrão Pydantic V2.
+- Validação do campo `twilio_whatsapp_number` exige prefixo `whatsapp:`.
+
+### 3. Refatoração do Supabase Client
+- Cliente Supabase criado via `create_client(str(settings.supabase_url), settings.supabase_key)` sem argumentos extras.
+- Serviço utilitário centraliza operações Supabase (CRUD, storage, uploads de PDF) usando métodos assíncronos e `asyncio.to_thread`.
+
+### 4. Fluxo de integração WhatsApp
+- Serviço WhatsApp ajustado para usar Twilio e Supabase para registro de conversas e envio de PDFs.
+- PDFs gerados são enviados ao Supabase Storage e o link público é retornado para envio via WhatsApp.
+
+### 5. Testes e ambiente de desenvolvimento
+- Para rodar o backend:
+  ```powershell
+  cd apps/backend/inss/app
+  uvicorn main:app --reload
+  ```
+- Teste endpoints via Swagger (`/docs`) e comandos como `curl` ou `Invoke-RestMethod`.
+
+### 6. Boas práticas de manutenção
+- Após alterações em `requirements.txt`, execute:
+  ```powershell
+  pip install -r requirements.txt
+  ```
+- Use `pip list` para garantir que apenas os pacotes necessários estão presentes.
