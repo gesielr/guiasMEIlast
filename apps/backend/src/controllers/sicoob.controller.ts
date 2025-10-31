@@ -37,11 +37,11 @@ export class SicoobController {
           identificador: resultado.txid,
           tipo: 'PIX_IMEDIATA',
           status: 'PENDENTE',
-          pagador_nome: dados.devedor?.nome,
-          pagador_cpf_cnpj: dados.devedor?.cpf || dados.devedor?.cnpj,
-          valor_original: parseFloat(dados.valor.original),
-          qrcode_url: resultado.pixCopiaECola,
-          qrcode_base64: resultado.qrcode,
+          pagador_nome: resultado.pagador?.nome,
+          pagador_cpf_cnpj: resultado.pagador?.cpf || resultado.pagador?.cnpj,
+          valor_original: dados.valor,
+          qrcode_url: resultado.qr_code,
+          qrcode_base64: resultado.qr_code,
           metadados: { dados_originais: dados },
         });
       } catch (dbError) {
@@ -76,12 +76,12 @@ export class SicoobController {
           identificador: resultado.txid,
           tipo: 'PIX_VENCIMENTO',
           status: 'PENDENTE',
-          pagador_nome: dados.devedor?.nome,
-          pagador_cpf_cnpj: dados.devedor?.cpf || dados.devedor?.cnpj,
-          valor_original: parseFloat(dados.valor.original),
-          data_vencimento: dados.calendario?.dataDeVencimento,
-          qrcode_url: resultado.pixCopiaECola,
-          qrcode_base64: resultado.qrcode,
+          pagador_nome: resultado.pagador?.nome,
+          pagador_cpf_cnpj: resultado.pagador?.cpf || resultado.pagador?.cnpj,
+          valor_original: dados.valor,
+          data_vencimento: dados.data_vencimento,
+          qrcode_url: resultado.qr_code,
+          qrcode_base64: resultado.qr_code,
           metadados: { dados_originais: dados },
         });
       } catch (dbError) {
@@ -193,15 +193,15 @@ export class SicoobController {
         const cobrancaDbService = getCobrancaDbService();
         await cobrancaDbService.criarCobranca({
           user_id: (req as any).user?.id,
-          identificador: resultado.nossoNumero,
+          identificador: resultado.nosso_numero,
           tipo: 'BOLETO',
           status: 'PENDENTE',
-          pagador_nome: dados.pagador?.nome,
-          pagador_cpf_cnpj: dados.pagador?.cpfCnpj,
-          valor_original: parseFloat(dados.valorNominal),
-          data_vencimento: dados.dataVencimento,
-          linha_digitavel: resultado.linhaDigitavel,
-          pdf_url: resultado.urlPdf,
+          pagador_nome: resultado.pagador?.nome,
+          pagador_cpf_cnpj: resultado.pagador?.cpf_cnpj,
+          valor_original: resultado.valor,
+          data_vencimento: resultado.data_vencimento,
+          linha_digitavel: resultado.numero_boleto,
+          pdf_url: undefined,
           metadados: { dados_originais: dados },
         });
       } catch (dbError) {

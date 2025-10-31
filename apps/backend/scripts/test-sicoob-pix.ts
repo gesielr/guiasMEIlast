@@ -34,24 +34,16 @@ async function main() {
   console.log('\n=== Teste 1: Criar Cobrança PIX Imediata ===');
   try {
     const cobrancaImediata = await pixService.criarCobrancaImediata({
-      calendario: {
-        expiracao: 3600, // 1 hora
-      },
-      devedor: {
-        cpf: '12345678909',
-        nome: 'João da Silva Teste',
-      },
-      valor: {
-        original: '100.00',
-      },
-      chave: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
-      solicitacaoPagador: 'Teste de cobrança PIX imediata',
+      chave_pix: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
+      solicitacao_pagador: 'Teste de cobrança PIX imediata',
+      valor: 100.00,
+      expiracao: 3600,
     });
 
     console.log('✓ Cobrança PIX imediata criada:', {
       txid: cobrancaImediata.txid,
       status: cobrancaImediata.status,
-      qrcode: cobrancaImediata.pixCopiaECola?.substring(0, 50) + '...',
+      qrcode: cobrancaImediata.qr_code?.substring(0, 50) + '...',
     });
 
     // Registrar no Supabase
@@ -67,19 +59,10 @@ async function main() {
     dataVencimento.setDate(dataVencimento.getDate() + 7); // 7 dias
 
     const cobrancaVencimento = await pixService.criarCobrancaComVencimento({
-      calendario: {
-        dataDeVencimento: dataVencimento.toISOString().split('T')[0],
-        validadeAposVencimento: 30,
-      },
-      devedor: {
-        cpf: '12345678909',
-        nome: 'Maria Santos Teste',
-      },
-      valor: {
-        original: '250.50',
-      },
-      chave: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
-      solicitacaoPagador: 'Teste de cobrança PIX com vencimento',
+      chave_pix: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
+      solicitacao_pagador: 'Teste de cobrança PIX com vencimento',
+      valor: 250.50,
+      data_vencimento: dataVencimento.toISOString().split('T')[0],
     });
 
     console.log('✓ Cobrança PIX com vencimento criada:', {
@@ -118,8 +101,8 @@ async function main() {
     });
 
     console.log('✓ Cobranças listadas:', {
-      total: lista.parametros?.paginacao?.quantidadeDePaginas || 0,
-      registros: lista.cobs?.length || 0,
+      total: lista.paginacao?.total_paginas || 0,
+      registros: lista.cobracas?.length || 0,
     });
 
     // Registrar no Supabase
