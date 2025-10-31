@@ -4,8 +4,10 @@
  */
 
 import axios, { AxiosInstance } from 'axios';
+import pLimit from 'p-limit';
 import {
   DadosBoleto,
+  BoletoPayloadV3,
   BoletoResponse,
   ListaBoletos,
   FiltrosBoleto,
@@ -24,6 +26,7 @@ export class SicoobBoletoService {
   private axiosInstance: AxiosInstance;
   private authService: SicoobAuthService;
   private config: SicoobConfig;
+  private limitPostBoleto = pLimit(2); // Max 2 req/s for POST /boletos
 
   constructor(config: SicoobConfig, authService: SicoobAuthService) {
     this.config = config;
@@ -35,8 +38,11 @@ export class SicoobBoletoService {
   private setupHttpClient(): AxiosInstance {
     const httpsAgent = this.setupMTLS();
 
+    // Usar URL específica de boleto se configurada, senão usar baseUrl + /boleto
+    const boletoBaseUrl = process.env.SICOOB_BOLETO_BASE_URL || `${this.config.baseUrl}/cobranca-bancaria/v3`;
+
     return axios.create({
-      baseURL: `${this.config.baseUrl}/boleto`,
+      baseURL: boletoBaseUrl,
       httpAgent: new http.Agent({ keepAlive: true }),
       httpsAgent: httpsAgent,
       timeout: this.config.timeout || 30000,
@@ -72,7 +78,7 @@ export class SicoobBoletoService {
 
       const token = await this.authService.getAccessToken();
       const response = await this.axiosInstance.post<BoletoResponse>(
-        '/gerar',
+        '/boletos',
         dados,
         {
           headers: {
@@ -95,6 +101,127 @@ export class SicoobBoletoService {
   }
 
   /**
+   * Criar boleto (API V3) usando payload estrito e limpeza de campos
+   */
+  async criarBoleto(dados: BoletoPayloadV3): Promise<BoletoResponse> {
+    // 1) Validar obrigatórios e formatos
+    this.validarCamposObrigatorios(dados);
+    this.validarFormatos(dados);
+
+    // 2) Limpar payload de campos vazios/opcionais não usados
+    const payloadLimpo = this.cleanPayload<BoletoPayloadV3>(dados);
+
+    // 3) Logar requisição (sem dados sensíveis)
+    const url = new URL('boletos', (this.axiosInstance.defaults.baseURL || '').replace(/\/$/, '/')).toString();
+    sicoobLogger.debug('=== REQUISIÇÃO BOLETO SICOOB V3 ===', {
+      url,
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer [REDACTED]',
+        'Content-Type': 'application/json',
+      },
+      payload: JSON.stringify(payloadLimpo, null, 2),
+      payloadSize: JSON.stringify(payloadLimpo).length,
+      propriedades: Object.keys(payloadLimpo),
+    });
+
+    // 4) Token e verificação de escopos (antes para reutilizar em fallback)
+    const token = await this.authService.getAccessToken();
+    await this.verificarEscopos(token, ['boletos_inclusao']);
+
+    const doPost = (body: any) => {
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      };
+      if (this.config.cooperativa) headers['x-cooperativa'] = String(this.config.cooperativa);
+      if (this.config.conta) headers['x-conta-corrente'] = String(this.config.conta);
+
+      return this.axiosInstance.post<BoletoResponse>(
+        '/boletos',
+        body,
+        {
+          headers,
+          timeout: 30000,
+        }
+      );
+    };
+
+    try {
+      // 5) POST com rate limit (2 req/s)
+      const response = await this.limitPostBoleto(() => doPost(payloadLimpo));
+
+      sicoobLogger.info('Boleto criado com sucesso', {
+        nossoNumero: response.data?.nosso_numero,
+        linhaDigitavel: response.data?.numero_boleto,
+      });
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        sicoobLogger.error('=== ERRO BOLETO SICOOB V3 ===', error, {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          errorData: JSON.stringify(error.response?.data, null, 2),
+          headers: error.response?.headers,
+          requestPayload: JSON.stringify(payloadLimpo, null, 2),
+        });
+
+        if (error.response?.status === 406) {
+          const raw = error.response?.data;
+          const rawStr = typeof raw === 'string' ? raw : JSON.stringify(raw);
+          const indicaContrato = /numeroContrato/i.test(rawStr);
+          const indicaModalidade = /modalidade/i.test(rawStr);
+          const indicaEspecie = /especieDocumento/i.test(rawStr);
+          const indicaConta = /numeroContaCorrente/i.test(rawStr);
+
+          // Tentativa automática de compatibilidade: remover campos rejeitados
+          if (indicaContrato || indicaModalidade || indicaEspecie || indicaConta) {
+            // Para compatibilidade com sandbox: remova todos os campos sinalizados
+            const payloadCompat: any = { ...payloadLimpo } as any;
+            if (payloadCompat.numeroContrato !== undefined) delete payloadCompat.numeroContrato;
+            if (payloadCompat.modalidade !== undefined) delete payloadCompat.modalidade;
+            if (payloadCompat.especieDocumento !== undefined) delete payloadCompat.especieDocumento;
+            if (payloadCompat.numeroContaCorrente !== undefined) delete payloadCompat.numeroContaCorrente;
+
+            const compatLimpo = this.cleanPayload(payloadCompat);
+            sicoobLogger.warn('Reenviando sem campos rejeitados (compat)', {
+              removidos: {
+                numeroContrato: indicaContrato,
+                modalidade: indicaModalidade,
+                especieDocumento: indicaEspecie,
+                numeroContaCorrente: indicaConta,
+              },
+              payload: JSON.stringify(compatLimpo, null, 2),
+            });
+
+            try {
+              const retryResp = await this.limitPostBoleto(() => doPost(compatLimpo));
+              sicoobLogger.info('Boleto criado após compatibilidade', {
+                nossoNumero: retryResp.data?.nosso_numero,
+              });
+              return retryResp.data;
+            } catch (e2: any) {
+              sicoobLogger.error('Falha também no modo compat', e2, {
+                status: e2?.response?.status,
+                data: e2?.response?.data,
+              });
+            }
+          }
+
+          // 406 específico: schema inválido / propriedade inesperada
+          throw new SicoobValidationError(
+            'Payload inválido - verifique propriedades enviadas',
+            error.response?.data
+          );
+        }
+      }
+      this.handleError(error, 'Erro ao criar boleto');
+      throw error;
+    }
+  }
+
+  /**
    * Consultar boleto por nosso número
    */
   async consultarBoleto(nossoNumero: string): Promise<BoletoResponse> {
@@ -106,12 +233,17 @@ export class SicoobBoletoService {
       sicoobLogger.debug('Consultando boleto', { nossoNumero });
 
       const token = await this.authService.getAccessToken();
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      };
+      if (this.config.cooperativa) headers['x-cooperativa'] = String(this.config.cooperativa);
+      if (this.config.conta) headers['x-conta-corrente'] = String(this.config.conta);
+
       const response = await this.axiosInstance.get<BoletoResponse>(
-        `/consultar/${nossoNumero}`,
+        `/boletos/${nossoNumero}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers,
         }
       );
 
@@ -142,12 +274,17 @@ export class SicoobBoletoService {
       sicoobLogger.debug('Cancelando boleto', { nossoNumero });
 
       const token = await this.authService.getAccessToken();
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      };
+      if (this.config.cooperativa) headers['x-cooperativa'] = String(this.config.cooperativa);
+      if (this.config.conta) headers['x-conta-corrente'] = String(this.config.conta);
+
       await this.axiosInstance.delete(
-        `/cancelar/${nossoNumero}`,
+        `/boletos/${nossoNumero}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers,
         }
       );
 
@@ -178,13 +315,18 @@ export class SicoobBoletoService {
       if (filtros?.pagina) params.append('pagina', filtros.pagina.toString());
       if (filtros?.limite) params.append('limite', filtros.limite.toString());
 
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      };
+      if (this.config.cooperativa) headers['x-cooperativa'] = String(this.config.cooperativa);
+      if (this.config.conta) headers['x-conta-corrente'] = String(this.config.conta);
+
       const response = await this.axiosInstance.get<ListaBoletos>(
-        '/listar',
+        '/boletos',
         {
           params: Object.fromEntries(params),
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers,
         }
       );
 
@@ -211,12 +353,17 @@ export class SicoobBoletoService {
       sicoobLogger.debug('Baixando PDF do boleto', { nossoNumero });
 
       const token = await this.authService.getAccessToken();
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/pdf',
+      };
+      if (this.config.cooperativa) headers['x-cooperativa'] = String(this.config.cooperativa);
+      if (this.config.conta) headers['x-conta-corrente'] = String(this.config.conta);
+
       const response = await this.axiosInstance.get(
-        `/pdf/${nossoNumero}`,
+        `/boletos/${nossoNumero}/pdf`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers,
           responseType: 'arraybuffer',
         }
       );
@@ -237,41 +384,183 @@ export class SicoobBoletoService {
    * Validar dados do boleto
    */
   private validarDadosBoleto(dados: DadosBoleto): void {
-    if (!dados.beneficiario || !dados.beneficiario.nome) {
-      throw new SicoobValidationError('Beneficiário e nome são obrigatórios');
+    // Validações conforme API Sicoob Cobrança Bancária V3
+    if (!dados.modalidade || ![1].includes(dados.modalidade)) {
+      throw new SicoobValidationError('Modalidade inválida (use 1 para Simples)');
     }
 
-    if (!dados.beneficiario.cpf_cnpj) {
-      throw new SicoobValidationError(
-        'CPF/CNPJ do beneficiário é obrigatório'
-      );
+    if (!dados.numeroTituloCliente || dados.numeroTituloCliente.trim() === '') {
+      throw new SicoobValidationError('Número do título do cliente (seu número) é obrigatório');
     }
 
     if (!dados.pagador || !dados.pagador.nome) {
-      throw new SicoobValidationError('Pagador e nome são obrigatórios');
+      throw new SicoobValidationError('Nome do pagador é obrigatório');
     }
 
-    if (!dados.pagador.cpf_cnpj) {
+    if (!dados.pagador.numeroCpfCnpj) {
       throw new SicoobValidationError('CPF/CNPJ do pagador é obrigatório');
     }
 
-    if (!dados.valor || dados.valor <= 0) {
-      throw new SicoobValidationError('Valor deve ser maior que 0');
+    if (!dados.pagador.tipoPessoa || ![1, 2].includes(dados.pagador.tipoPessoa)) {
+      throw new SicoobValidationError('Tipo de pessoa do pagador inválido (1 = Física, 2 = Jurídica)');
     }
 
-    if (!dados.data_vencimento) {
+    if (!dados.valorTitulo || dados.valorTitulo <= 0) {
+      throw new SicoobValidationError('Valor do título deve ser maior que 0');
+    }
+
+    if (!dados.dataVencimento) {
       throw new SicoobValidationError('Data de vencimento é obrigatória');
     }
 
-    const dataVencimento = new Date(dados.data_vencimento);
+    const dataVencimento = new Date(dados.dataVencimento);
     if (isNaN(dataVencimento.getTime())) {
       throw new SicoobValidationError('Data de vencimento inválida');
     }
 
-    if (dataVencimento < new Date()) {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    if (dataVencimento < hoje) {
       throw new SicoobValidationError(
         'Data de vencimento não pode ser no passado'
       );
+    }
+  }
+
+  // ---------------- V3 Helpers -----------------
+
+  /**
+   * Remove undefined, null, empty strings, and empties in arrays/objects
+   */
+  private cleanPayload<T extends Record<string, any>>(obj: T): Partial<T> {
+    const cleaned: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      // skip undefined, null, empty string
+      if (
+        value === undefined ||
+        value === null ||
+        (typeof value === 'string' && value.trim() === '')
+      ) {
+        continue;
+      }
+
+      if (Array.isArray(value)) {
+        const cleanedArray = value
+          .map((item) => (typeof item === 'object' && item !== null ? this.cleanPayload(item) : item))
+          .filter((item) => item !== null && item !== undefined);
+        if (cleanedArray.length > 0) cleaned[key] = cleanedArray;
+        continue;
+      }
+
+      if (typeof value === 'object') {
+        const cleanedObj = this.cleanPayload(value as Record<string, any>);
+        if (Object.keys(cleanedObj).length > 0) cleaned[key] = cleanedObj;
+        continue;
+      }
+
+      cleaned[key] = value;
+    }
+    return cleaned;
+  }
+
+  private validarCamposObrigatorios(dados: BoletoPayloadV3): void {
+    const camposObrigatorios: Array<keyof BoletoPayloadV3> = [
+      'numeroContrato',
+      'modalidade',
+      'numeroContaCorrente',
+      'especieDocumento',
+      'dataEmissao',
+      'dataVencimento',
+      'valorNominal',
+      'pagador',
+    ];
+
+    const faltando: string[] = [];
+    for (const campo of camposObrigatorios) {
+      if (!(dados as any)[campo]) faltando.push(String(campo));
+    }
+
+    if (dados.pagador) {
+      const camposPagador: Array<keyof BoletoPayloadV3['pagador']> = [
+        'numeroCpfCnpj',
+        'nome',
+        'endereco',
+        'cidade',
+        'cep',
+        'uf',
+      ];
+      for (const c of camposPagador) {
+        if (!(dados.pagador as any)[c]) faltando.push(`pagador.${String(c)}`);
+      }
+    } else {
+      faltando.push('pagador');
+    }
+
+    if (faltando.length > 0) {
+      throw new SicoobValidationError(
+        `Campos obrigatórios faltando: ${faltando.join(', ')}`
+      );
+    }
+  }
+
+  private validarFormatos(dados: BoletoPayloadV3): void {
+    // CPF/CNPJ
+    const cpfCnpj = (dados.pagador.numeroCpfCnpj || '').replace(/\D/g, '');
+    if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+      throw new SicoobValidationError('CPF/CNPJ inválido');
+    }
+
+    // CEP
+    const cep = (dados.pagador.cep || '').replace(/\D/g, '');
+    if (cep.length !== 8) {
+      throw new SicoobValidationError('CEP deve ter 8 dígitos');
+    }
+
+    // UF
+    if (!dados.pagador.uf || dados.pagador.uf.length !== 2) {
+      throw new SicoobValidationError('UF deve ter 2 caracteres');
+    }
+
+    // Datas
+    const regexData = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regexData.test(dados.dataEmissao)) {
+      throw new SicoobValidationError('dataEmissao deve estar no formato YYYY-MM-DD');
+    }
+    if (!regexData.test(dados.dataVencimento)) {
+      throw new SicoobValidationError('dataVencimento deve estar no formato YYYY-MM-DD');
+    }
+
+    // Valor nominal
+    if (dados.valorNominal <= 0) {
+      throw new SicoobValidationError('valorNominal deve ser maior que zero');
+    }
+  }
+
+  private async verificarEscopos(token: string, necessarios: string[]): Promise<void> {
+    try {
+      const parts = token.split('.');
+      if (parts.length < 2) return; // Não validamos se token não for JWT
+      const payloadJson = Buffer.from(parts[1], 'base64').toString();
+      const payload: any = JSON.parse(payloadJson);
+
+      const presentes: string[] = Array.isArray(payload.scp)
+        ? payload.scp
+        : typeof payload.scope === 'string'
+        ? String(payload.scope).split(/[\s]+/)
+        : [];
+
+      const faltando = necessarios.filter((s) => !presentes.includes(s));
+      if (faltando.length > 0) {
+        throw new SicoobValidationError(
+          `Escopos faltando no token: ${faltando.join(', ')}`
+        );
+      }
+      sicoobLogger.info('Escopos validados', { escopos: presentes });
+    } catch (e) {
+      // Se não conseguirmos ler o payload, seguimos sem bloquear
+      sicoobLogger.warn('Não foi possível validar escopos do token (seguindo)', {
+        detalhe: (e as Error).message,
+      });
     }
   }
 

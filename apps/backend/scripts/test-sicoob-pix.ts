@@ -1,12 +1,21 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { initializeSicoobServices, getPixService } from '../src/services/sicoob';
 import { createClient } from '@supabase/supabase-js';
 
+// Carregar .env do diretório apps/backend
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+config({ path: resolve(__dirname, '../.env') });
+
 async function main() {
+  console.log('🔐 Testando integração PIX Sicoob (Sandbox)\n');
+  
   // Inicializar serviços Sicoob
   initializeSicoobServices({
     environment: process.env.SICOOB_ENVIRONMENT as 'sandbox' | 'production',
-    baseUrl: process.env.SICOOB_API_BASE_URL!,
+    baseUrl: process.env.SICOOB_PIX_BASE_URL || process.env.SICOOB_API_BASE_URL!,
     authUrl: process.env.SICOOB_AUTH_URL!,
     authValidateUrl: process.env.SICOOB_AUTH_VALIDATE_URL,
     clientId: process.env.SICOOB_CLIENT_ID!,
@@ -34,11 +43,15 @@ async function main() {
   console.log('\n=== Teste 1: Criar Cobrança PIX Imediata ===');
   try {
     const cobrancaImediata = await pixService.criarCobrancaImediata({
-      chave_pix: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
-      solicitacao_pagador: 'Teste de cobrança PIX imediata',
-      valor: 100.00,
-      expiracao: 3600,
-    });
+      calendario: {
+        expiracao: 3600,
+      },
+      valor: {
+        original: '100.00',
+      },
+      chave: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
+      solicitacaoPagador: 'Teste de cobrança PIX imediata',
+    } as any);
 
     console.log('✓ Cobrança PIX imediata criada:', {
       txid: cobrancaImediata.txid,
@@ -50,6 +63,9 @@ async function main() {
     await registrarNoSupabase('pix_imediata', cobrancaImediata);
   } catch (error: any) {
     console.error('✗ Erro ao criar cobrança PIX imediata:', error.message);
+    if (error.response?.data) {
+      console.error('  Detalhes:', JSON.stringify(error.response.data, null, 2));
+    }
   }
 
   // Teste 2: Criar cobrança PIX com vencimento
@@ -59,11 +75,20 @@ async function main() {
     dataVencimento.setDate(dataVencimento.getDate() + 7); // 7 dias
 
     const cobrancaVencimento = await pixService.criarCobrancaComVencimento({
-      chave_pix: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
-      solicitacao_pagador: 'Teste de cobrança PIX com vencimento',
-      valor: 250.50,
-      data_vencimento: dataVencimento.toISOString().split('T')[0],
-    });
+      calendario: {
+        dataDeVencimento: dataVencimento.toISOString().split('T')[0],
+        validadeAposVencimento: 30,
+      },
+      devedor: {
+        cpf: '12345678909',
+        nome: 'Nome do Devedor Teste',
+      },
+      valor: {
+        original: '250.50',
+      },
+      chave: process.env.SICOOB_PIX_CHAVE || 'sua-chave-pix@exemplo.com',
+      solicitacaoPagador: 'Teste de cobrança PIX com vencimento',
+    } as any);
 
     console.log('✓ Cobrança PIX com vencimento criada:', {
       txid: cobrancaVencimento.txid,
@@ -75,6 +100,9 @@ async function main() {
     await registrarNoSupabase('pix_vencimento', cobrancaVencimento);
   } catch (error: any) {
     console.error('✗ Erro ao criar cobrança PIX com vencimento:', error.message);
+    if (error.response?.data) {
+      console.error('  Detalhes:', JSON.stringify(error.response.data, null, 2));
+    }
   }
 
   // Teste 3: Consultar cobrança PIX
@@ -91,13 +119,13 @@ async function main() {
   console.log('\n=== Teste 4: Listar Cobranças PIX ===');
   try {
     const dataInicio = new Date();
-    dataInicio.setDate(dataInicio.getDate() - 30); // 30 dias atrás
+    dataInicio.setDate(dataInicio.getDate() - 6); // Usar 6 dias para garantir < 7 dias de diferença
 
     const lista = await pixService.listarCobrancas({
-      data_inicio: dataInicio.toISOString().split('T')[0],
-      data_fim: new Date().toISOString().split('T')[0],
-      pagina: 1,
-      limite: 10,
+      inicio: dataInicio.toISOString().split('T')[0],
+      fim: new Date().toISOString().split('T')[0],
+      paginaAtual: 1,
+      itensPorPagina: 10,
     });
 
     console.log('✓ Cobranças listadas:', {

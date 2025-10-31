@@ -21,62 +21,78 @@ export interface CertificateConfig {
 }
 
 // ============================================================
-// PIX TYPES
+// PIX TYPES - Padrão PADI PIX do Bacen
 // ============================================================
 
 export interface CobrancaPixImediata {
-  chave_pix: string;
-  solicitacao_pagador?: string;
-  valor: number;
-  expiracao?: number;
-  abatimento?: {
-    tipo: 'FIXO' | 'PERCENTUAL';
-    valor_abatimento: number;
+  // Formato padrão Bacen PADI PIX
+  calendario?: {
+    expiracao: number; // segundos
+    criacao?: string;
   };
-  juros?: {
-    tipo: 'SIMPLES' | 'COMPOSTO';
-    valor_juros: number;
+  devedor?: {
+    cpf?: string;
+    cnpj?: string;
+    nome: string;
   };
-  multa?: {
-    tipo: 'FIXO' | 'PERCENTUAL';
-    valor_multa: number;
+  valor: {
+    original: string; // valor em string formato "100.00"
+    modalidadeAlteracao?: number;
   };
-  desconto?: {
-    tipo: 'FIXO' | 'PERCENTUAL';
-    valor_desconto: number;
-  };
+  chave: string;
+  solicitacaoPagador?: string;
   infoAdicionais?: Array<{
     nome: string;
     valor: string;
   }>;
+  
+  // Campos adicionais opcionais
+  txid?: string; // para PUT com txid específico
 }
 
 export interface CobrancaPixVencimento {
-  chave_pix: string;
-  solicitacao_pagador?: string;
-  valor: number;
-  data_vencimento: string; // ISO 8601
-  abatimento?: {
-    tipo: 'FIXO' | 'PERCENTUAL';
-    valor_abatimento: number;
+  // Formato padrão Bacen PADI PIX cobv
+  calendario: {
+    dataDeVencimento: string; // YYYY-MM-DD
+    validadeAposVencimento?: number; // dias
   };
-  juros?: {
-    tipo: 'SIMPLES' | 'COMPOSTO';
-    valor_juros: number;
+  devedor?: {
+    cpf?: string;
+    cnpj?: string;
+    nome: string;
+    logradouro?: string;
+    cidade?: string;
+    uf?: string;
+    cep?: string;
   };
-  multa?: {
-    tipo: 'FIXO' | 'PERCENTUAL';
-    valor_multa: number;
+  valor: {
+    original: string;
+    modalidadeAlteracao?: number;
+    juros?: {
+      modalidade: number; // 1=Valor fixo, 2=Percentual
+      valorPerc: string;
+    };
+    multa?: {
+      modalidade: number; // 1=Valor fixo, 2=Percentual
+      valorPerc: string;
+    };
+    desconto?: {
+      modalidade: number;
+      descontoDataFixa?: Array<{
+        data: string;
+        valorPerc: string;
+      }>;
+    };
   };
-  desconto?: {
-    tipo: 'FIXO' | 'PERCENTUAL';
-    valor_desconto: number;
-    data_desconto?: string;
-  };
+  chave: string;
+  solicitacaoPagador?: string;
   infoAdicionais?: Array<{
     nome: string;
     valor: string;
   }>;
+  
+  // Campos adicionais opcionais
+  txid?: string; // para PUT com txid específico
 }
 
 export interface CobrancaResponse {
@@ -106,10 +122,12 @@ export interface ListaCobrancas {
 
 export interface FiltrosCobranca {
   status?: 'VIGENTE' | 'RECEBIDA' | 'CANCELADA' | 'DEVOLVIDA' | 'EXPIRADA';
-  data_inicio?: string;
-  data_fim?: string;
-  pagina?: number;
-  limite?: number;
+  // Bacen PADI utiliza inicio/fim em RFC3339
+  inicio?: string; // ex: 2025-02-01T00:00:00Z
+  fim?: string;    // ex: 2025-02-28T23:59:59Z
+  // Paginação
+  paginaAtual?: number;
+  itensPorPagina?: number;
 }
 
 export interface QRCodeResponse {
@@ -125,33 +143,43 @@ export interface QRCodeResponse {
 // ============================================================
 
 export interface DadosBoleto {
-  numero_controle?: string;
-  beneficiario: {
-    nome: string;
-    cpf_cnpj: string;
-    endereco?: string;
-    numero?: string;
-    bairro?: string;
-    cidade?: string;
-    estado?: string;
-  };
+  // Campos obrigatórios conforme API Sicoob V3
+  modalidade: number; // 1 = Simples
+  numeroTituloCliente: string; // Seu número (identificador do cliente)
+  dataVencimento: string; // YYYY-MM-DD
+  valorTitulo: number;
+  
+  // Dados do pagador (obrigatórios)
   pagador: {
     nome: string;
-    cpf_cnpj: string;
+    numeroCpfCnpj: string; // Apenas números
+    tipoPessoa: 1 | 2; // 1 = Física, 2 = Jurídica
     endereco?: string;
-    numero?: string;
-    bairro?: string;
-    cidade?: string;
-    estado?: string;
+    nomeBairro?: string;
+    nomeMunicipio?: string;
+    siglaUf?: string;
+    numeroCep?: string;
   };
-  valor: number;
-  data_vencimento: string; // ISO 8601
-  tipo_juros?: 'ISENTO' | 'COBRADO';
-  valor_juros?: number;
-  tipo_multa?: 'ISENTO' | 'FIXO' | 'PERCENTUAL';
-  valor_multa?: number;
-  descricao?: string;
-  instrucoes?: string[];
+  
+  // Campos opcionais
+  especieDocumento?: 2; // 2 = Duplicata Mercantil
+  codigoAceite?: 'A' | 'N'; // A = Aceite, N = Não aceite
+  numeroParcela?: number;
+  
+  // Multa e Juros (opcional)
+  multa?: {
+    tipoMulta?: 0 | 1 | 2; // 0 = Isento, 1 = Valor Fixo, 2 = Percentual
+    valorMulta?: number;
+    dataMulta?: string; // YYYY-MM-DD
+  };
+  
+  juros?: {
+    tipoJuros?: 0 | 1 | 3; // 0 = Isento, 1 = Valor por dia, 3 = Percentual mensal
+    valorJuros?: number;
+  };
+  
+  // Mensagens (opcional)
+  mensagensPosicao5a8?: string[];
 }
 
 export interface BoletoResponse {
@@ -170,6 +198,71 @@ export interface BoletoResponse {
     nome: string;
     cpf_cnpj: string;
   };
+}
+
+// ============================================================
+// BOLETO V3 STRICT PAYLOAD (as per latest docs)
+// ============================================================
+
+export interface BoletoV3Pagador {
+  numeroCpfCnpj: string; // 11 or 14 digits
+  nome: string;
+  endereco: string;
+  cidade: string;
+  cep: string; // 8 digits, no hyphen
+  uf: string; // 2-letter UF
+}
+
+export interface BoletoDescontoV3 {
+  codigoDesconto: number; // 1=fixed, 2=percent
+  data: string; // YYYY-MM-DD
+  valor?: number; // when fixed
+  taxa?: number; // when percent
+}
+
+export interface BoletoMultaV3 {
+  codigoMulta: number; // 1=fixed, 2=percent
+  data: string; // YYYY-MM-DD
+  valor?: number;
+  taxa?: number;
+}
+
+export interface BoletoJurosV3 {
+  codigoJuros: number; // 1=per day, 2=monthly, 3=exempt
+  valor?: number; // per day
+  taxa?: number; // monthly
+}
+
+export interface BoletoRateioCreditoV3 {
+  numeroContaRateio: number;
+  codigoTipoValorRateio: number; // 1=percent, 2=fixed
+  valorRateio: number;
+}
+
+export interface BoletoPayloadV3 {
+  // Required boleto data
+  numeroContrato: number;
+  modalidade: number;
+  numeroContaCorrente: number;
+  especieDocumento: string; // e.g. "DM"
+  dataEmissao: string; // YYYY-MM-DD
+  dataVencimento: string; // YYYY-MM-DD
+  valorNominal: number;
+
+  // Required payer
+  pagador: BoletoV3Pagador;
+
+  // Optional fields (include only when present)
+  seuNumero?: string;
+  descricao?: string;
+  codigoNegativacao?: number;
+  numeroDiasNegativacao?: number;
+  codigoProtesto?: number;
+  numeroDiasProtesto?: number;
+  descontos?: BoletoDescontoV3[];
+  multa?: BoletoMultaV3;
+  jurosMora?: BoletoJurosV3;
+  rateioCredito?: BoletoRateioCreditoV3[];
 }
 
 export interface ListaBoletos {

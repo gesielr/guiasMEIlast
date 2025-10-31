@@ -38,7 +38,7 @@ export class SicoobPixService {
     const httpsAgent = this.setupMTLS();
 
     return axios.create({
-      baseURL: `${this.config.baseUrl}/pix`,
+      baseURL: this.config.baseUrl, // URL já inclui o path completo
       httpAgent: new http.Agent({ keepAlive: true }),
       httpsAgent: httpsAgent,
       timeout: this.config.timeout || 30000,
@@ -73,7 +73,7 @@ export class SicoobPixService {
 
       const token = await this.authService.getAccessToken();
       const response = await this.axiosInstance.post<CobrancaResponse>(
-        '/cobranca-imediata',
+        '/cob',
         dados,
         {
           headers: {
@@ -110,7 +110,7 @@ export class SicoobPixService {
 
       const token = await this.authService.getAccessToken();
       const response = await this.axiosInstance.post<CobrancaResponse>(
-        '/cobranca-vencimento',
+        '/cobv',
         dados,
         {
           headers: {
@@ -149,7 +149,7 @@ export class SicoobPixService {
 
       const token = await this.authService.getAccessToken();
       const response = await this.axiosInstance.get<CobrancaResponse>(
-        `/cobranca/${txid}`,
+        `/cob/${txid}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -183,14 +183,28 @@ export class SicoobPixService {
       const params = new URLSearchParams();
 
       if (filtros?.status) params.append('status', filtros.status);
-      if (filtros?.data_inicio)
-        params.append('data_inicio', filtros.data_inicio);
-      if (filtros?.data_fim) params.append('data_fim', filtros.data_fim);
-      if (filtros?.pagina) params.append('pagina', filtros.pagina.toString());
-      if (filtros?.limite) params.append('limite', filtros.limite.toString());
+      // Padrão Bacen PADI: 'inicio' e 'fim' em RFC3339
+      const toRfc3339 = (d: string, endOfDay = false) => {
+        // Se vier só YYYY-MM-DD, completar com horário
+        if (!d.includes('T')) {
+          return endOfDay ? `${d}T23:59:59Z` : `${d}T00:00:00Z`;
+        }
+        return d;
+      };
+
+      if (filtros?.inicio) params.append('inicio', toRfc3339(filtros.inicio));
+      if (filtros?.fim) params.append('fim', toRfc3339(filtros.fim, true));
+
+      // Paginação Bacen/Sicoob costuma usar paginacao.paginaAtual / paginacao.itensPorPagina
+      if (typeof filtros?.paginaAtual === 'number') {
+        params.append('paginacao.paginaAtual', filtros.paginaAtual.toString());
+      }
+      if (typeof filtros?.itensPorPagina === 'number') {
+        params.append('paginacao.itensPorPagina', filtros.itensPorPagina.toString());
+      }
 
       const response = await this.axiosInstance.get<ListaCobrancas>(
-        '/cobrancas',
+        '/cob',
         {
           params: Object.fromEntries(params),
           headers: {
@@ -199,9 +213,8 @@ export class SicoobPixService {
         }
       );
 
-      sicoobLogger.debug('Cobranças listadas', {
-        total: response.data.paginacao.total_itens,
-      });
+      const totalItens = (response.data as any)?.paginacao?.total_itens ?? 0;
+      sicoobLogger.debug('Cobranças listadas', { total: totalItens });
 
       return response.data;
     } catch (error) {
@@ -223,7 +236,7 @@ export class SicoobPixService {
 
       const token = await this.authService.getAccessToken();
       await this.axiosInstance.delete(
-        `/cobranca/${txid}`,
+        `/cob/${txid}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -280,19 +293,18 @@ export class SicoobPixService {
    * Validar dados de cobrança
    */
   private validarDadosCobranca(dados: any): void {
-    if (!dados.chave_pix || dados.chave_pix.trim() === '') {
+    // Validação para formato PADI PIX do Bacen
+    if (!dados.chave || dados.chave.trim() === '') {
       throw new SicoobValidationError('Chave PIX é obrigatória');
     }
 
-    if (!dados.valor || dados.valor <= 0) {
-      throw new SicoobValidationError('Valor deve ser maior que 0');
+    if (!dados.valor || !dados.valor.original) {
+      throw new SicoobValidationError('Valor é obrigatório');
     }
 
-    if ('data_vencimento' in dados && dados.data_vencimento) {
-      const dataVencimento = new Date(dados.data_vencimento);
-      if (isNaN(dataVencimento.getTime())) {
-        throw new SicoobValidationError('Data de vencimento inválida');
-      }
+    const valorNum = parseFloat(dados.valor.original);
+    if (isNaN(valorNum) || valorNum <= 0) {
+      throw new SicoobValidationError('Valor deve ser maior que 0');
     }
   }
 

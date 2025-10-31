@@ -29,48 +29,23 @@ O **GuiasMEI** é uma plataforma full-stack que revoluciona a gestão fiscal de 
   - Gerenciar clientes
   - Gerar links de convite
   - Acompanhar comissões
-  - Relatórios de faturamento
-
-### 🔧 **Administrador**
 - **Fluxo**: Login direto → Dashboard Admin
 - **Funcionalidades**:
-  - Gestão completa de usuários
-  - Monitoramento NFSe (5 telas especializadas)
-  - Configurações do sistema
-  - Analytics e relatórios
 
 ## 🏗️ Arquitetura Técnica
-
-### **Frontend (React + Vite)**
-```
-apps/web/
 ├── 🏠 Homepage - Landing page e seleção de perfil
 ├── 👤 Cadastros - MEI, Autônomo, Parceiro
 ├── 🔐 Autenticação - Login/Logout
 ├── 📊 Dashboards - Usuário, Parceiro, Admin
-├── 🤖 WhatsApp Simulator - Testes locais
-└── 📄 Emissões - Telas de emissão (simuladas)
-```
 
 ### **Backend (Node.js + Fastify)**
-```
-apps/backend/
-├── 🔐 Auth - Autenticação e autorização
 ├── 📊 Dashboard - APIs de dados
 ├── 🗺️ GPS - Emissão de guias
-├── 📄 NFSe - Emissão de notas fiscais
-├── 💰 Payments - Integração Stripe
-└── 📱 WhatsApp - Webhooks e automação
 ```
 
 ### **Banco de Dados (Supabase)**
 ```
 📊 Tabelas Principais:
-├── profiles - Perfis de usuários
-├── partners - Contabilidades parceiras
-├── nfse_emissions - Emissões de NFS-e
-├── gps_emissions - Emissões de GPS
-├── nfse_credentials - Certificados digitais
 └── partner_clients - Vínculos parceiro-cliente
 ```
 
@@ -84,16 +59,115 @@ apps/backend/
 
 ### **Dashboards Especializados**
 
+
+## 💸 Sicoob PIX + Boleto — Status, Como Testar e Variáveis
+
+### Status Atual (31/10/2025)
+
+#### **PIX (v2) - ✅ FUNCIONANDO**
+- ✅ Autenticação OAuth2 + mTLS: OK
+- ✅ Cobrança PIX Imediata (POST /cob): OK — cobrança criada (status ATIVA)
+- ✅ Listar Cobranças (GET /cob): OK — usar janela < 7 dias; retornou 0 itens na rodada
+- ⚠️ Cobrança com Vencimento (POST /cobv): 405 Method Not Allowed no sandbox
+- ✅ Consultar por TXID (GET /cob/{txid}): 404 para TXID inexistente (esperado)
+
+#### **Boleto (v3) - ❌ BLOQUEADO (Sandbox Incompatível)**
+- ✅ Autenticação OAuth2 + mTLS: OK
+- ✅ Headers `x-cooperativa` e `x-conta-corrente`: Enviados corretamente
+### Como Rodar os Testes (PowerShell)
+
+#### **Teste PIX (✅ Funcionando)**
+```powershell
+cd "c:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI"
+npx tsx apps/backend/scripts/test-sicoob-pix.ts
+```
+
+O script executa:
+- POST /cob (imediata)
+- POST /cobv (vencimento)
+- GET /cob/{txid}
+- GET /cob (listagem com janela de 6 dias)
+
+#### **Teste Boleto (⚠️ Sandbox Incompatível)**
+```powershell
+cd "c:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI"
+npx tsx apps/backend/scripts/test-sicoob-boleto.ts
+```
+
+O script executa:
+- POST /boletos (Teste 0: V3 mínimo, Teste 1: V2 legado)
+- GET /boletos (listagem)
+- GET /boletos/{nossoNumero}/pdf (download)
+
+**Resultado esperado:** 406 em todos os testes V3 devido a incompatibilidade do sandbox.
+
+Se `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` estiverem configurados, tentará registrar as respostas na tabela `sicoob_test_logs`.
+
+TXID PIX obtido (exemplo real):
+- PHB7MFTILK1NFV813678801761920911096
+
+Detalhes completos: `docs/sicoob-test-results.md`.
+
+### Como Rodar os Testes (PowerShell)
+1) Crie `apps/backend/.env` com as variáveis do bloco abaixo
+2) Execute o script de validação PIX:
+
+```powershell
 #### **Dashboard Parceiro** 🤝
 - **Métricas**: Clientes, comissões, emissões
+```
+
+O script executa:
+- POST /cob (imediata)
+- POST /cobv (vencimento)
+- GET /cob/{txid}
+- GET /cob (listagem com janela de 6 dias)
+
+Se `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` estiverem configurados, tentará registrar as respostas na tabela `sicoob_test_logs` (veja instruções de criação em `docs/sicoob-test-results.md`).
+
+### Variáveis .env (Sicoob PIX)
+```env
+# Ambiente: sandbox ou production
+SICOOB_ENVIRONMENT=sandbox
+
+# Base URL do PIX (preferencial) — já incluindo /pix/api/v2
+SICOOB_PIX_BASE_URL=https://api.sicoob.com.br/pix/api/v2
+
+# Alternativa legada (se ausente, o script usa SICOOB_API_BASE_URL)
+SICOOB_API_BASE_URL=https://api-sandbox.sicoob.com.br
+
+# Autenticação
+SICOOB_AUTH_URL=https://auth.sicoob.com.br/auth/realms/cooperado/protocol/openid-connect/token
+SICOOB_CLIENT_ID=seu_client_id
+# SICOOB_CLIENT_SECRET (opcional)
+
+# Certificados mTLS (PEM)
+SICOOB_CERT_PATH=apps/backend/certificates/sicoob-cert.pem
+SICOOB_KEY_PATH=apps/backend/certificates/chave_privada.pem
+# Opcional: SICOOB_CA_PATH=apps/backend/certificates/sicoob-ca.pem
+
+# Chave PIX do recebedor (EVP ou CNPJ)
+SICOOB_PIX_CHAVE=sua_evp_ou_cnpj
+
+# (Opcional) Logging das respostas no Supabase
+SUPABASE_URL=https://seu-projeto.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
+```
+
+### Limitações do Sandbox e Dicas
+- Janela de listagem precisa ser estritamente menor que 7 dias; com 7 dias retorna 422
+- A chave PIX deve pertencer ao recebedor; caso contrário, erro de validação
+- O endpoint /cobv pode não estar disponível no sandbox (405)
+- Observe possíveis 429 por rate limit; verifique headers `x-ratelimit-*`
+- Para consultas por TXID inexistente, 404 é esperado
 - **Gestão**: Adicionar clientes, gerar links
 - **Relatórios**: Faturamento, performance
 - **Ações Rápidas**: Gerar link, lembrete, relatórios, WhatsApp
-
-#### **Dashboard Admin** 🔧
-- **Visão Geral**: Estatísticas globais
-- **Gestão NFSe**: 5 telas especializadas
-  - 🔐 **Certificados Digitais** - Gestão de certificados de todos os usuários
+### **Serviços de Pagamento**
+- **Sicoob PIX**: Cobranças PIX imediatas e com vencimento (✅ Funcionando 31/10/2025)
+- **Sicoob Boleto**: Geração e gestão de boletos bancários (❌ Bloqueado - Sandbox Incompatível 31/10/2025)
+- **Stripe**: Processamento internacional (estrutura básica)
+- **Webhooks**: Confirmação automática e notificações (✅ Implementado 31/10/2025)
   - 📊 **Monitoramento de Emissões** - Acompanhamento em tempo real
   - 📈 **Relatórios e Analytics** - Análise completa de dados
   - ⚙️ **Configurações do Sistema** - Gerenciamento de integrações
@@ -417,15 +491,15 @@ ADN_NFSE_DANFSE_URL=https://...
 
 # WhatsApp
 WHATSAPP_TOKEN=your_token
-WHATSAPP_PHONE_ID=your_phone_id
-```
+## 💳 Integração Sicoob PIX + Boleto
 
-### **Banco de Dados**
-```bash
-# Aplicar migrações
-supabase db reset
-
-# Visualizar schema
+### **Visão Geral**
+Integração com o ecossistema Sicoob para gerenciamento de cobranças via PIX e Boleto:
+- 🔐 **Autenticação OAuth 2.0 + mTLS** com certificados ICP-Brasil (✅ Funcionando)
+- 💰 **Cobranças PIX** (imediatas e com vencimento) (✅ Funcionando 31/10/2025)
+- 📄 **Boletos Bancários** (geração, consulta, cancelamento, PDF) (❌ Bloqueado - Sandbox Incompatível 31/10/2025)
+- 🔔 **Webhooks** com validação HMAC e persistência automática (✅ Implementado)
+- 📱 **Notificações WhatsApp** automatizadas para eventos de pagamento (✅ Implementado)
 supabase db diff
 ```
 
@@ -448,7 +522,6 @@ apps/backend/src/services/sicoob/
 ├── pix.service.ts            # Cobranças PIX (criar, consultar, listar, cancelar)
 ├── boleto.service.ts         # Boletos (gerar, consultar, listar, PDF)
 ├── webhook.service.ts        # Processamento de webhooks (✅ persistência Supabase)
-├── cobranca-db.service.ts    # Gerenciamento de cobranças no Supabase (✅ NOVO)
 └── certificate.util.ts       # Manipulação de certificados mTLS
 ```
 

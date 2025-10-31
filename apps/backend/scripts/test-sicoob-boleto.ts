@@ -1,12 +1,22 @@
-import 'dotenv/config';
+import { config } from 'dotenv';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { initializeSicoobServices, getBoletoService } from '../src/services/sicoob';
+import type { BoletoPayloadV3 } from '../src/services/sicoob';
 import { createClient } from '@supabase/supabase-js';
 
+// Carregar .env do diretório apps/backend
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+config({ path: resolve(__dirname, '../.env') });
+
 async function main() {
+  console.log('🔐 Testando integração Boleto Sicoob (Sandbox)\n');
+  
   // Inicializar serviços Sicoob
   initializeSicoobServices({
     environment: process.env.SICOOB_ENVIRONMENT as 'sandbox' | 'production',
-    baseUrl: process.env.SICOOB_API_BASE_URL!,
+    baseUrl: process.env.SICOOB_BOLETO_BASE_URL || process.env.SICOOB_API_BASE_URL!,
     authUrl: process.env.SICOOB_AUTH_URL!,
     authValidateUrl: process.env.SICOOB_AUTH_VALIDATE_URL,
     clientId: process.env.SICOOB_CLIENT_ID!,
@@ -30,6 +40,43 @@ async function main() {
   // Obter serviço de Boleto
   const boletoService = getBoletoService();
 
+  // Teste 0: Criar Boleto (V3 mínimo)
+  console.log('\n=== Teste 0: Criar Boleto V3 (mínimo) ===');
+  try {
+    const hoje = new Date();
+    const vencimento = new Date();
+    vencimento.setDate(hoje.getDate() + 30);
+
+    const payloadV3: BoletoPayloadV3 = {
+      numeroContrato: Number(process.env.SICOOB_NUMERO_CONTRATO || '123456'),
+      modalidade: Number(process.env.SICOOB_MODALIDADE || '1'),
+      numeroContaCorrente: Number(process.env.SICOOB_CONTA_CORRENTE || '144796'),
+      especieDocumento: process.env.SICOOB_ESPECIE_DOCUMENTO || 'DM',
+      dataEmissao: hoje.toISOString().slice(0, 10),
+      dataVencimento: vencimento.toISOString().slice(0, 10),
+      valorNominal: 100.0,
+      pagador: {
+        numeroCpfCnpj: process.env.SICOOB_PAGADOR_CPF || '12345678901',
+        nome: 'Teste Sandbox',
+        endereco: 'Rua Teste 123',
+        cidade: 'Brasilia',
+        cep: '70000000',
+        uf: 'DF',
+      },
+      seuNumero: 'TESTE001',
+    };
+
+    const boletoV3 = await boletoService.criarBoleto(payloadV3);
+    console.log('✓ Boleto V3 criado:', {
+      nossoNumero: boletoV3.nosso_numero,
+      linhaDigitavel: boletoV3.numero_boleto,
+    });
+
+    await registrarNoSupabase('boleto_v3_criado', boletoV3);
+  } catch (error: any) {
+    console.error('✗ Erro ao criar boleto V3:', error.message);
+  }
+
   // Teste 1: Gerar boleto
   console.log('\n=== Teste 1: Gerar Boleto ===');
   try {
@@ -37,30 +84,29 @@ async function main() {
     dataVencimento.setDate(dataVencimento.getDate() + 15); // 15 dias
 
     const boleto = await boletoService.gerarBoleto({
-      numero_controle: 'TESTE-' + Date.now(),
-      beneficiario: {
-        nome: 'Empresa Teste Ltda',
-        cpf_cnpj: process.env.SICOOB_CNPJ_BENEFICIARIO || '12345678000190',
-        endereco: 'Rua da Empresa',
-        numero: '1000',
-        bairro: 'Centro',
-        cidade: 'São Paulo',
-        estado: 'SP',
-      },
+      modalidade: 1, // 1 = Simples
+      numeroTituloCliente: 'TESTE-' + Date.now(),
+      dataVencimento: dataVencimento.toISOString().split('T')[0],
+      valorTitulo: 350.75,
       pagador: {
-        cpf_cnpj: '12345678909',
         nome: 'Carlos Souza Teste',
-        endereco: 'Rua Exemplo',
-        numero: '100',
-        bairro: 'Centro',
-        cidade: 'São Paulo',
-        estado: 'SP',
+        numeroCpfCnpj: '12345678909',
+        tipoPessoa: 1, // 1 = Pessoa Física
+        endereco: 'Rua Exemplo 100',
+        nomeBairro: 'Centro',
+        nomeMunicipio: 'Sao Paulo',
+        siglaUf: 'SP',
+        numeroCep: '01310100',
       },
-      valor: 350.75,
-      data_vencimento: dataVencimento.toISOString().split('T')[0],
-      tipo_juros: 'ISENTO',
-      tipo_multa: 'ISENTO',
-      descricao: 'Teste de geração de boleto via sandbox',
+      especieDocumento: 2, // 2 = Duplicata Mercantil
+      codigoAceite: 'N',
+      multa: {
+        tipoMulta: 0, // 0 = Isento
+      },
+      juros: {
+        tipoJuros: 0, // 0 = Isento
+      },
+      mensagensPosicao5a8: ['Teste de geracao de boleto via sandbox'],
     });
 
     console.log('✓ Boleto gerado:', {
