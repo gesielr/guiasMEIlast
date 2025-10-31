@@ -37,50 +37,50 @@ async function main() {
     dataVencimento.setDate(dataVencimento.getDate() + 15); // 15 dias
 
     const boleto = await boletoService.gerarBoleto({
-      numeroContrato: process.env.SICOOB_CONTRATO || '123456',
-      modalidade: '01', // Simples
-      numeroContaCorrente: process.env.SICOOB_CONTA || '12345',
-      especieDocumento: 'DM', // Duplicata Mercantil
-      dataEmissao: new Date().toISOString().split('T')[0],
-      dataVencimento: dataVencimento.toISOString().split('T')[0],
-      valorNominal: '350.75',
-      pagador: {
-        cpfCnpj: '12345678909',
-        nome: 'Carlos Souza Teste',
-        endereco: {
-          logradouro: 'Rua Exemplo',
-          numero: '100',
-          bairro: 'Centro',
-          cidade: 'São Paulo',
-          uf: 'SP',
-          cep: '01000000',
-        },
-      },
+      numero_controle: 'TESTE-' + Date.now(),
       beneficiario: {
         nome: 'Empresa Teste Ltda',
-        cpfCnpj: process.env.SICOOB_CNPJ_BENEFICIARIO || '12345678000190',
+        cpf_cnpj: process.env.SICOOB_CNPJ_BENEFICIARIO || '12345678000190',
+        endereco: 'Rua da Empresa',
+        numero: '1000',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
       },
+      pagador: {
+        cpf_cnpj: '12345678909',
+        nome: 'Carlos Souza Teste',
+        endereco: 'Rua Exemplo',
+        numero: '100',
+        bairro: 'Centro',
+        cidade: 'São Paulo',
+        estado: 'SP',
+      },
+      valor: 350.75,
+      data_vencimento: dataVencimento.toISOString().split('T')[0],
+      tipo_juros: 'ISENTO',
+      tipo_multa: 'ISENTO',
       descricao: 'Teste de geração de boleto via sandbox',
     });
 
     console.log('✓ Boleto gerado:', {
-      nossoNumero: boleto.nossoNumero,
-      linhaDigitavel: boleto.linhaDigitavel,
-      codigoBarras: boleto.codigoBarras?.substring(0, 20) + '...',
+      nossoNumero: boleto.nosso_numero,
+      linhaDigitavel: boleto.numero_boleto,
+      codigoBarras: boleto.nosso_numero?.substring(0, 20) + '...',
     });
 
     // Registrar no Supabase
     await registrarNoSupabase('boleto_gerado', boleto);
 
     // Teste 2: Consultar boleto recém-criado
-    if (boleto.nossoNumero) {
+    if (boleto.nosso_numero) {
       console.log('\n=== Teste 2: Consultar Boleto ===');
       try {
-        const consultaBoleto = await boletoService.consultarBoleto(boleto.nossoNumero);
+        const consultaBoleto = await boletoService.consultarBoleto(boleto.nosso_numero);
         console.log('✓ Boleto consultado:', {
-          nossoNumero: consultaBoleto.nossoNumero,
-          status: consultaBoleto.situacao,
-          valor: consultaBoleto.valorNominal,
+          nossoNumero: consultaBoleto.nosso_numero,
+          status: consultaBoleto.status,
+          valor: consultaBoleto.valor,
         });
 
         await registrarNoSupabase('boleto_consultado', consultaBoleto);
@@ -106,7 +106,7 @@ async function main() {
     });
 
     console.log('✓ Boletos listados:', {
-      total: lista.paginacao?.totalRegistros || 0,
+      total: lista.paginacao?.total_itens || 0,
       registros: lista.boletos?.length || 0,
     });
 
