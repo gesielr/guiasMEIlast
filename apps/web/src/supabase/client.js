@@ -1,14 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Access environment variables with the CRA prefix.
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+// Suporta Vite (VITE_*) e fallback para CRA (REACT_APP_*)
+const supabaseUrl = (typeof import !== 'undefined' && import.meta?.env?.VITE_SUPABASE_URL)
+  ?? process.env.REACT_APP_SUPABASE_URL;
+const supabaseAnonKey = (typeof import !== 'undefined' && import.meta?.env?.VITE_SUPABASE_ANON_KEY)
+  ?? process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 let supabaseClient = null;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   // Development environment without Supabase configured: fall back to a lightweight mock.
-  console.warn('Aviso: variaveis REACT_APP_SUPABASE_URL / REACT_APP_SUPABASE_ANON_KEY nao encontradas. Usando mock de supabase para desenvolvimento.');
+  console.warn('Aviso: variaveis VITE_SUPABASE_URL/ANON_KEY (ou REACT_APP_*) nao encontradas. Usando mock de supabase para desenvolvimento.');
 
   const mockAuth = {
     async getSession() { return { data: { session: null }, error: null }; },
@@ -19,9 +21,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
       return { data: { subscription }, error: null, subscription };
     },
     async signOut() { return { error: null }; },
-    async signUp({ email }) {
+    async signUp({ email, role = 'partner' }) {
       const id = 'mock_' + Date.now();
-      return { data: { user: { id, email, user_metadata: { user_type: 'parceiro' } } }, error: null };
+      return { data: { user: { id, email, user_metadata: { role, user_type: role } } }, error: null };
     }
   };
 

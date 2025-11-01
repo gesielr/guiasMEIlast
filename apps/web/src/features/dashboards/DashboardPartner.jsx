@@ -112,7 +112,9 @@ const DashboardPartner = () => {
       }
 
       const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser || authUser.user_metadata?.user_type !== 'partner') {
+      const meta = authUser?.user_metadata ?? {};
+      const isPartner = meta.user_type === 'partner' || meta.user_type === 'parceiro' || meta.role === 'partner' || meta.role === 'parceiro';
+      if (!authUser || !isPartner) {
         navigate('/login');
         return;
       }

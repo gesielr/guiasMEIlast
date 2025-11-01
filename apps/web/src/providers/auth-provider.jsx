@@ -64,7 +64,8 @@ export function AuthProvider({ children }) {
               app_metadata: { provider: "email" },
               user_metadata: {
                 name: payload.name,
-                role: payload.role
+                role: payload.role ?? 'partner',
+                user_type: payload.role ?? 'partner'
               }
             }
           };

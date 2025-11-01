@@ -849,3 +849,38 @@
 2025-10-31 22:01:30,090 - app.main - INFO - [RESPONSE] Status 422
 2025-10-31 22:01:30,091 - app.main - INFO -    Tempo: 0.003s
 2025-10-31 22:01:30,091 - app.main - INFO - ================================================================================
+2025-10-31 22:20:28,797 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 22:20:28,798 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 22:20:28,798 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 22:20:28,800 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 22:20:28,801 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 22:20:28,801 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 22:20:28,802 - app.main - INFO - ================================================================================
+2025-10-31 22:20:28,802 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 22:20:28,802 - app.main - INFO - ================================================================================
+2025-10-31 22:20:28,804 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 22:20:28,804 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 22:20:28,804 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 22:20:28,804 - app.main - INFO - ================================================================================
+2025-10-31 22:20:28,804 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 22:20:28,805 - app.main - INFO - ================================================================================
+2025-10-31 22:20:40,985 - app.main - INFO - ================================================================================
+2025-10-31 22:20:40,985 - app.main - INFO - [REQUEST] GET /docs
+2025-10-31 22:20:40,986 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'sec-ch-ua': '"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'upgrade-insecure-requests': '1', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 'sec-fetch-site': 'none', 'sec-fetch-mode': 'navigate', 'sec-fetch-user': '?1', 'sec-fetch-dest': 'document', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7'}
+2025-10-31 22:20:40,986 - app.main - INFO - ================================================================================
+2025-10-31 22:20:40,988 - app.main - INFO - ================================================================================
+2025-10-31 22:20:40,988 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 22:20:40,988 - app.main - INFO -    Tempo: 0.001s
+2025-10-31 22:20:40,988 - app.main - INFO - ================================================================================
+2025-10-31 22:20:41,842 - app.main - INFO - ================================================================================
+2025-10-31 22:20:41,843 - app.main - INFO - [REQUEST] GET /openapi.json
+2025-10-31 22:20:41,844 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'connection': 'keep-alive', 'sec-ch-ua-platform': '"Windows"', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'accept': 'application/json,*/*', 'sec-ch-ua': '"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"', 'sec-ch-ua-mobile': '?0', 'sec-fetch-site': 'same-origin', 'sec-fetch-mode': 'cors', 'sec-fetch-dest': 'empty', 'referer': 'http://127.0.0.1:8000/docs', 'accept-encoding': 'gzip, deflate, br, zstd', 'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7'}
+2025-10-31 22:20:41,846 - app.main - INFO - ================================================================================
+2025-10-31 22:20:41,866 - app.main - INFO - ================================================================================
+2025-10-31 22:20:41,866 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 22:20:41,867 - app.main - INFO -    Tempo: 0.020s
+2025-10-31 22:20:41,868 - app.main - INFO - ================================================================================
+2025-10-31 22:35:30,396 - app.main - INFO - ================================================================================
+2025-10-31 22:35:30,397 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 22:35:30,398 - app.main - INFO - ================================================================================
+2025-10-31 22:35:30,398 - app.main - INFO - [OK] SHUTDOWN COMPLETO

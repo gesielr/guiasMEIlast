@@ -59,8 +59,9 @@ const CadastroPageParceiro = () => {
         setUser(response.session.user);
       }
 
-      const redirectTarget = response?.redirectTo ?? (appMode === "mock" ? "/dashboard/parceiro" : null);
-      navigate(redirectTarget ?? "/login");
+      // Após cadastro de parceiro, levar diretamente ao dashboard do parceiro
+      const redirectTarget = response?.redirectTo || "/parceiro/dashboard";
+      navigate(redirectTarget, { replace: true });
 
       
     } catch (err) {
