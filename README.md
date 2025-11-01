@@ -1025,6 +1025,109 @@ SUPABASE_KEY=eyJ...
 2. ⏳ Obter credenciais Twilio reais (quando necessário para produção)
 3. ⏳ Testar envio de links NFSe via WhatsApp
 4. ⏳ Integração Frontend ↔ Backend ↔ WhatsApp
+
+---
+
+## 🔗 Integração Frontend ↔ Backend
+
+### Status Atual (31/10/2025) - ⚠️ 50% PARCIAL
+
+#### Validação Técnica Completa
+- ✅ **Backend INSS (FastAPI)**: Rodando em http://127.0.0.1:8000
+- ✅ **CORS Configurado**: Frontend pode comunicar com backends
+- ✅ **Tratamento de Erros**: 404, 422 tratados corretamente
+- ✅ **Fluxo E2E (Estrutura)**: Comunicação validada
+- ❌ **Backend NFSe (Fastify)**: Não iniciado (porta 3333)
+- ❌ **Frontend (React/Vite)**: Não iniciado (porta 5173)
+
+#### Relatório de Testes
+📄 Veja o relatório completo em: [`docs/RELATORIO_FRONTEND_BACKEND_INTEGRACAO.md`](docs/RELATORIO_FRONTEND_BACKEND_INTEGRACAO.md)
+
+**Resumo:** 4/8 testes passaram (50% - Backend INSS + CORS + Erros + Fluxo)
+
+### Endpoints Backend INSS Funcionais
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|--------|
+| POST | `/api/v1/guias/emitir` | Emitir guia GPS | ✅ |
+| POST | `/api/v1/guias/complementacao` | Complementar contribuição | ✅ |
+| POST | `/api/v1/guias/gerar-pdf` | Gerar PDF da guia | ✅ |
+| GET | `/docs` | Documentação interativa | ✅ |
+| GET | `/health` | Health check | ✅ |
+
+### Como Iniciar os Serviços
+
+#### Backend INSS (FastAPI) - ✅ RODANDO
+```bash
+cd apps/backend/inss
+.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
+# Docs: http://127.0.0.1:8000/docs
+```
+
+#### Backend NFSe (Fastify) - ⏸️ PARADO
+```bash
+cd apps/backend
+npm run dev
+# API: http://127.0.0.1:3333
+```
+
+#### Frontend (React/Vite) - ⏸️ PARADO
+```bash
+cd apps/web
+npm run dev
+# App: http://localhost:5173
+```
+
+### Testes Automatizados
+```bash
+# Teste completo de integração
+cd apps/backend/inss
+python test_frontend_backend_integracao.py
+
+# Resultado esperado:
+# ✓ Backend INSS Health Check
+# ✓ Configuração CORS
+# ✓ Tratamento de Erros
+# ✓ Fluxo Integração E2E
+# ⚠ Backend NFSe (aguardando início)
+# ⚠ Frontend (aguardando início)
+```
+
+### Exemplo de Requisição
+```javascript
+// Frontend → Backend INSS
+const response = await fetch('http://127.0.0.1:8000/api/v1/guias/emitir', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Origin': 'http://localhost:5173'
+  },
+  body: JSON.stringify({
+    tipo_contribuinte: 'autonomo',
+    valor_base: 1518.00,
+    competencia: '202510',
+    whatsapp: '+5548991117268',
+    nome: 'João Silva',
+    cpf: '12345678901'
+  })
+});
+```
+
+### Variáveis .env (Frontend ↔ Backend)
+```env
+# Frontend (apps/web/.env)
+VITE_API_URL=http://localhost:3333
+VITE_SUPABASE_URL=https://...
+VITE_SUPABASE_ANON_KEY=...
+
+# Backend INSS já configurado ✅
+# Backend NFSe já configurado ✅
+```
+
+### Próximos Passos
+1. ✅ Backend INSS operacional (50% validado)
+2. ⏳ Iniciar Frontend para testes E2E completos
+3. ⏳ Iniciar Backend NFSe quando necessário
+4. ⏳ Validar dashboards (Usuário e Parceiro)
 NFSE_CERT_PFX_BASE64=...
 NFSE_CERT_PFX_PASS=...
 ```
