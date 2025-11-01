@@ -5,6 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import { decryptData } from '../../utils/encryption';
 import logo from '../../assets/logo.png';
 
+// Add CSS animation for spinner
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(styleSheet);
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? process.env.REACT_APP_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? process.env.REACT_APP_SUPABASE_ANON_KEY;
 const supabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
@@ -298,7 +308,25 @@ const DashboardPartner = () => {
               : `👤 CPF - Restam ${Math.max(DOCUMENT_LENGTH.cpf - newClient.document.length, 0)} dígitos`}
           </div>
         </div>
-        <button type="submit" disabled={loading} style={styles.button}>
+        <button type="submit" disabled={loading} style={{
+          ...styles.button,
+          opacity: loading ? 0.6 : 1,
+          cursor: loading ? 'not-allowed' : 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          if (!loading) {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.3)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!loading) {
+            e.currentTarget.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(37, 99, 235, 0.2)';
+          }
+        }}>
           {loading ? '⏳ Processando...' : '🚀 Gerar Link de Convite'}
         </button>
       </form>
@@ -323,7 +351,20 @@ const DashboardPartner = () => {
                 />
                 <button
                   type="button"
-                  style={styles.copyButton}
+                  style={{
+                    ...styles.copyButton,
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#047857';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#059669';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                   onClick={async () => {
                     try {
                       await navigator.clipboard.writeText(inviteLink);
@@ -353,32 +394,92 @@ const DashboardPartner = () => {
         <p style={styles.cardSubtitle}>Ferramentas para gerenciar seus clientes</p>
       </div>
       <div style={styles.quickActionsGrid}>
-        <button type="button" style={styles.quickActionButton}>
+        <button 
+          type="button" 
+          style={styles.quickActionButton}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#3b82f6';
+            e.currentTarget.style.backgroundColor = '#eff6ff';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#f3f4f6';
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
           <span style={styles.actionIcon}>🔗</span>
           <div style={styles.actionContent}>
-            <strong>Gerar Link</strong>
-            <small>Criar novo convite</small>
+            <strong style={{display: 'block', fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '4px'}}>Gerar Link</strong>
+            <small style={{fontSize: '12px', color: '#6b7280'}}>Criar novo convite</small>
           </div>
         </button>
-        <button type="button" style={styles.quickActionButton}>
+        <button 
+          type="button" 
+          style={styles.quickActionButton}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#3b82f6';
+            e.currentTarget.style.backgroundColor = '#eff6ff';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#f3f4f6';
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
           <span style={styles.actionIcon}>📧</span>
           <div style={styles.actionContent}>
-            <strong>Enviar Lembrete</strong>
-            <small>Pagamentos pendentes</small>
+            <strong style={{display: 'block', fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '4px'}}>Enviar Lembrete</strong>
+            <small style={{fontSize: '12px', color: '#6b7280'}}>Pagamentos pendentes</small>
           </div>
         </button>
-        <button type="button" style={styles.quickActionButton}>
+        <button 
+          type="button" 
+          style={styles.quickActionButton}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#3b82f6';
+            e.currentTarget.style.backgroundColor = '#eff6ff';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#f3f4f6';
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
           <span style={styles.actionIcon}>📊</span>
           <div style={styles.actionContent}>
-            <strong>Relatórios</strong>
-            <small>Exportar dados</small>
+            <strong style={{display: 'block', fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '4px'}}>Relatórios</strong>
+            <small style={{fontSize: '12px', color: '#6b7280'}}>Exportar dados</small>
           </div>
         </button>
-        <button type="button" style={styles.quickActionButton}>
+        <button 
+          type="button" 
+          style={styles.quickActionButton}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = '#3b82f6';
+            e.currentTarget.style.backgroundColor = '#eff6ff';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.15)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = '#f3f4f6';
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
           <span style={styles.actionIcon}>📱</span>
           <div style={styles.actionContent}>
-            <strong>WhatsApp</strong>
-            <small>Contato direto</small>
+            <strong style={{display: 'block', fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '4px'}}>WhatsApp</strong>
+            <small style={{fontSize: '12px', color: '#6b7280'}}>Contato direto</small>
           </div>
         </button>
       </div>
@@ -436,13 +537,46 @@ const DashboardPartner = () => {
                 </td>
                 <td style={styles.td}>
                   <div style={styles.actionButtons}>
-                    <button style={styles.actionBtn} title="Visualizar">
+                    <button 
+                      style={styles.actionBtn} 
+                      title="Visualizar"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#eff6ff';
+                        e.currentTarget.style.borderColor = '#3b82f6';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#ffffff';
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                      }}
+                    >
                       👁️
                     </button>
-                    <button style={styles.actionBtn} title="Editar">
+                    <button 
+                      style={styles.actionBtn} 
+                      title="Editar"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fef3c7';
+                        e.currentTarget.style.borderColor = '#f59e0b';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#ffffff';
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                      }}
+                    >
                       ✏️
                     </button>
-                    <button style={styles.actionBtn} title="Contatar">
+                    <button 
+                      style={styles.actionBtn} 
+                      title="Contatar"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#dcfce7';
+                        e.currentTarget.style.borderColor = '#10b981';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#ffffff';
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                      }}
+                    >
                       📱
                     </button>
                   </div>
@@ -454,8 +588,14 @@ const DashboardPartner = () => {
                 <td style={styles.emptyState} colSpan={5}>
                   <div style={styles.emptyStateContent}>
                     <span style={styles.emptyIcon}>👥</span>
-                    <h4>Nenhum cliente cadastrado ainda</h4>
-                    <p>Comece adicionando seu primeiro cliente usando o formulário acima</p>
+                    <div>
+                      <strong style={{fontSize: '18px', color: '#374151', display: 'block', marginBottom: '8px'}}>
+                        Nenhum cliente cadastrado ainda
+                      </strong>
+                      <span style={{fontSize: '14px', color: '#9ca3af'}}>
+                        Comece adicionando seu primeiro cliente usando o formulário acima
+                      </span>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -516,17 +656,21 @@ const DashboardPartner = () => {
 
       <main style={styles.mainContent}>
         <header style={styles.header}>
-          <h2>{currentMeta.title}</h2>
-          <p>{currentMeta.description}</p>
+          <h2 style={{fontSize: '32px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0'}}>
+            {currentMeta.title}
+          </h2>
+          <p style={{fontSize: '16px', color: '#6b7280', margin: 0, lineHeight: 1.5}}>
+            {currentMeta.description}
+          </p>
         </header>
 
         {activeSection === 'overview' && (
           <>
             <section style={styles.statsGrid}>
-              <StatCard title="Receita Total" value={`R$ ${stats.total_revenue.toFixed(2)}`} icon="R$" />
-              <StatCard title="Notas Fiscais Emitidas" value={stats.total_nfse} icon="NF" />
-              <StatCard title="Guias GPS Emitidas" value={stats.total_gps} icon="GPS" />
-              <StatCard title="Total de Clientes" value={clients.length} icon="CL" />
+              <StatCard title="Receita Total" value={`R$ ${stats.total_revenue.toFixed(2)}`} icon="💰" />
+              <StatCard title="Notas Fiscais" value={stats.total_nfse} icon="📊" />
+              <StatCard title="Guias GPS" value={stats.total_gps} icon="📄" />
+              <StatCard title="Total Clientes" value={clients.length} icon="👥" />
             </section>
 
             <section style={styles.grid2Cols}>
@@ -550,28 +694,49 @@ const DashboardPartner = () => {
         {activeSection === 'commissions' && (
           <>
             <section style={styles.statsGrid}>
-              <StatCard title="Receita Total" value={`R$ ${totalCommission.toFixed(2)}`} icon="R$" />
-              <StatCard title="Clientes Ativos" value={clients.length} icon="CL" />
-              <StatCard title="Notas Emitidas" value={stats.total_nfse} icon="NF" />
+              <StatCard title="Receita Total" value={`R$ ${totalCommission.toFixed(2)}`} icon="💰" />
+              <StatCard title="Clientes Ativos" value={clients.length} icon="👥" />
+              <StatCard title="Notas Emitidas" value={stats.total_nfse} icon="📊" />
+              <StatCard title="Taxa de Sucesso" value="95%" icon="✅" />
             </section>
 
             <section style={styles.card}>
-              <h3>Histórico de Comissões</h3>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>Cliente</th>
-                    <th style={styles.th}>Valor</th>
-                    <th style={styles.th}>Data</th>
-                    <th style={styles.th}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <div style={styles.cardHeader}>
+                <h3 style={styles.cardTitle}>💳 Histórico de Comissões</h3>
+                <p style={styles.cardSubtitle}>Acompanhe todas as suas comissões recebidas</p>
+              </div>
+              <div style={styles.tableContainer}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr style={styles.tableRow}>
+                      <th style={styles.th}>Cliente</th>
+                      <th style={styles.th}>Valor</th>
+                      <th style={styles.th}>Data</th>
+                      <th style={styles.th}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                   {commissionHistory.map((item) => (
-                    <tr key={item.id}>
-                      <td style={styles.td}>{item.name}</td>
-                      <td style={styles.td}>R$ {item.amount.toFixed(2)}</td>
-                      <td style={styles.td}>{item.date}</td>
+                    <tr key={item.id} style={styles.tableRow}>
+                      <td style={styles.td}>
+                        <div style={styles.clientInfo}>
+                          <div style={styles.clientAvatar}>
+                            {item.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                          </div>
+                          <div>
+                            <div style={{fontWeight: 600, color: '#111827'}}>{item.name}</div>
+                            <div style={styles.clientType}>MEI</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style={styles.td}>
+                        <span style={{fontSize: '16px', fontWeight: 700, color: '#059669'}}>
+                          R$ {item.amount.toFixed(2)}
+                        </span>
+                      </td>
+                      <td style={styles.td}>
+                        <span style={styles.dateText}>{item.date}</span>
+                      </td>
                       <td style={styles.td}>
                         <span style={styles.statusBadge(item.status === 'Pago')}>{item.status}</span>
                       </td>
@@ -580,12 +745,23 @@ const DashboardPartner = () => {
                   {!commissionHistory.length && (
                     <tr>
                       <td style={styles.emptyState} colSpan={4}>
-                        Nenhuma comissão registrada até o momento.
+                        <div style={styles.emptyStateContent}>
+                          <span style={styles.emptyIcon}>💳</span>
+                          <div>
+                            <strong style={{fontSize: '16px', color: '#374151', display: 'block', marginBottom: '8px'}}>
+                              Nenhuma comissão registrada
+                            </strong>
+                            <span style={{fontSize: '14px', color: '#9ca3af'}}>
+                              As comissões aparecerão aqui quando seus clientes emitirem notas fiscais
+                            </span>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
+            </div>
             </section>
           </>
         )}
@@ -596,82 +772,435 @@ const DashboardPartner = () => {
 
 const StatCard = ({ title, value, icon }) => (
   <div style={styles.statCard}>
-    <div style={styles.statIcon}>{icon}</div>
-    <div>
-      <p style={styles.statValue}>{value}</p>
+    <div style={styles.statIconContainer}>
+      <span style={styles.statIcon}>{icon}</span>
+    </div>
+    <div style={styles.statContent}>
       <h4 style={styles.statTitle}>{title}</h4>
+      <p style={styles.statValue}>{value}</p>
     </div>
   </div>
 );
 
 const styles = {
-  dashboardContainer: { display: 'flex', minHeight: '100vh', fontFamily: '"Inter", sans-serif', backgroundColor: '#f8f9fa' },
-  sidebar: { width: '280px', backgroundColor: '#fff', padding: '30px 20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid #e5e7eb', boxShadow: '2px 0 10px rgba(0,0,0,0.05)' },
-  logo: { height: '60px', marginBottom: '40px', alignSelf: 'center' },
-  nav: { display: 'flex', flexDirection: 'column', gap: '8px', flexGrow: 1 },
-  navLink: { textDecoration: 'none', color: '#6b7280', padding: '14px 16px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 500, transition: 'all 0.3s ease', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: '15px' },
-  activeNavLink: { backgroundColor: '#eff6ff', color: '#2563eb', border: '1px solid #dbeafe' },
-  logoutButton: { padding: '14px 16px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 500, color: '#dc2626', cursor: 'pointer', transition: 'all 0.3s ease', backgroundColor: '#fef2f2', border: '1px solid #fecaca' },
-  mainContent: { flex: 1, padding: '40px', overflowY: 'auto', backgroundColor: '#f8f9fa' },
-  header: { marginBottom: '40px' },
-  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '40px' },
-  statCard: { display: 'flex', alignItems: 'center', gap: '20px', backgroundColor: '#fff', padding: '28px', borderRadius: '16px', boxShadow: '0 4px 25px rgba(0,0,0,0.08)', border: '1px solid #f3f4f6', transition: 'all 0.3s ease' },
-  statIcon: { fontSize: '2.5rem', opacity: 0.8 },
-  statValue: { fontSize: '28px', fontWeight: 'bold', margin: 0, color: '#1f2937' },
-  statTitle: { fontSize: '14px', color: '#6b7280', margin: 0, fontWeight: 500 },
-  grid2Cols: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px', marginBottom: '40px' },
-  gridSingle: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px', marginBottom: '40px' },
-  card: { backgroundColor: '#fff', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 25px rgba(0,0,0,0.08)', border: '1px solid #f3f4f6' },
-  cardHeader: { marginBottom: '24px' },
-  cardTitle: { fontSize: '20px', fontWeight: 'bold', color: '#1f2937', margin: '0 0 8px 0' },
-  cardSubtitle: { fontSize: '14px', color: '#6b7280', margin: 0 },
-  form: { display: 'flex', flexDirection: 'column', gap: '20px' },
-  inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  inputLabel: { fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '4px' },
-  input: { padding: '14px 16px', fontSize: '16px', border: '2px solid #e5e7eb', borderRadius: '10px', transition: 'all 0.3s ease', backgroundColor: '#fff', '&:focus': { borderColor: '#3b82f6', outline: 'none', boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)' } },
-  helperText: { fontSize: '13px', color: '#6b7280', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' },
-  button: { padding: '14px 24px', fontSize: '16px', fontWeight: '600', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', transition: 'all 0.3s ease', '&:hover': { backgroundColor: '#2563eb', transform: 'translateY(-1px)' }, '&:disabled': { backgroundColor: '#9ca3af', cursor: 'not-allowed' } },
-  quickActionsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' },
-  quickActionButton: { padding: '20px 16px', borderRadius: '12px', border: '2px solid #f3f4f6', backgroundColor: '#fff', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', '&:hover': { borderColor: '#3b82f6', backgroundColor: '#eff6ff', transform: 'translateY(-2px)' } },
-  actionIcon: { fontSize: '24px' },
-  actionContent: { textAlign: 'center', 'strong': { display: 'block', fontSize: '14px', fontWeight: '600', color: '#1f2937', marginBottom: '4px' }, 'small': { fontSize: '12px', color: '#6b7280' } },
-  feedbackBox: { marginTop: '20px', padding: '20px', borderRadius: '12px', backgroundColor: '#f0f9ff', border: '2px solid #bae6fd', display: 'flex', flexDirection: 'column', gap: '16px' },
-  feedbackMessage: { display: 'flex', alignItems: 'center', gap: '12px' },
-  feedbackIcon: { fontSize: '18px' },
-  feedbackText: { margin: 0, fontSize: '14px', color: '#1e40af', fontWeight: '500' },
-  inviteSection: { backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' },
-  inviteTitle: { fontSize: '16px', fontWeight: '600', color: '#1f2937', margin: '0 0 12px 0' },
-  inviteWrapper: { display: 'flex', gap: '12px', alignItems: 'center' },
-  inviteInput: { flex: 1, padding: '12px 16px', borderRadius: '8px', border: '2px solid #d1d5db', fontSize: '14px', backgroundColor: '#fff', fontFamily: 'monospace' },
-  copyButton: { padding: '12px 20px', borderRadius: '8px', border: 'none', backgroundColor: '#059669', color: '#fff', fontWeight: '600', cursor: 'pointer', transition: 'all 0.3s ease', '&:hover': { backgroundColor: '#047857' } },
-  inviteInstructions: { fontSize: '13px', color: '#6b7280', margin: '8px 0 0 0', fontStyle: 'italic' },
-  tableContainer: { overflowX: 'auto', borderRadius: '12px', border: '1px solid #e5e7eb' },
-  table: { width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' },
-  tableRow: { transition: 'all 0.2s ease', '&:hover': { backgroundColor: '#f9fafb' } },
-  th: { textAlign: 'left', padding: '16px', backgroundColor: '#f8fafc', fontWeight: '600', color: '#374151', fontSize: '14px', borderBottom: '2px solid #e5e7eb' },
-  td: { padding: '16px', borderBottom: '1px solid #f3f4f6', color: '#374151' },
-  clientInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
-  clientAvatar: { width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#3b82f6', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '16px' },
-  clientType: { color: '#6b7280', fontSize: '12px' },
-  documentCode: { backgroundColor: '#f3f4f6', padding: '4px 8px', borderRadius: '6px', fontFamily: 'monospace', fontSize: '12px', color: '#374151' },
-  dateText: { color: '#6b7280', fontSize: '14px' },
-  actionButtons: { display: 'flex', gap: '8px' },
-  actionBtn: { padding: '6px 8px', borderRadius: '6px', border: '1px solid #d1d5db', backgroundColor: '#fff', cursor: 'pointer', transition: 'all 0.2s ease', fontSize: '14px', '&:hover': { backgroundColor: '#f3f4f6', borderColor: '#9ca3af' } },
-  emptyState: { padding: '40px', textAlign: 'center', color: '#6b7280' },
-  emptyStateContent: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' },
-  emptyIcon: { fontSize: '48px', opacity: 0.5 },
+  dashboardContainer: { 
+    display: 'flex', 
+    minHeight: '100vh', 
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', 
+    backgroundColor: '#f3f4f6' 
+  },
+  sidebar: { 
+    width: '280px', 
+    backgroundColor: '#ffffff', 
+    padding: '32px 24px', 
+    display: 'flex', 
+    flexDirection: 'column', 
+    borderRight: '1px solid #e5e7eb', 
+    boxShadow: '2px 0 8px rgba(0, 0, 0, 0.04)' 
+  },
+  logo: { 
+    height: '56px', 
+    marginBottom: '48px', 
+    alignSelf: 'center' 
+  },
+  nav: { 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: '8px', 
+    flexGrow: 1 
+  },
+  navLink: { 
+    textDecoration: 'none', 
+    color: '#6b7280', 
+    padding: '12px 16px', 
+    borderRadius: '12px', 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: '12px', 
+    fontWeight: 500, 
+    transition: 'all 0.2s ease', 
+    backgroundColor: 'transparent', 
+    border: 'none', 
+    cursor: 'pointer', 
+    textAlign: 'left', 
+    fontSize: '15px' 
+  },
+  activeNavLink: { 
+    backgroundColor: '#eff6ff', 
+    color: '#2563eb', 
+    fontWeight: 600 
+  },
+  logoutButton: { 
+    padding: '12px 16px', 
+    borderRadius: '12px', 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: '12px', 
+    fontWeight: 500, 
+    color: '#dc2626', 
+    cursor: 'pointer', 
+    transition: 'all 0.2s ease', 
+    backgroundColor: '#fef2f2', 
+    marginTop: '16px' 
+  },
+  mainContent: { 
+    flex: 1, 
+    padding: '40px 48px', 
+    overflowY: 'auto', 
+    backgroundColor: '#f9fafb' 
+  },
+  header: { 
+    marginBottom: '32px' 
+  },
+  statsGrid: { 
+    display: 'grid', 
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+    gap: '24px', 
+    marginBottom: '40px' 
+  },
+  statCard: { 
+    display: 'flex', 
+    flexDirection: 'column',
+    backgroundColor: '#ffffff', 
+    padding: '24px', 
+    borderRadius: '16px', 
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)', 
+    border: '1px solid #e5e7eb', 
+    transition: 'all 0.2s ease',
+    cursor: 'default'
+  },
+  statIconContainer: {
+    width: '56px',
+    height: '56px',
+    borderRadius: '12px',
+    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '16px'
+  },
+  statIcon: { 
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#ffffff'
+  },
+  statContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px'
+  },
+  statTitle: { 
+    fontSize: '14px', 
+    color: '#6b7280', 
+    margin: 0, 
+    fontWeight: 500,
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
+  },
+  statValue: { 
+    fontSize: '32px', 
+    fontWeight: 700, 
+    margin: 0, 
+    color: '#111827',
+    lineHeight: 1.2
+  },
+  grid2Cols: { 
+    display: 'grid', 
+    gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', 
+    gap: '24px', 
+    marginBottom: '40px' 
+  },
+  gridSingle: { 
+    display: 'grid', 
+    gridTemplateColumns: '1fr', 
+    gap: '24px', 
+    marginBottom: '40px',
+    maxWidth: '900px'
+  },
+  card: { 
+    backgroundColor: '#ffffff', 
+    padding: '32px', 
+    borderRadius: '16px', 
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)', 
+    border: '1px solid #e5e7eb' 
+  },
+  cardHeader: { 
+    marginBottom: '24px',
+    borderBottom: '1px solid #f3f4f6',
+    paddingBottom: '16px'
+  },
+  cardTitle: { 
+    fontSize: '20px', 
+    fontWeight: 700, 
+    color: '#111827', 
+    margin: '0 0 8px 0' 
+  },
+  cardSubtitle: { 
+    fontSize: '14px', 
+    color: '#6b7280', 
+    margin: 0,
+    lineHeight: 1.5
+  },
+  form: { 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: '20px' 
+  },
+  inputGroup: { 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: '8px' 
+  },
+  inputLabel: { 
+    fontSize: '14px', 
+    fontWeight: 600, 
+    color: '#374151', 
+    marginBottom: '4px' 
+  },
+  input: { 
+    padding: '12px 16px', 
+    fontSize: '15px', 
+    border: '2px solid #e5e7eb', 
+    borderRadius: '10px', 
+    transition: 'border-color 0.2s ease', 
+    backgroundColor: '#ffffff',
+    outline: 'none'
+  },
+  helperText: { 
+    fontSize: '13px', 
+    color: '#6b7280', 
+    marginTop: '4px', 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: '6px' 
+  },
+  button: { 
+    padding: '14px 24px', 
+    fontSize: '16px', 
+    fontWeight: 600, 
+    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
+    color: '#ffffff', 
+    border: 'none', 
+    borderRadius: '10px', 
+    cursor: 'pointer', 
+    transition: 'all 0.2s ease',
+    boxShadow: '0 2px 4px rgba(37, 99, 235, 0.2)'
+  },
+  quickActionsGrid: { 
+    display: 'grid', 
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
+    gap: '16px' 
+  },
+  quickActionButton: { 
+    padding: '20px 16px', 
+    borderRadius: '12px', 
+    border: '2px solid #f3f4f6', 
+    backgroundColor: '#ffffff', 
+    cursor: 'pointer', 
+    transition: 'all 0.2s ease', 
+    display: 'flex', 
+    flexDirection: 'column', 
+    alignItems: 'center', 
+    gap: '12px',
+    textAlign: 'center'
+  },
+  actionIcon: { 
+    fontSize: '28px' 
+  },
+  actionContent: { 
+    textAlign: 'center'
+  },
+  feedbackBox: { 
+    marginTop: '24px', 
+    padding: '20px', 
+    borderRadius: '12px', 
+    backgroundColor: '#eff6ff', 
+    border: '2px solid #bfdbfe', 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: '16px' 
+  },
+  feedbackMessage: { 
+    display: 'flex', 
+    alignItems: 'flex-start', 
+    gap: '12px' 
+  },
+  feedbackIcon: { 
+    fontSize: '20px',
+    marginTop: '2px'
+  },
+  feedbackText: { 
+    margin: 0, 
+    fontSize: '14px', 
+    color: '#1e40af', 
+    fontWeight: 500,
+    lineHeight: 1.5
+  },
+  inviteSection: { 
+    backgroundColor: '#f8fafc', 
+    padding: '20px', 
+    borderRadius: '12px', 
+    border: '1px solid #e2e8f0' 
+  },
+  inviteTitle: { 
+    fontSize: '16px', 
+    fontWeight: 600, 
+    color: '#111827', 
+    margin: '0 0 16px 0' 
+  },
+  inviteWrapper: { 
+    display: 'flex', 
+    gap: '12px', 
+    alignItems: 'stretch' 
+  },
+  inviteInput: { 
+    flex: 1, 
+    padding: '12px 16px', 
+    borderRadius: '10px', 
+    border: '2px solid #d1d5db', 
+    fontSize: '13px', 
+    backgroundColor: '#ffffff', 
+    fontFamily: 'monospace',
+    color: '#374151'
+  },
+  copyButton: { 
+    padding: '12px 24px', 
+    borderRadius: '10px', 
+    border: 'none', 
+    backgroundColor: '#059669', 
+    color: '#ffffff', 
+    fontWeight: 600, 
+    cursor: 'pointer', 
+    transition: 'all 0.2s ease',
+    fontSize: '14px',
+    whiteSpace: 'nowrap'
+  },
+  inviteInstructions: { 
+    fontSize: '13px', 
+    color: '#6b7280', 
+    margin: '12px 0 0 0', 
+    fontStyle: 'italic' 
+  },
+  tableContainer: { 
+    overflowX: 'auto', 
+    borderRadius: '12px', 
+    border: '1px solid #e5e7eb',
+    marginTop: '24px'
+  },
+  table: { 
+    width: '100%', 
+    borderCollapse: 'collapse', 
+    backgroundColor: '#ffffff' 
+  },
+  tableRow: { 
+    transition: 'background-color 0.15s ease' 
+  },
+  th: { 
+    textAlign: 'left', 
+    padding: '16px 20px', 
+    backgroundColor: '#f9fafb', 
+    fontWeight: 600, 
+    color: '#374151', 
+    fontSize: '13px', 
+    borderBottom: '2px solid #e5e7eb',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
+  },
+  td: { 
+    padding: '16px 20px', 
+    borderBottom: '1px solid #f3f4f6', 
+    color: '#374151',
+    fontSize: '14px'
+  },
+  clientInfo: { 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: '12px' 
+  },
+  clientAvatar: { 
+    width: '44px', 
+    height: '44px', 
+    borderRadius: '50%', 
+    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
+    color: '#ffffff', 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    fontWeight: 700, 
+    fontSize: '16px',
+    flexShrink: 0
+  },
+  clientType: { 
+    color: '#6b7280', 
+    fontSize: '12px',
+    marginTop: '2px'
+  },
+  documentCode: { 
+    backgroundColor: '#f3f4f6', 
+    padding: '6px 10px', 
+    borderRadius: '6px', 
+    fontFamily: 'ui-monospace, monospace', 
+    fontSize: '13px', 
+    color: '#374151',
+    fontWeight: 500
+  },
+  dateText: { 
+    color: '#6b7280', 
+    fontSize: '14px' 
+  },
+  actionButtons: { 
+    display: 'flex', 
+    gap: '8px' 
+  },
+  actionBtn: { 
+    padding: '8px 10px', 
+    borderRadius: '8px', 
+    border: '1px solid #e5e7eb', 
+    backgroundColor: '#ffffff', 
+    cursor: 'pointer', 
+    transition: 'all 0.15s ease', 
+    fontSize: '16px'
+  },
+  emptyState: { 
+    padding: '60px 40px', 
+    textAlign: 'center', 
+    color: '#6b7280' 
+  },
+  emptyStateContent: { 
+    display: 'flex', 
+    flexDirection: 'column', 
+    alignItems: 'center', 
+    gap: '16px' 
+  },
+  emptyIcon: { 
+    fontSize: '64px', 
+    opacity: 0.3 
+  },
   statusBadge: (isCompleted) => ({
-    padding: '6px 12px',
+    display: 'inline-block',
+    padding: '6px 14px',
     borderRadius: '20px',
     fontSize: '12px',
-    fontWeight: '600',
+    fontWeight: 600,
     backgroundColor: isCompleted ? '#dcfce7' : '#fef3c7',
     color: isCompleted ? '#166534' : '#92400e',
-    border: isCompleted ? '1px solid #bbf7d0' : '1px solid #fde68a'
+    border: `1px solid ${isCompleted ? '#bbf7d0' : '#fde68a'}`
   }),
-  centered: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' },
-  spinner: { border: '4px solid #f3f4f6', borderTop: '4px solid #3b82f6', borderRadius: '50%', width: '40px', height: '40px', animation: 'spin 1s linear infinite' },
-  '@keyframes spin': { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } }
+  centered: { 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    minHeight: '100vh',
+    backgroundColor: '#f9fafb'
+  },
+  spinner: { 
+    border: '4px solid #e5e7eb', 
+    borderTop: '4px solid #3b82f6', 
+    borderRadius: '50%', 
+    width: '48px', 
+    height: '48px', 
+    animation: 'spin 0.8s linear infinite' 
+  }
 };
 
 export default DashboardPartner;
