@@ -1,7 +1,7 @@
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import Field, HttpUrl
+from pydantic import Field, HttpUrl, AliasChoices
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -9,14 +9,18 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """Configurações globais carregadas do ambiente."""
 
-    model_config = SettingsConfigDict(env_file="../.env", env_file_encoding="utf-8", extra="ignore")
+    # Usa o .env da raiz do módulo INSS (apps/backend/inss/.env)
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     app_name: str = Field(default="INSS Guias API")
     app_version: str = Field(default="1.0.0")
 
     # Supabase
     supabase_url: HttpUrl = Field(..., alias="SUPABASE_URL")
-    supabase_key: str = Field(..., alias="SUPABASE_ANON_KEY")
+    # Aceita tanto SUPABASE_ANON_KEY (preferido) quanto SUPABASE_KEY (legado/.env.example)
+    supabase_key: str = Field(
+        ..., validation_alias=AliasChoices("SUPABASE_ANON_KEY", "SUPABASE_KEY")
+    )
 
     # Twilio / WhatsApp
     twilio_account_sid: Optional[str] = Field(default=None, alias="TWILIO_ACCOUNT_SID")
@@ -26,6 +30,7 @@ class Settings(BaseSettings):
 
     # OpenAI / LangChain
     openai_api_key: Optional[str] = Field(default=None, alias="OPENAI_API_KEY")
+    openai_chat_model: Optional[str] = Field(default="gpt-5", alias="OPENAI_CHAT_MODEL")
 
     # Configurações INSS
     salario_minimo_2025: float = Field(default=1518.00, alias="SALARIO_MINIMO_2025")

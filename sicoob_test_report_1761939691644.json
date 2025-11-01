@@ -1,0 +1,58 @@
+{
+  "timestamp": "2025-10-31T19:41:31.644Z",
+  "ambiente": "sandbox",
+  "summary": {
+    "total": 3,
+    "passed": 1,
+    "failed": 2,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "test": "GET /cob/{txid}",
+      "status": "PASS",
+      "details": {
+        "brcode": "00020101021226900014br.gov.bcb.pix2568pix.sicoob.com.br/qr/payload/v2/c042af4c-ab85-4732-b435-e8502cc754ed5204000053039865802BR5909GUIAS_MEI6013Nao_informado62070503***63040A31",
+        "revisao": 0,
+        "txid": "PHB7MFTILK1NFV813678801761920911096",
+        "calendario": {
+          "criacao": "2025-10-31T14:28:31.101Z",
+          "expiracao": 3600
+        },
+        "status": "ATIVA",
+        "chave": "27a25e8e-e3c0-4927-b608-dfb7528a5dda",
+        "solicitacaoPagador": "Teste de cobrança PIX imediata",
+        "valor": {
+          "original": "100.00",
+          "modalidadeAlteracao": 0
+        },
+        "permiteAlteracao": false,
+        "infoAdicionais": [],
+        "payloadURL": "pix.sicoob.com.br/qr/payload/v2/c042af4c-ab85-4732-b435-e8502cc754ed",
+        "pix": []
+      },
+      "timestamp": "2025-10-31T19:41:31.343Z"
+    },
+    {
+      "test": "POST /cobv (validação sandbox)",
+      "status": "FAIL",
+      "details": {
+        "error": "pixService.criarCobrancaVencimento is not a function"
+      },
+      "timestamp": "2025-10-31T19:41:31.344Z"
+    },
+    {
+      "test": "Boleto (gerar + consultar + PDF)",
+      "status": "FAIL",
+      "details": {
+        "error": "Request failed with status code 404",
+        "response": {
+          "httpCode": "404",
+          "httpMessage": "Not Found",
+          "moreInformation": "No resources match requested URI"
+        }
+      },
+      "timestamp": "2025-10-31T19:41:31.641Z"
+    }
+  ]
+}

@@ -824,212 +824,71 @@ Este projeto inclui 3 checklists para homologação:
 - ❌ Integração com backend não validada
 - ❌ Testes E2E não iniciados
 
-### 📋 **Documentos Criados**
-- 📄 `CHECKLIST_HOMOLOGACAO.md` - Checklist completo (109 itens)
-- 📄 `CHECKLIST_HOMOLOGACAO_RESUMIDO.md` - Versão executiva
-- 📄 `PLANO_ACAO_HOMOLOGACAO.md` - Plano 3 fases de 15 dias
-- 📄 Documentação técnica em `docs/`
+### 🧾 NFSe - Integração Nacional
 
----
+### Status Atual (31/10/2025)
+- ✅ Integração REST completa com SEFIN/ADN via mTLS e certificado ICP-Brasil
+- ✅ Endpoints: emissão, consulta, DPS, parâmetros municipais, DANFSE (PDF)
+- ✅ Testes automatizados para todos endpoints
+- ✅ Payloads e respostas validados
+- ✅ Pronto para produção/homologação
 
-## Novos ajustes do backend (inss) – Atualização OUTUBRO 2025
+### Endpoints REST NFSe
+| Método | Endpoint                       | Descrição                       |
+|--------|-------------------------------|---------------------------------|
+| POST   | /nfse                         | Emissão de NFS-e                |
+| GET    | /nfse/:chaveAcesso            | Consulta NFS-e por chave        |
+| GET    | /dps/:id                      | Consulta DPS                    |
+| GET    | /parametros/:municipio        | Parâmetros municipais           |
+| GET    | /danfse/:chaveAcesso          | Download DANFSE (PDF)           |
 
-### ✅ 1. Correção de HTTP 500 Errors (RESOLVIDO)
-
-**Problema 1: Pydantic V1 em V2**
-- ❌ Problema: `@validator` decorator não reconhecido
-- ✅ Solução: Mudado para `@field_validator` com `@classmethod`
-- 📁 Arquivo: `app/models/guia_inss.py`
-
-**Problema 2: Duplicate Route Prefix (PRINCIPAL)**
-- ❌ Problema: Rotas ficavam `/api/v1/api/v1/guias/...` (404)
-- ✅ Solução: Removido prefix `/api/v1` do `include_router()` em `main.py` linha 187
-- 📁 Arquivo: `app/main.py`
-
-**Validação:**
-```powershell
-# Todos os endpoints retornando 200 OK:
-POST /api/v1/guias/emitir           # 200 OK
-POST /api/v1/guias/complementacao   # 200 OK
-GET  /                               # 200 OK (health check)
+### Exemplo de Emissão
+```json
+{
+  "userId": "123456",
+  "versao": "1.00",
+  "dps_xml_gzip_b64": "<base64-gzip-do-xml-DPS>"
+}
 ```
 
-### ✅ 2. Logging e Error Handling (IMPLEMENTADO)
-
-**Infraestrutura de Logging:**
-- Lifespan context manager (linhas 31-77)
-- DebugMiddleware HTTP logging (linhas 80-109)
-- Global exception handler
-- Logs para console + arquivo (`app_debug.log`)
-- DEBUG level para desenvolvimento
-- Limpeza de caracteres Unicode para compatibilidade Windows
-
-**Benefício:** Visibilidade completa de erros e fluxo de requisições
-
-### ✅ 3. Atualização de Dependências Python
-
-**Removidas (Obsoletas):**
-- ❌ `gotrue` (incompatível com Supabase V2)
-
-**Adicionadas/Atualizadas:**
-- ✅ `supabase>=2.22.3`
-- ✅ `fastapi>=0.120.1`
-- ✅ `pydantic>=2.12.3`
-- ✅ `reportlab>=4.0.9`
-
-**Recomendação:** Criar novo `.venv` e rodar `pip install -r requirements.txt`
-
-### ✅ 4. Configuração Pydantic V2
-
-**Padrão Adotado:**
-```python
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        from_attributes=True  # V2 syntax
-    )
+### Exemplo de Resposta
+```json
+{
+  "protocolo": "PROTO-1698771234567",
+  "chaveAcesso": "42123456789012345678901234567890123456789012",
+  "numeroNfse": "12345",
+  "status": "AUTORIZADA",
+  "situacao": "AUTORIZADA",
+  "dataProcessamento": "2025-10-31T10:00:00Z",
+  "resposta": { ...dados completos da SEFIN/ADN... }
+}
 ```
 
-**Validadores:**
-```python
-from pydantic import field_validator
-
-class Model(BaseModel):
-    @field_validator('field_name')
-    @classmethod
-    def validate_field(cls, v):
-        return v
+### Testes Automatizados
+- Arquivo: `apps/backend/tests/nfse.test.ts`
+- Cobertura: emissão, consulta, DPS, parâmetros, DANFSE
+- Como rodar:
+```bash
+cd apps/backend
+yarn test # ou npm test
 ```
 
-### ✅ 5. Supabase Client - Modo Produção
-
-**Lazy Loading Implementado:**
-```python
-client = create_client(
-    str(settings.supabase_url),
-    settings.supabase_key
-)
+### Variáveis .env (NFSe)
+```env
+NFSE_API_URL=https://adn.producaorestrita.nfse.gov.br/
+NFSE_BASE_URL=https://sefin.nfse.gov.br/sefinnacional
+NFSE_CONTRIBUINTES_BASE_URL=https://sefin.nfse.gov.br/sefinnacional/nfse
+NFSE_PARAMETROS_BASE_URL=https://sefin.nfse.gov.br/sefinnacional/parametros_municipais
+NFSE_DANFSE_BASE_URL=https://sefin.nfse.gov.br/sefinnacional/danfse
+NFSE_CREDENTIAL_SECRET=...
+NFSE_CERT_METHOD=supabase_vault
+NFSE_CERT_PFX_BASE64=...
+NFSE_CERT_PFX_PASS=...
 ```
 
-**Fallback Mode:**
-- Sistema funciona completamente sem Supabase (modo mock)
-- Respostas de exemplo retornadas se não conectado
-- PDFs podem ser salvos localmente
-
-### ✅ 6. Integração WhatsApp
-
-**Fluxo:**
-1. GPS gerado em PDF
-2. PDF armazenado no Supabase Storage
-3. Link público obtido
-4. WhatsApp recebe link via Twilio
-5. Conversa registrada no banco
-
-**Mock Mode:**
-- Funciona sem Twilio credentials
-- Retorna respostas simuladas
-
-### 7. Testes e Validação
-
-**Testes Existentes:**
-```
-✅ 30+ testes unitários (ALL PASSING)
-✅ 3 testes HTTP endpoints (200 OK)
-✅ Teste de conformidade INSS
-✅ Teste de geração PDF
-✅ Teste de cálculo GPS
-```
-
-**Rodando Testes:**
-```powershell
-cd "apps/backend/inss"
-.\.venv\Scripts\python.exe -m pytest tests/ -v
-
-# Ou testes específicos:
-.\.venv\Scripts\python.exe test_00_sumario_final.py
-.\.venv\Scripts\python.exe test_07_requisicoes_http.py
-```
-
-### 8. Executando Backend Local
-
-**Opção 1: Desenvolvimento (com reload)**
-```powershell
-cd "apps/backend/inss"
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
-```
-
-**Opção 2: Produção (sem reload)**
-```powershell
-cd "apps/backend/inss"
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
-
-**Acesso:**
-- API Swagger: `http://localhost:8000/docs`
-- Health: `http://localhost:8000/`
-- GPS Emission: `POST http://localhost:8000/api/v1/guias/emitir`
-
-### 9. Troubleshooting
-
-**Problema: ModuleNotFoundError**
-```powershell
-# Solução:
-cd "apps/backend/inss"
-.\.venv\Scripts\pip.exe install -r requirements.txt
-```
-
-**Problema: Port 8000 em uso**
-```powershell
-# Matar processo Python:
-Stop-Process -Name python -Force -ErrorAction SilentlyContinue
-
-# Usar porta diferente:
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --port 9000
-```
-
-**Problema: Certificado SSL/TLS**
-```powershell
-# Para desenvolvimento local (desabilitar verificação):
-$env:PYTHONHTTPSVERIFY=0
-```
-
-### 10. Boas Práticas
-
-**Após Alterar requirements.txt:**
-```powershell
-# Reinstalar:
-pip install -r requirements.txt --upgrade
-
-# Verificar pacotes:
-pip list
-```
-
-**Mantendo Código Limpo:**
-```powershell
-# Remover venv antiga (se necessário):
-Remove-Item -Recurse -Force .venv
-
-# Criar nova:
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-**Commits Importantes:**
-- `df0a383` - HTTP 500 fixes (Pydantic + Route prefix)
-- Todos os testes passing após este commit
-
----
-
-## 📚 Documentação Relacionada
-
-Veja também:
-- `docs/guia-aplicativo-guiasMEI.md` - Documentação técnica completa
-- `CHECKLIST_HOMOLOGACAO.md` - Checklist com 109 itens
-- `CHECKLIST_HOMOLOGACAO_RESUMIDO.md` - Versão executiva
-- `PLANO_ACAO_HOMOLOGACAO.md` - Plano de 3 fases para homologação
-- `apps/backend/inss/README.md` - README específico do módulo INSS
-
----
+### Checklist Produção/Homologação
+- [x] Endpoints REST integrados e testados
+- [x] Certificado ICP-Brasil configurado (.env ou Supabase Vault)
+- [x] Testes automatizados rodando
+- [x] Documentação de payloads e respostas
+- [x] Pronto para deploy

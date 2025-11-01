@@ -4,6 +4,8 @@ from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import Response
+from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
 from ..models.guia_inss import ComplementacaoRequest, EmitirGuiaRequest
@@ -69,6 +71,59 @@ def _calcular_por_tipo(request: EmitirGuiaRequest) -> CalculoSAL:
             detalhes={"base_calculo": base, "aliquota": 0.20},
         )
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Tipo de contribuinte não suportado.")
+
+
+class GerarPDFRequest(BaseModel):
+    nome_segurado: str
+    cpf: str
+    valor_base: float = Field(..., gt=0)
+    tipo_contribuinte: str
+    plano: str | None = "normal"
+
+
+@router.post("/gerar-pdf")
+async def gerar_pdf(request: GerarPDFRequest) -> Response:
+    """
+    Gera apenas o PDF da guia (sem criar registro ou enviar WhatsApp).
+    Compatível com o teste de integração local.
+    """
+    try:
+        tipo = request.tipo_contribuinte
+        if tipo == "autonomo":
+            calculo = calculator.calcular_contribuinte_individual(request.valor_base, request.plano or "normal")
+        elif tipo == "domestico":
+            calculo = calculator.calcular_domestico(request.valor_base)
+        elif tipo == "produtor_rural":
+            calculo = calculator.calcular_produtor_rural(request.valor_base, segurado_especial=False)
+        elif tipo == "facultativo":
+            base = max(calculator.salario_minimo_2025, request.valor_base)
+            valor = base * SAL_CLASSES["facultativo"]["aliquota"]
+            calculo = CalculoSAL(
+                codigo_gps=SAL_CLASSES["facultativo"]["codigo_gps"],
+                valor=round(valor, 2),
+                descricao=SAL_CLASSES["facultativo"]["descricao"],
+                detalhes={"base_calculo": base, "aliquota": 0.20},
+            )
+        else:
+            raise HTTPException(status_code=400, detail="tipo_contribuinte não suportado")
+
+        competencia = datetime.utcnow().strftime("%m/%Y")
+        dados_contribuinte = {
+            "nome": request.nome_segurado,
+            "cpf": request.cpf,
+        }
+        pdf_bytes = await run_in_threadpool(
+            pdf_generator.gerar_guia,
+            dados_contribuinte,
+            calculo.valor,
+            calculo.codigo_gps,
+            competencia,
+        )
+        return Response(content=pdf_bytes, media_type="application/pdf")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao gerar PDF: {str(e)}")
 
 
 @router.post("/emitir")

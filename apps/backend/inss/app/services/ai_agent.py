@@ -21,7 +21,12 @@ class INSSChatAgent:
         
         if LANGCHAIN_AVAILABLE and settings.openai_api_key and settings.openai_api_key != "sua-chave-openai":
             try:
-                self.llm = ChatOpenAI(model="gpt-4o", temperature=0.3, openai_api_key=settings.openai_api_key)
+                model_name = getattr(settings, "openai_chat_model", None) or "gpt-5"
+                try:
+                    self.llm = ChatOpenAI(model=model_name, temperature=0.3, openai_api_key=settings.openai_api_key)
+                except Exception:
+                    # Fallback automático para gpt-4o se gpt-5 não estiver disponível
+                    self.llm = ChatOpenAI(model="gpt-4o", temperature=0.3, openai_api_key=settings.openai_api_key)
             except Exception as e:
                 print(f"⚠ AVISO: Não foi possível inicializar ChatOpenAI: {str(e)[:60]}...")
         

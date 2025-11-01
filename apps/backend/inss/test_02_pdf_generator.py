@@ -5,11 +5,12 @@ Valida geração de PDFs com dados reais via API
 """
 
 import sys
+import os
 import requests
 from pathlib import Path
 from datetime import datetime, timedelta
 
-API_URL = "http://localhost:8000"
+API_URL = os.getenv("INSS_API_URL", "http://localhost:8000")
 
 def test_pdf_generation():
     """Testa geração de PDF para diferentes tipos de guias"""
@@ -24,7 +25,8 @@ def test_pdf_generation():
     except requests.exceptions.ConnectionError:
         print("✗ ERRO: API não está rodando em http://localhost:8000")
         print("  Para rodar este teste, execute em outro terminal:")
-        print("  cd apps/backend/inss && .\.venv\Scripts\uvicorn app.main:app --reload")
+        # Usar barras duplas para evitar escapes no Windows
+        print("  cd apps/backend/inss && .\\.venv\\Scripts\\uvicorn app.main:app --reload")
         return False
     
     # Dados de teste

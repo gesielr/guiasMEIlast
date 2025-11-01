@@ -354,3 +354,327 @@
 2025-10-30 09:26:45,021 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
 2025-10-30 09:26:45,021 - app.main - INFO - ================================================================================
 2025-10-30 09:26:45,021 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 14:59:08,283 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 14:59:08,284 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 14:59:08,284 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 14:59:08,285 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 14:59:08,286 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 14:59:08,286 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 14:59:08,288 - app.main - INFO - ================================================================================
+2025-10-31 14:59:08,288 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 14:59:08,288 - app.main - INFO - ================================================================================
+2025-10-31 14:59:08,288 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 14:59:08,289 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 14:59:08,289 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 14:59:08,289 - app.main - INFO - ================================================================================
+2025-10-31 14:59:08,290 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 14:59:08,290 - app.main - INFO - ================================================================================
+2025-10-31 14:59:27,594 - app.main - INFO - ================================================================================
+2025-10-31 14:59:27,594 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 14:59:27,595 - app.main - INFO - ================================================================================
+2025-10-31 14:59:27,595 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 14:59:45,824 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 14:59:45,826 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 14:59:45,826 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 14:59:45,827 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 14:59:45,827 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 14:59:45,829 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 14:59:45,831 - app.main - INFO - ================================================================================
+2025-10-31 14:59:45,832 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 14:59:45,832 - app.main - INFO - ================================================================================
+2025-10-31 14:59:45,832 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 14:59:45,832 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 14:59:45,832 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 14:59:45,833 - app.main - INFO - ================================================================================
+2025-10-31 14:59:45,833 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 14:59:45,833 - app.main - INFO - ================================================================================
+2025-10-31 14:59:45,834 - app.main - INFO - ================================================================================
+2025-10-31 14:59:45,834 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 14:59:45,835 - app.main - INFO - ================================================================================
+2025-10-31 14:59:45,835 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 15:00:23,516 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:00:23,517 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:00:23,517 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:00:23,518 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:00:23,519 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:00:23,520 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:00:23,521 - app.main - INFO - ================================================================================
+2025-10-31 15:00:23,521 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:00:23,522 - app.main - INFO - ================================================================================
+2025-10-31 15:00:23,522 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:00:23,522 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:00:23,522 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:00:23,522 - app.main - INFO - ================================================================================
+2025-10-31 15:00:23,523 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:00:23,523 - app.main - INFO - ================================================================================
+2025-10-31 15:00:39,351 - app.main - INFO - ================================================================================
+2025-10-31 15:00:39,351 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 15:00:39,351 - app.main - INFO - ================================================================================
+2025-10-31 15:00:39,352 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 15:01:43,998 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:01:43,998 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:01:43,998 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:01:44,000 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:01:44,000 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:01:44,001 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:01:44,002 - app.main - INFO - ================================================================================
+2025-10-31 15:01:44,002 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:01:44,002 - app.main - INFO - ================================================================================
+2025-10-31 15:01:44,002 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:01:44,002 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:01:44,002 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:01:44,002 - app.main - INFO - ================================================================================
+2025-10-31 15:01:44,002 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:01:44,003 - app.main - INFO - ================================================================================
+2025-10-31 15:02:09,382 - app.main - INFO - ================================================================================
+2025-10-31 15:02:09,382 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 15:02:09,382 - app.main - INFO - ================================================================================
+2025-10-31 15:02:09,383 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 15:08:33,402 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:08:33,402 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:08:33,403 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:08:33,404 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:08:33,404 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:08:33,405 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:08:33,407 - app.main - INFO - ================================================================================
+2025-10-31 15:08:33,407 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:08:33,407 - app.main - INFO - ================================================================================
+2025-10-31 15:08:33,407 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:08:33,409 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:08:33,409 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:08:33,409 - app.main - INFO - ================================================================================
+2025-10-31 15:08:33,409 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:08:33,409 - app.main - INFO - ================================================================================
+2025-10-31 15:08:33,411 - app.main - INFO - ================================================================================
+2025-10-31 15:08:33,412 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 15:08:33,412 - app.main - INFO - ================================================================================
+2025-10-31 15:08:33,412 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 15:10:51,772 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:10:51,773 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:10:51,773 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:10:51,775 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:10:51,776 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:10:51,776 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:10:51,777 - app.main - INFO - ================================================================================
+2025-10-31 15:10:51,777 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:10:51,777 - app.main - INFO - ================================================================================
+2025-10-31 15:10:51,778 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:10:51,778 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:10:51,778 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:10:51,778 - app.main - INFO - ================================================================================
+2025-10-31 15:10:51,778 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:10:51,779 - app.main - INFO - ================================================================================
+2025-10-31 15:11:11,063 - app.main - INFO - ================================================================================
+2025-10-31 15:11:11,063 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 15:11:11,063 - app.main - INFO - ================================================================================
+2025-10-31 15:11:11,063 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 15:12:10,953 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:12:10,953 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:12:10,954 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:12:10,955 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:12:10,955 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:12:10,956 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:12:10,957 - app.main - INFO - ================================================================================
+2025-10-31 15:12:10,958 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:12:10,958 - app.main - INFO - ================================================================================
+2025-10-31 15:12:10,958 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:12:10,958 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:12:10,958 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:12:10,959 - app.main - INFO - ================================================================================
+2025-10-31 15:12:10,959 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:12:10,959 - app.main - INFO - ================================================================================
+2025-10-31 15:15:18,947 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:15:18,948 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:15:18,949 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:15:18,951 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:15:18,951 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:15:18,951 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:15:18,952 - app.main - INFO - ================================================================================
+2025-10-31 15:15:18,952 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:15:18,952 - app.main - INFO - ================================================================================
+2025-10-31 15:15:18,953 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:15:18,953 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:15:18,953 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:15:18,953 - app.main - INFO - ================================================================================
+2025-10-31 15:15:18,953 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:15:18,953 - app.main - INFO - ================================================================================
+2025-10-31 15:15:38,345 - app.main - INFO - ================================================================================
+2025-10-31 15:15:38,346 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 15:15:38,346 - app.main - INFO - ================================================================================
+2025-10-31 15:15:38,346 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 15:15:49,281 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:15:49,282 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:15:49,282 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:15:49,283 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:15:49,284 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:15:49,285 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:15:49,286 - app.main - INFO - ================================================================================
+2025-10-31 15:15:49,286 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:15:49,286 - app.main - INFO - ================================================================================
+2025-10-31 15:15:49,286 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:15:49,287 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:15:49,287 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:15:49,287 - app.main - INFO - ================================================================================
+2025-10-31 15:15:49,287 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:15:49,287 - app.main - INFO - ================================================================================
+2025-10-31 15:16:08,616 - app.main - INFO - ================================================================================
+2025-10-31 15:16:08,617 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-10-31 15:16:08,617 - app.main - INFO - ================================================================================
+2025-10-31 15:16:08,617 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-10-31 15:20:00,306 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-10-31 15:20:00,306 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-10-31 15:20:00,307 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-10-31 15:20:00,308 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-10-31 15:20:00,308 - app.main - INFO -    [OK] Incluindo router Users...
+2025-10-31 15:20:00,308 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-10-31 15:20:00,310 - app.main - INFO - ================================================================================
+2025-10-31 15:20:00,310 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-10-31 15:20:00,310 - app.main - INFO - ================================================================================
+2025-10-31 15:20:00,310 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-10-31 15:20:00,310 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-10-31 15:20:00,311 - app.main - INFO - [OK] App Version: 1.0.0
+2025-10-31 15:20:00,311 - app.main - INFO - ================================================================================
+2025-10-31 15:20:00,311 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-10-31 15:20:00,311 - app.main - INFO - ================================================================================
+2025-10-31 15:20:10,099 - app.main - INFO - ================================================================================
+2025-10-31 15:20:10,100 - app.main - INFO - [REQUEST] GET /health
+2025-10-31 15:20:10,100 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive'}
+2025-10-31 15:20:10,100 - app.main - INFO - ================================================================================
+2025-10-31 15:20:10,100 - app.main - INFO - [ROUTE] Health check chamado
+2025-10-31 15:20:10,101 - app.main - INFO - ================================================================================
+2025-10-31 15:20:10,101 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:20:10,101 - app.main - INFO -    Tempo: 0.001s
+2025-10-31 15:20:10,102 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,583 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,584 - app.main - INFO - [REQUEST] GET /health
+2025-10-31 15:25:23,584 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive'}
+2025-10-31 15:25:23,584 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,585 - app.main - INFO - [ROUTE] Health check chamado
+2025-10-31 15:25:23,585 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,585 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:23,586 - app.main - INFO -    Tempo: 0.001s
+2025-10-31 15:25:23,586 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,611 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,611 - app.main - INFO - [REQUEST] POST /api/v1/guias/gerar-pdf
+2025-10-31 15:25:23,611 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '116', 'content-type': 'application/json'}
+2025-10-31 15:25:23,611 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,623 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,623 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:23,624 - app.main - INFO -    Tempo: 0.012s
+2025-10-31 15:25:23,624 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,630 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,630 - app.main - INFO - [REQUEST] POST /api/v1/guias/gerar-pdf
+2025-10-31 15:25:23,630 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '113', 'content-type': 'application/json'}
+2025-10-31 15:25:23,631 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,633 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,634 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:23,634 - app.main - INFO -    Tempo: 0.002s
+2025-10-31 15:25:23,634 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,640 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,640 - app.main - INFO - [REQUEST] POST /api/v1/guias/gerar-pdf
+2025-10-31 15:25:23,640 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '131', 'content-type': 'application/json'}
+2025-10-31 15:25:23,640 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,643 - app.main - INFO - ================================================================================
+2025-10-31 15:25:23,644 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:23,644 - app.main - INFO -    Tempo: 0.002s
+2025-10-31 15:25:23,644 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,111 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,112 - app.main - INFO - [REQUEST] GET /health
+2025-10-31 15:25:39,112 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive'}
+2025-10-31 15:25:39,112 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,113 - app.main - INFO - [ROUTE] Health check chamado
+2025-10-31 15:25:39,113 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,113 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:39,114 - app.main - INFO -    Tempo: 0.001s
+2025-10-31 15:25:39,114 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,138 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,138 - app.main - INFO - [REQUEST] POST /api/v1/guias/gerar-pdf
+2025-10-31 15:25:39,138 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '116', 'content-type': 'application/json'}
+2025-10-31 15:25:39,139 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,141 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,141 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:39,141 - app.main - INFO -    Tempo: 0.002s
+2025-10-31 15:25:39,142 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,146 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,147 - app.main - INFO - [REQUEST] POST /api/v1/guias/gerar-pdf
+2025-10-31 15:25:39,147 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '113', 'content-type': 'application/json'}
+2025-10-31 15:25:39,147 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,150 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,151 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:39,151 - app.main - INFO -    Tempo: 0.003s
+2025-10-31 15:25:39,151 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,170 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,171 - app.main - INFO - [REQUEST] POST /api/v1/guias/gerar-pdf
+2025-10-31 15:25:39,171 - app.main - INFO -    Headers: {'host': '127.0.0.1:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '131', 'content-type': 'application/json'}
+2025-10-31 15:25:39,171 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,173 - app.main - INFO - ================================================================================
+2025-10-31 15:25:39,173 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:25:39,174 - app.main - INFO -    Tempo: 0.002s
+2025-10-31 15:25:39,174 - app.main - INFO - ================================================================================
+2025-10-31 15:28:24,503 - app.main - INFO - ================================================================================
+2025-10-31 15:28:24,503 - app.main - INFO - [REQUEST] GET /health
+2025-10-31 15:28:24,503 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive'}
+2025-10-31 15:28:24,504 - app.main - INFO - ================================================================================
+2025-10-31 15:28:24,504 - app.main - INFO - [ROUTE] Health check chamado
+2025-10-31 15:28:24,504 - app.main - INFO - ================================================================================
+2025-10-31 15:28:24,504 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:28:24,505 - app.main - INFO -    Tempo: 0.000s
+2025-10-31 15:28:24,505 - app.main - INFO - ================================================================================
+2025-10-31 15:28:26,562 - app.main - INFO - ================================================================================
+2025-10-31 15:28:26,563 - app.main - INFO - [REQUEST] POST /api/v1/guias/emitir
+2025-10-31 15:28:26,564 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '175', 'content-type': 'application/json'}
+2025-10-31 15:28:26,564 - app.main - INFO - ================================================================================
+2025-10-31 15:28:26,570 - app.main - INFO - ================================================================================
+2025-10-31 15:28:26,571 - app.main - INFO - [RESPONSE] Status 422
+2025-10-31 15:28:26,572 - app.main - INFO -    Tempo: 0.006s
+2025-10-31 15:28:26,572 - app.main - INFO - ================================================================================
+2025-10-31 15:29:10,694 - app.main - INFO - ================================================================================
+2025-10-31 15:29:10,694 - app.main - INFO - [REQUEST] GET /health
+2025-10-31 15:29:10,694 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive'}
+2025-10-31 15:29:10,695 - app.main - INFO - ================================================================================
+2025-10-31 15:29:10,695 - app.main - INFO - [ROUTE] Health check chamado
+2025-10-31 15:29:10,695 - app.main - INFO - ================================================================================
+2025-10-31 15:29:10,695 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:29:10,696 - app.main - INFO -    Tempo: 0.000s
+2025-10-31 15:29:10,696 - app.main - INFO - ================================================================================
+2025-10-31 15:29:12,742 - app.main - INFO - ================================================================================
+2025-10-31 15:29:12,765 - app.main - INFO - [REQUEST] POST /api/v1/guias/emitir
+2025-10-31 15:29:12,783 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '104', 'content-type': 'application/json'}
+2025-10-31 15:29:12,786 - app.main - INFO - ================================================================================
+2025-10-31 15:29:12,903 - app.main - INFO - ================================================================================
+2025-10-31 15:29:12,903 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:29:12,903 - app.main - INFO -    Tempo: 0.117s
+2025-10-31 15:29:12,903 - app.main - INFO - ================================================================================
+2025-10-31 15:29:52,761 - app.main - INFO - ================================================================================
+2025-10-31 15:29:52,761 - app.main - INFO - [REQUEST] GET /health
+2025-10-31 15:29:52,762 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive'}
+2025-10-31 15:29:52,762 - app.main - INFO - ================================================================================
+2025-10-31 15:29:52,762 - app.main - INFO - [ROUTE] Health check chamado
+2025-10-31 15:29:52,763 - app.main - INFO - ================================================================================
+2025-10-31 15:29:52,763 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:29:52,763 - app.main - INFO -    Tempo: 0.001s
+2025-10-31 15:29:52,763 - app.main - INFO - ================================================================================
+2025-10-31 15:29:54,815 - app.main - INFO - ================================================================================
+2025-10-31 15:29:54,817 - app.main - INFO - [REQUEST] POST /api/v1/guias/emitir
+2025-10-31 15:29:54,817 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '104', 'content-type': 'application/json'}
+2025-10-31 15:29:54,818 - app.main - INFO - ================================================================================
+2025-10-31 15:29:54,822 - app.main - INFO - ================================================================================
+2025-10-31 15:29:54,823 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:29:54,823 - app.main - INFO -    Tempo: 0.004s
+2025-10-31 15:29:54,823 - app.main - INFO - ================================================================================
+2025-10-31 15:29:56,900 - app.main - INFO - ================================================================================
+2025-10-31 15:29:56,900 - app.main - INFO - [REQUEST] POST /api/v1/guias/emitir
+2025-10-31 15:29:56,900 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '86', 'content-type': 'application/json'}
+2025-10-31 15:29:56,901 - app.main - INFO - ================================================================================
+2025-10-31 15:29:56,906 - app.main - INFO - ================================================================================
+2025-10-31 15:29:56,907 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:29:56,907 - app.main - INFO -    Tempo: 0.004s
+2025-10-31 15:29:56,907 - app.main - INFO - ================================================================================
+2025-10-31 15:29:58,950 - app.main - INFO - ================================================================================
+2025-10-31 15:29:58,951 - app.main - INFO - [REQUEST] POST /api/v1/guias/emitir
+2025-10-31 15:29:58,951 - app.main - INFO -    Headers: {'host': 'localhost:8000', 'user-agent': 'python-requests/2.32.5', 'accept-encoding': 'gzip, deflate', 'accept': '*/*', 'connection': 'keep-alive', 'content-length': '93', 'content-type': 'application/json'}
+2025-10-31 15:29:58,951 - app.main - INFO - ================================================================================
+2025-10-31 15:29:58,954 - app.main - INFO - ================================================================================
+2025-10-31 15:29:58,954 - app.main - INFO - [RESPONSE] Status 200
+2025-10-31 15:29:58,955 - app.main - INFO -    Tempo: 0.003s
+2025-10-31 15:29:58,955 - app.main - INFO - ================================================================================

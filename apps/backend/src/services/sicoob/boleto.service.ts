@@ -72,8 +72,8 @@ export class SicoobBoletoService {
     try {
       this.validarDadosBoleto(dados);
       sicoobLogger.debug('Gerando boleto', {
-        valor: dados.valor,
-        dataVencimento: dados.data_vencimento,
+        valor: dados.valorTitulo,
+        dataVencimento: dados.dataVencimento,
       });
 
       const token = await this.authService.getAccessToken();

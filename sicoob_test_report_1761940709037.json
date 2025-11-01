@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-10-31T19:58:29.037Z",
+  "ambiente": "sandbox",
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "test": "GET /cob/{txid}",
+      "status": "PASS",
+      "details": {
+        "brcode": "00020101021226900014br.gov.bcb.pix2568pix.sicoob.com.br/qr/payload/v2/c042af4c-ab85-4732-b435-e8502cc754ed5204000053039865802BR5909GUIAS_MEI6013Nao_informado62070503***63040A31",
+        "revisao": 0,
+        "txid": "PHB7MFTILK1NFV813678801761920911096",
+        "calendario": {
+          "criacao": "2025-10-31T14:28:31.101Z",
+          "expiracao": 3600
+        },
+        "status": "ATIVA",
+        "chave": "27a25e8e-e3c0-4927-b608-dfb7528a5dda",
+        "solicitacaoPagador": "Teste de cobrança PIX imediata",
+        "valor": {
+          "original": "100.00",
+          "modalidadeAlteracao": 0
+        },
+        "permiteAlteracao": false,
+        "infoAdicionais": [],
+        "payloadURL": "pix.sicoob.com.br/qr/payload/v2/c042af4c-ab85-4732-b435-e8502cc754ed",
+        "pix": []
+      },
+      "timestamp": "2025-10-31T19:58:28.112Z"
+    },
+    {
+      "test": "POST /cobv (validação sandbox)",
+      "status": "PASS",
+      "details": {
+        "message": "Limitação 405 confirmada",
+        "error": {
+          "httpCode": "405",
+          "httpMessage": "Method Not Allowed",
+          "moreInformation": "The method is not allowed for the requested URL"
+        }
+      },
+      "timestamp": "2025-10-31T19:58:28.589Z"
+    },
+    {
+      "test": "Boleto (gerar + consultar + PDF)",
+      "status": "FAIL",
+      "details": {
+        "error": "Request failed with status code 406",
+        "response": {
+          "mensagens": [
+            {
+              "mensagem": "Propriedade inesperada: (numeroContrato.)",
+              "codigo": "0004"
+            }
+          ]
+        }
+      },
+      "timestamp": "2025-10-31T19:58:29.033Z"
+    }
+  ]
+}

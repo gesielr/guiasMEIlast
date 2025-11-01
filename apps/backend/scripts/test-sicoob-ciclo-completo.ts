@@ -59,9 +59,9 @@ async function testGetCobPorTxid() {
     console.log('✓ Cobrança consultada com sucesso:', {
       txid: cobranca.txid,
       status: cobranca.status,
-      valor: cobranca.valor?.original,
-      chave: cobranca.chave,
-      criacao: cobranca.calendario?.criacao,
+      valor: cobranca.valor,
+      chave_pix: cobranca.chave_pix,
+      data_criacao: cobranca.data_criacao,
     });
 
     await registrarNoSupabase('pix', 'cob_consulta_txid', cobranca);
