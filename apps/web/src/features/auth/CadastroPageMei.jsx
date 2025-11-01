@@ -52,21 +52,17 @@ const CadastroPage = () => {
       }
       setLoading(true);
       try {
-        const url = `${supabaseUrl}/functions/v1/fetch-cnpj?cnpj=${doc}`;
-        const response = await fetch(url, {
-          headers: {
-            apikey: supabaseAnonKey,
-            Authorization: `Bearer ${supabaseAnonKey}`,
-          },
-        });
+        // Usando BrasilAPI temporariamente (resolve CORS)
+        const url = `https://brasilapi.com.br/api/cnpj/v1/${doc}`;
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Erro ao buscar CNPJ.");
 
         const data = await response.json();
-        if (data && (data.nome || data.fantasia)) {
+        if (data && data.razao_social) {
           setFormData((prev) => ({
             ...prev,
-            business_name: data.fantasia || data.nome || "",
-            name: data.nome || "",
+            business_name: data.nome_fantasia || data.razao_social || "",
+            name: data.razao_social || "",
           }));
           setError("");
         } else {
