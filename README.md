@@ -1,104 +1,108 @@
-# 🚀 GuiasMEI - Plataforma Completa de Gestão Fiscal
+﻿# ðŸš€ GuiasMEI - Plataforma Completa de GestÃ£o Fiscal
 
 [![CI](https://github.com/gesielr/guiasMEIslast/actions/workflows/ci.yml/badge.svg)](https://github.com/gesielr/guiasMEIslast/actions/workflows/ci.yml)
 
-> **Solução inovadora para emissão automatizada de guias GPS e notas fiscais NFS-e através de atendimento via WhatsApp com IA especializada.**
+> **SoluÃ§Ã£o inovadora para emissÃ£o automatizada de guias GPS e notas fiscais NFS-e atravÃ©s de atendimento via WhatsApp com IA especializada.**
 
-## 🎯 Visão Geral
+## Atualizações Recentes
 
-O **GuiasMEI** é uma plataforma full-stack que revoluciona a gestão fiscal de Microempreendedores Individuais (MEI) e autônomos, oferecendo:
+- Documentação reorganizada: todos os arquivos `.md` do repositório (exceto este `README.md`) foram movidos para `docs/`, preservando a estrutura original de subpastas. Exemplos: `apps/backend/inss/README.md` agora está em `docs/apps/backend/inss/README.md` e os templates do GitHub foram realocados para `docs/.github/`.
+- Consulte a pasta `docs/` para encontrar relatórios técnicos, checklists, fluxos operacionais e arquivos de suporte migrados de `document_projet/`, `.archive/` e demais diretórios.
+## ðŸŽ¯ VisÃ£o Geral
 
-- 🤖 **Atendimento 100% via WhatsApp** com IA especializada em legislação fiscal
-- 📄 **Emissão automática** de guias GPS e notas fiscais NFS-e
-- 🤝 **Rede de parceiros** (contabilidades) com sistema de comissões
-- 🔧 **Painel administrativo** completo para monitoramento e gestão
+O **GuiasMEI** Ã© uma plataforma full-stack que revoluciona a gestÃ£o fiscal de Microempreendedores Individuais (MEI) e autÃ´nomos, oferecendo:
 
-## 👥 Tipos de Usuários
+- ðŸ¤– **Atendimento 100% via WhatsApp** com IA especializada em legislaÃ§Ã£o fiscal
+- ðŸ“„ **EmissÃ£o automÃ¡tica** de guias GPS e notas fiscais NFS-e
+- ðŸ¤ **Rede de parceiros** (contabilidades) com sistema de comissÃµes
+- ðŸ”§ **Painel administrativo** completo para monitoramento e gestÃ£o
 
-### 🏢 **MEI (Microempreendedor Individual)**
-- **Fluxo**: Homepage → Cadastro → WhatsApp (IA)
-- **Funcionalidades**: Emissão GPS/NFS-e via IA
+## ðŸ‘¥ Tipos de UsuÃ¡rios
+
+### ðŸ¢ **MEI (Microempreendedor Individual)**
+- **Fluxo**: Homepage â†’ Cadastro â†’ WhatsApp (IA)
+- **Funcionalidades**: EmissÃ£o GPS/NFS-e via IA
 - **Acesso**: Apenas WhatsApp (sem telas web)
 
-### 👤 **Autônomo**
-- **Fluxo**: Homepage → Cadastro → WhatsApp (IA)
-- **Funcionalidades**: Emissão GPS via IA
+### ðŸ‘¤ **AutÃ´nomo**
+- **Fluxo**: Homepage â†’ Cadastro â†’ WhatsApp (IA)
+- **Funcionalidades**: EmissÃ£o GPS via IA
 - **Acesso**: Apenas WhatsApp (sem telas web)
 
-### 🤝 **Parceiro (Contabilidade)**
-- **Fluxo**: Homepage → Cadastro → Dashboard Web
+### ðŸ¤ **Parceiro (Contabilidade)**
+- **Fluxo**: Homepage â†’ Cadastro â†’ Dashboard Web
 - **Funcionalidades**:
   - Gerenciar clientes
   - Gerar links de convite
-  - Acompanhar comissões
-- **Fluxo**: Login direto → Dashboard Admin
+  - Acompanhar comissÃµes
+- **Fluxo**: Login direto â†’ Dashboard Admin
 - **Funcionalidades**:
 
-## 🏗️ Arquitetura Técnica
-├── 🏠 Homepage - Landing page e seleção de perfil
-├── 👤 Cadastros - MEI, Autônomo, Parceiro
-├── 🔐 Autenticação - Login/Logout
-├── 📊 Dashboards - Usuário, Parceiro, Admin
+## ðŸ—ï¸ Arquitetura TÃ©cnica
+â”œâ”€â”€ ðŸ  Homepage - Landing page e seleÃ§Ã£o de perfil
+â”œâ”€â”€ ðŸ‘¤ Cadastros - MEI, AutÃ´nomo, Parceiro
+â”œâ”€â”€ ðŸ” AutenticaÃ§Ã£o - Login/Logout
+â”œâ”€â”€ ðŸ“Š Dashboards - UsuÃ¡rio, Parceiro, Admin
 
 ### **Backend (Node.js + Fastify)**
-├── 📊 Dashboard - APIs de dados
-├── 🗺️ GPS - Emissão de guias
+â”œâ”€â”€ ðŸ“Š Dashboard - APIs de dados
+â”œâ”€â”€ ðŸ—ºï¸ GPS - EmissÃ£o de guias
 ```
 
 ### **Banco de Dados (Supabase)**
 ```
-📊 Tabelas Principais:
-└── partner_clients - Vínculos parceiro-cliente
+ðŸ“Š Tabelas Principais:
+â””â”€â”€ partner_clients - VÃ­nculos parceiro-cliente
 ```
 
-## � Novidades — Certificado Digital ICP-Brasil (11/2025)
+## ï¿½ Novidades â€” Certificado Digital ICP-Brasil (11/2025)
 
-Implementamos a base de dados e especificação completa para o fluxo de certificado digital ICP-Brasil com assinatura remota e pagamentos via PIX Sicoob.
+Implementamos a base de dados e especificaÃ§Ã£o completa para o fluxo de certificado digital ICP-Brasil com assinatura remota e pagamentos via PIX Sicoob.
 
 - Tabelas (Supabase):
   - cert_providers, cert_enrollments, sign_requests, sign_audit_logs, payment_cert_digital
-- Segurança: RLS restritiva; sem armazenamento de PFX/senha/chave privada (metadados apenas)
-- Integração: Webhooks da certificadora (HMAC), assinatura remota, PIX R$ 150
-- Documentos de referência: `docs/FLUXO_COMPLETO_CERTIFICADO_DIGITAL.md`, `docs/ANALISE_GAP_CERTIFICADO.md`, `docs/DIAGNOSTICO_CERTIFICADO_DIGITAL.md`
+- SeguranÃ§a: RLS restritiva; sem armazenamento de PFX/senha/chave privada (metadados apenas)
+- IntegraÃ§Ã£o: Webhooks da certificadora (HMAC), assinatura remota, PIX R$ 150
+- Documentos de referÃªncia: `docs/FLUXO_COMPLETO_CERTIFICADO_DIGITAL.md`, `docs/ANALISE_GAP_CERTIFICADO.md`, `docs/DIAGNOSTICO_CERTIFICADO_DIGITAL.md`
 
 ### Status atual do backend (Nov/2025)
 
-- ✅ Schema Supabase e migrations dedicadas ao certificado (`supabase/migrations/20251101090000_create_cert_icp_tables.sql`)
-- ✅ Endpoints Fastify para consulta de datas, enrollment, assinatura e webhooks (modo mock da Certisign)
-- ✅ Serviço de pagamento PIX integrado ao Sicoob e reconciliado via webhook (`payment_cert_digital`)
-- ✅ Notificações por email via SendGrid (fallback em log quando variáveis ausentes)
-- ✅ Automações WhatsApp com Twilio (confirmação de pagamento, certificado ativo, lembretes)
-- ✅ Scheduler de monitoramento cobre expiração de pagamentos, certificados e retries Sicoob
-- ⚠️ Integração real com a API Certisign pendente (CertificateService ainda em modo mock)
-- ⚠️ Fluxos completos de IA e testes E2E em evolução (frontend/WhatsApp)
+- âœ… Schema Supabase e migrations dedicadas ao certificado (`supabase/migrations/20251101090000_create_cert_icp_tables.sql`)
+- âœ… Endpoints Fastify para consulta de datas, enrollment, assinatura e webhooks (modo mock da Certisign)
+- âœ… ServiÃ§o de pagamento PIX integrado ao Sicoob e reconciliado via webhook (`payment_cert_digital`)
+- âœ… NotificaÃ§Ãµes por email via SendGrid (fallback em log quando variÃ¡veis ausentes)
+- âœ… AutomaÃ§Ãµes WhatsApp com Twilio (confirmaÃ§Ã£o de pagamento, certificado ativo, lembretes)
+- âœ… Scheduler de monitoramento cobre expiraÃ§Ã£o de pagamentos, certificados e retries Sicoob
+- âš ï¸ IntegraÃ§Ã£o real com a API Certisign pendente (CertificateService ainda em modo mock)
+- âš ï¸ Fluxos completos de IA e testes E2E em evoluÃ§Ã£o (frontend/WhatsApp)
 
 
-- ✅ Schema Supabase e migrations dedicadas ao certificado (`supabase/migrations/20251101090000_create_cert_icp_tables.sql`)
-- ✅ Endpoints Fastify para consulta de datas, enrollment, assinatura e webhooks (modo mock da Certisign)
-- ✅ Serviço de pagamento PIX integrado ao Sicoob e reconciliado via webhook (`payment_cert_digital`)
-- ✅ Notificações por email via SendGrid (fallback em log quando variáveis ausentes)
-- ⚠️ Integração real com a API Certisign pendente (CertificateService opera em modo mock)
-- ⚠️ Fluxos de IA e testes E2E completos em andamento (frontend/WhatsApp)
-- ✅ Automações WhatsApp com Twilio: confirmação de pagamento, certificado ativo e lembretes
-- ⚠️ Integração real com a API Certisign pendente (CertificateService ainda em modo mock)
-- ✅ Scheduler de monitoramento cobre expiração de pagamentos, certificados e retries Sicoob
+- âœ… Schema Supabase e migrations dedicadas ao certificado (`supabase/migrations/20251101090000_create_cert_icp_tables.sql`)
+- âœ… Endpoints Fastify para consulta de datas, enrollment, assinatura e webhooks (modo mock da Certisign)
+- âœ… ServiÃ§o de pagamento PIX integrado ao Sicoob e reconciliado via webhook (`payment_cert_digital`)
+- âœ… NotificaÃ§Ãµes por email via SendGrid (fallback em log quando variÃ¡veis ausentes)
+- âš ï¸ IntegraÃ§Ã£o real com a API Certisign pendente (CertificateService opera em modo mock)
+- âš ï¸ Fluxos de IA e testes E2E completos em andamento (frontend/WhatsApp)
+- âœ… AutomaÃ§Ãµes WhatsApp com Twilio: confirmaÃ§Ã£o de pagamento, certificado ativo e lembretes
+- âš ï¸ IntegraÃ§Ã£o real com a API Certisign pendente (CertificateService ainda em modo mock)
+- âœ… Scheduler de monitoramento cobre expiraÃ§Ã£o de pagamentos, certificados e retries Sicoob
 
 > Consulte os documentos acima para o plano completo, lacunas identificadas e roadmap por sprint.
 
-Como aplicar as migrações (opcional, com Supabase CLI):
+Como aplicar as migraÃ§Ãµes (opcional, com Supabase CLI):
 
 ```powershell
-# (Opcional) Validar conexão do projeto
+# (Opcional) Validar conexÃ£o do projeto
 supabase projects list
 
-# Aplicar todas as migrações pendentes
+# Aplicar todas as migraÃ§Ãµes pendentes
 supabase db push
 
 # OU: executar somente o novo arquivo (se preferir rodar manualmente)
 # Arquivo: supabase/migrations/20251101090000_create_cert_icp_tables.sql
 ```
 
-Variáveis de ambiente (novas):
+VariÃ¡veis de ambiente (novas):
 
 ```env
 # Certificadora (ex.: Certisign)
@@ -107,40 +111,40 @@ CERTISIGN_API_BASE_URL=https://api.certisign.com.br
 CERTISIGN_WEBHOOK_SECRET=whsec_...
 CERTISIGN_EMAIL_CERTIFICADORA=rebelocontabil@gmail.com
 
-# Backend público (para callbacks)
+# Backend pÃºblico (para callbacks)
 BACKEND_URL=https://api.seu-dominio.com.br
 ```
 
-## �🎨 Interface e Experiência
+## ï¿½ðŸŽ¨ Interface e ExperiÃªncia
 
 ### **Design System Moderno**
 - **Paleta**: Azuis profissionais (#3b82f6, #2563eb)
-- **Tipografia**: Inter (moderna e legível)
-- **Componentes**: Cards, badges, botões com hover effects
-- **Responsividade**: Mobile-first, adaptável
+- **Tipografia**: Inter (moderna e legÃ­vel)
+- **Componentes**: Cards, badges, botÃµes com hover effects
+- **Responsividade**: Mobile-first, adaptÃ¡vel
 
 ### **Dashboards Especializados**
 
 
-## 💸 Sicoob PIX + Boleto — Status, Como Testar e Variáveis
+## ðŸ’¸ Sicoob PIX + Boleto â€” Status, Como Testar e VariÃ¡veis
 
 ### Status Atual (31/10/2025)
 
-#### **PIX (v2) - ✅ FUNCIONANDO**
-- ✅ Autenticação OAuth2 + mTLS: OK
-- ✅ Cobrança PIX Imediata (POST /cob): OK — cobrança criada (status ATIVA)
-- ✅ Listar Cobranças (GET /cob): OK — usar janela < 7 dias; retornou 0 itens na rodada
-- ⚠️ Cobrança com Vencimento (POST /cobv): 405 Method Not Allowed no sandbox
-- ✅ Consultar por TXID (GET /cob/{txid}): 404 para TXID inexistente (esperado)
+#### **PIX (v2) - âœ… FUNCIONANDO**
+- âœ… AutenticaÃ§Ã£o OAuth2 + mTLS: OK
+- âœ… CobranÃ§a PIX Imediata (POST /cob): OK â€” cobranÃ§a criada (status ATIVA)
+- âœ… Listar CobranÃ§as (GET /cob): OK â€” usar janela < 7 dias; retornou 0 itens na rodada
+- âš ï¸ CobranÃ§a com Vencimento (POST /cobv): 405 Method Not Allowed no sandbox
+- âœ… Consultar por TXID (GET /cob/{txid}): 404 para TXID inexistente (esperado)
 
-#### **Boleto (v3) - ❌ BLOQUEADO (Sandbox Incompatível)**
-- ✅ Autenticação OAuth2 + mTLS: OK
-- ✅ Headers `x-cooperativa` e `x-conta-corrente`: Enviados corretamente
+#### **Boleto (v3) - âŒ BLOQUEADO (Sandbox IncompatÃ­vel)**
+- âœ… AutenticaÃ§Ã£o OAuth2 + mTLS: OK
+- âœ… Headers `x-cooperativa` e `x-conta-corrente`: Enviados corretamente
 ### Como Rodar os Testes (PowerShell)
 
-#### **Teste PIX (✅ Funcionando)**
+#### **Teste PIX (âœ… Funcionando)**
 ```powershell
-cd "c:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI"
+cd "c:\Users\carlo\OneDrive\Ãrea de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI"
 npx tsx apps/backend/scripts/test-sicoob-pix.ts
 ```
 
@@ -150,20 +154,20 @@ O script executa:
 - GET /cob/{txid}
 - GET /cob (listagem com janela de 6 dias)
 
-#### **Teste Boleto (⚠️ Sandbox Incompatível)**
+#### **Teste Boleto (âš ï¸ Sandbox IncompatÃ­vel)**
 ```powershell
-cd "c:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI"
+cd "c:\Users\carlo\OneDrive\Ãrea de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI"
 npx tsx apps/backend/scripts/test-sicoob-boleto.ts
 ```
 
 O script executa:
-- POST /boletos (Teste 0: V3 mínimo, Teste 1: V2 legado)
+- POST /boletos (Teste 0: V3 mÃ­nimo, Teste 1: V2 legado)
 - GET /boletos (listagem)
 - GET /boletos/{nossoNumero}/pdf (download)
 
 **Resultado esperado:** 406 em todos os testes V3 devido a incompatibilidade do sandbox.
 
-Se `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` estiverem configurados, tentará registrar as respostas na tabela `sicoob_test_logs`.
+Se `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` estiverem configurados, tentarÃ¡ registrar as respostas na tabela `sicoob_test_logs`.
 
 TXID PIX obtido (exemplo real):
 - PHB7MFTILK1NFV813678801761920911096
@@ -171,12 +175,12 @@ TXID PIX obtido (exemplo real):
 Detalhes completos: `docs/sicoob-test-results.md`.
 
 ### Como Rodar os Testes (PowerShell)
-1) Crie `apps/backend/.env` com as variáveis do bloco abaixo
-2) Execute o script de validação PIX:
+1) Crie `apps/backend/.env` com as variÃ¡veis do bloco abaixo
+2) Execute o script de validaÃ§Ã£o PIX:
 
 ```powershell
-#### **Dashboard Parceiro** 🤝
-- **Métricas**: Clientes, comissões, emissões
+#### **Dashboard Parceiro** ðŸ¤
+- **MÃ©tricas**: Clientes, comissÃµes, emissÃµes
 ```
 
 O script executa:
@@ -185,20 +189,20 @@ O script executa:
 - GET /cob/{txid}
 - GET /cob (listagem com janela de 6 dias)
 
-Se `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` estiverem configurados, tentará registrar as respostas na tabela `sicoob_test_logs` (veja instruções de criação em `docs/sicoob-test-results.md`).
+Se `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` estiverem configurados, tentarÃ¡ registrar as respostas na tabela `sicoob_test_logs` (veja instruÃ§Ãµes de criaÃ§Ã£o em `docs/sicoob-test-results.md`).
 
-### Variáveis .env (Sicoob PIX)
+### VariÃ¡veis .env (Sicoob PIX)
 ```env
 # Ambiente: sandbox ou production
 SICOOB_ENVIRONMENT=sandbox
 
-# Base URL do PIX (preferencial) — já incluindo /pix/api/v2
+# Base URL do PIX (preferencial) â€” jÃ¡ incluindo /pix/api/v2
 SICOOB_PIX_BASE_URL=https://api.sicoob.com.br/pix/api/v2
 
 # Alternativa legada (se ausente, o script usa SICOOB_API_BASE_URL)
 SICOOB_API_BASE_URL=https://api-sandbox.sicoob.com.br
 
-# Autenticação
+# AutenticaÃ§Ã£o
 SICOOB_AUTH_URL=https://auth.sicoob.com.br/auth/realms/cooperado/protocol/openid-connect/token
 SICOOB_CLIENT_ID=seu_client_id
 # SICOOB_CLIENT_SECRET (opcional)
@@ -216,92 +220,92 @@ SUPABASE_URL=https://seu-projeto.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
 ```
 
-### Limitações do Sandbox e Dicas
+### LimitaÃ§Ãµes do Sandbox e Dicas
 - Janela de listagem precisa ser estritamente menor que 7 dias; com 7 dias retorna 422
-- A chave PIX deve pertencer ao recebedor; caso contrário, erro de validação
-- O endpoint /cobv pode não estar disponível no sandbox (405)
-- Observe possíveis 429 por rate limit; verifique headers `x-ratelimit-*`
-- Para consultas por TXID inexistente, 404 é esperado
-- **Gestão**: Adicionar clientes, gerar links
-- **Relatórios**: Faturamento, performance
-- **Ações Rápidas**: Gerar link, lembrete, relatórios, WhatsApp
-### **Serviços de Pagamento**
-- **Sicoob PIX**: Cobranças PIX imediatas e com vencimento (✅ Funcionando 31/10/2025)
-- **Sicoob Boleto**: Geração e gestão de boletos bancários (❌ Bloqueado - Sandbox Incompatível 31/10/2025)
-- **Stripe**: Processamento internacional (estrutura básica)
-- **Webhooks**: Confirmação automática e notificações (✅ Implementado 31/10/2025)
-  - 📊 **Monitoramento de Emissões** - Acompanhamento em tempo real
-  - 📈 **Relatórios e Analytics** - Análise completa de dados
-  - ⚙️ **Configurações do Sistema** - Gerenciamento de integrações
-  - 🔍 **Logs e Auditoria** - Monitoramento de operações
+- A chave PIX deve pertencer ao recebedor; caso contrÃ¡rio, erro de validaÃ§Ã£o
+- O endpoint /cobv pode nÃ£o estar disponÃ­vel no sandbox (405)
+- Observe possÃ­veis 429 por rate limit; verifique headers `x-ratelimit-*`
+- Para consultas por TXID inexistente, 404 Ã© esperado
+- **GestÃ£o**: Adicionar clientes, gerar links
+- **RelatÃ³rios**: Faturamento, performance
+- **AÃ§Ãµes RÃ¡pidas**: Gerar link, lembrete, relatÃ³rios, WhatsApp
+### **ServiÃ§os de Pagamento**
+- **Sicoob PIX**: CobranÃ§as PIX imediatas e com vencimento (âœ… Funcionando 31/10/2025)
+- **Sicoob Boleto**: GeraÃ§Ã£o e gestÃ£o de boletos bancÃ¡rios (âŒ Bloqueado - Sandbox IncompatÃ­vel 31/10/2025)
+- **Stripe**: Processamento internacional (estrutura bÃ¡sica)
+- **Webhooks**: ConfirmaÃ§Ã£o automÃ¡tica e notificaÃ§Ãµes (âœ… Implementado 31/10/2025)
+  - ðŸ“Š **Monitoramento de EmissÃµes** - Acompanhamento em tempo real
+  - ðŸ“ˆ **RelatÃ³rios e Analytics** - AnÃ¡lise completa de dados
+  - âš™ï¸ **ConfiguraÃ§Ãµes do Sistema** - Gerenciamento de integraÃ§Ãµes
+  - ðŸ” **Logs e Auditoria** - Monitoramento de operaÃ§Ãµes
 
-## 🔐 Segurança e Conformidade
+## ðŸ” SeguranÃ§a e Conformidade
 
-### **Criptografia Avançada**
-- **Dados Sensíveis**: CPF, CNPJ, PIS criptografados (AES-256-GCM)
+### **Criptografia AvanÃ§ada**
+- **Dados SensÃ­veis**: CPF, CNPJ, PIS criptografados (AES-256-GCM)
 - **Certificados**: Senhas PFX criptografadas
-- **Transmissão**: HTTPS obrigatório
+- **TransmissÃ£o**: HTTPS obrigatÃ³rio
 
 ### **Controle de Acesso**
 - **RLS**: Row Level Security no Supabase
-- **JWT**: Tokens seguros para autenticação
-- **Roles**: Admin, Parceiro, Usuário com permissões específicas
+- **JWT**: Tokens seguros para autenticaÃ§Ã£o
+- **Roles**: Admin, Parceiro, UsuÃ¡rio com permissÃµes especÃ­ficas
 
 ### **Auditoria Completa**
-- **Logs**: Todas as ações registradas
-- **Rastreabilidade**: Quem fez o quê e quando
-- **Compliance**: LGPD e regulamentações fiscais
+- **Logs**: Todas as aÃ§Ãµes registradas
+- **Rastreabilidade**: Quem fez o quÃª e quando
+- **Compliance**: LGPD e regulamentaÃ§Ãµes fiscais
 
-## 🚀 Integrações Externas
+## ðŸš€ IntegraÃ§Ãµes Externas
 
 ### **APIs Governamentais**
-- **Receita Federal**: Validação CNPJ/CPF
-- **ADN NFSe**: Emissão de notas fiscais
-- **SEFIP**: Geração de guias GPS
+- **Receita Federal**: ValidaÃ§Ã£o CNPJ/CPF
+- **ADN NFSe**: EmissÃ£o de notas fiscais
+- **SEFIP**: GeraÃ§Ã£o de guias GPS
 
-### **Serviços de Pagamento**
-- **Sicoob PIX**: Cobranças PIX imediatas e com vencimento (✅ Implementado 31/10/2025)
-- **Sicoob Boleto**: Geração e gestão de boletos bancários (✅ Implementado 31/10/2025)
-- **Stripe**: Processamento internacional (estrutura básica)
-- **Webhooks**: Confirmação automática e notificações (✅ Implementado 31/10/2025)
+### **ServiÃ§os de Pagamento**
+- **Sicoob PIX**: CobranÃ§as PIX imediatas e com vencimento (âœ… Implementado 31/10/2025)
+- **Sicoob Boleto**: GeraÃ§Ã£o e gestÃ£o de boletos bancÃ¡rios (âœ… Implementado 31/10/2025)
+- **Stripe**: Processamento internacional (estrutura bÃ¡sica)
+- **Webhooks**: ConfirmaÃ§Ã£o automÃ¡tica e notificaÃ§Ãµes (âœ… Implementado 31/10/2025)
 
-### **Comunicação**
-- **WhatsApp Business API**: Atendimento automatizado (✅ Integrado com Sicoob 31/10/2025)
-- **Twilio**: SMS e notificações WhatsApp
-- **Email**: Confirmações e lembretes
-- **Notificações Automáticas**: Sistema de fila para eventos de pagamento
+### **ComunicaÃ§Ã£o**
+- **WhatsApp Business API**: Atendimento automatizado (âœ… Integrado com Sicoob 31/10/2025)
+- **Twilio**: SMS e notificaÃ§Ãµes WhatsApp
+- **Email**: ConfirmaÃ§Ãµes e lembretes
+- **NotificaÃ§Ãµes AutomÃ¡ticas**: Sistema de fila para eventos de pagamento
 
-## 🛠️ Tecnologias Utilizadas
+## ðŸ› ï¸ Tecnologias Utilizadas
 
 ### **Frontend**
 - **React 18**: Interface moderna e reativa
-- **Vite**: Build rápido e eficiente
-- **React Router**: Navegação SPA
-- **Tailwind CSS**: Estilização utilitária
-- **Supabase Client**: Integração banco
+- **Vite**: Build rÃ¡pido e eficiente
+- **React Router**: NavegaÃ§Ã£o SPA
+- **Tailwind CSS**: EstilizaÃ§Ã£o utilitÃ¡ria
+- **Supabase Client**: IntegraÃ§Ã£o banco
 - **React Query**: Gerenciamento de estado
-- **React Hook Form**: Formulários eficientes
+- **React Hook Form**: FormulÃ¡rios eficientes
 
-### **Backend - Módulo INSS (Python)**
-- **FastAPI 0.120.1**: Framework web moderno assíncrono
+### **Backend - MÃ³dulo INSS (Python)**
+- **FastAPI 0.120.1**: Framework web moderno assÃ­ncrono
 - **Uvicorn 0.38.0**: Servidor ASGI
-- **Pydantic V2.12.3**: Validação de dados
-- **ReportLab 4.0.9**: Geração de PDFs
+- **Pydantic V2.12.3**: ValidaÃ§Ã£o de dados
+- **ReportLab 4.0.9**: GeraÃ§Ã£o de PDFs
 - **Supabase**: Banco de dados e storage
-- **Twilio**: Integração WhatsApp
+- **Twilio**: IntegraÃ§Ã£o WhatsApp
 
-### **Backend - Módulo NFSe (Node.js)**
+### **Backend - MÃ³dulo NFSe (Node.js)**
 - **Node.js**: Runtime JavaScript
-- **Fastify 4.26.2**: Framework web rápido
-- **TypeScript**: Tipagem estática
-- **Zod 3.23.8**: Validação de schemas
+- **Fastify 4.26.2**: Framework web rÃ¡pido
+- **TypeScript**: Tipagem estÃ¡tica
+- **Zod 3.23.8**: ValidaÃ§Ã£o de schemas
 - **xml-crypto**: Assinatura digital XML
-- **node-forge**: Manipulação de certificados
+- **node-forge**: ManipulaÃ§Ã£o de certificados
 - **Axios**: Cliente HTTP
 
 ### **Banco de Dados**
 - **Supabase**: PostgreSQL + Auth + Storage
-- **RLS (Row Level Security)**: Segurança a nível de linha
+- **RLS (Row Level Security)**: SeguranÃ§a a nÃ­vel de linha
 - **Migrations**: Versionamento schema
 - **Storage**: Arquivos PDF e certificados
 
@@ -310,27 +314,27 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 - **Railway/Heroku/GCP**: Deploy backend
 - **Supabase Cloud**: Banco de dados
 - **GitHub**: Versionamento e CI/CD
-- **Cloudflare**: CDN e proteção
+- **Cloudflare**: CDN e proteÃ§Ã£o
 
-## 🚀 Como Rodar Localmente
+## ðŸš€ Como Rodar Localmente
 
-### **Pré-requisitos**
+### **PrÃ©-requisitos**
 - Node.js 18+
 - Python 3.11+
 - Supabase CLI
 - Git
 - Docker (opcional, para Supabase local)
 
-### **1. Instalação**
+### **1. InstalaÃ§Ã£o**
 ```bash
-# Clone o repositório
+# Clone o repositÃ³rio
 git clone https://github.com/gesielr/guiasMEI.git
 cd guiasMEI
 
-# Instale as dependências (raiz)
+# Instale as dependÃªncias (raiz)
 npm install
 
-# Instale dependências Python (INSS backend)
+# Instale dependÃªncias Python (INSS backend)
 cd apps/backend/inss
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1          # Windows PowerShell
@@ -339,12 +343,12 @@ pip install -r requirements.txt
 cd ../..
 ```
 
-### **2. Configuração**
+### **2. ConfiguraÃ§Ã£o**
 ```bash
 # Copie o arquivo de exemplo
 cp .env.example .env
 
-# Configure as variáveis de ambiente necessárias:
+# Configure as variÃ¡veis de ambiente necessÃ¡rias:
 # Backend INSS (Python):
 SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_key
@@ -362,11 +366,11 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 STRIPE_SECRET_KEY=sk_test_...
 ```
 
-### **3. Execução Integrada**
+### **3. ExecuÃ§Ã£o Integrada**
 
-**Opção A: Tudo com npm (recomendado)**
+**OpÃ§Ã£o A: Tudo com npm (recomendado)**
 ```bash
-# Iniciar todos os serviços
+# Iniciar todos os serviÃ§os
 npm run dev
 
 # Isso abre:
@@ -376,7 +380,7 @@ npm run dev
 # - Supabase Studio: http://localhost:54323 (se local)
 ```
 
-**Opção B: Serviços Individuais**
+**OpÃ§Ã£o B: ServiÃ§os Individuais**
 ```bash
 # Terminal 1 - Frontend
 cd apps/web
@@ -398,7 +402,7 @@ supabase start       # http://localhost:54323
 
 **Frontend:**
 - URL: http://localhost:5173
-- Página inicial com seleção de perfil (MEI, Autônomo, Parceiro, Admin)
+- PÃ¡gina inicial com seleÃ§Ã£o de perfil (MEI, AutÃ´nomo, Parceiro, Admin)
 
 **Backend INSS (FastAPI):**
 - Swagger UI: http://localhost:8000/docs
@@ -410,7 +414,7 @@ supabase start       # http://localhost:54323
 - Status: http://localhost:3001/health (GET)
 - Endpoints NFSe: http://localhost:3001/nfse/* (POST)
 
-**Testes Rápidos:**
+**Testes RÃ¡pidos:**
 ```bash
 # INSS GPS Emission
 cd apps/backend/inss
@@ -427,7 +431,7 @@ npm test
 ### **5. Desenvolvimento com Hot Reload**
 
 **Frontend (React):**
-- Vite fornece hot reload automático
+- Vite fornece hot reload automÃ¡tico
 - Modificar `apps/web/src/**` recarrega automaticamente
 
 **Backend INSS (FastAPI):**
@@ -440,79 +444,79 @@ npm test
 
 ---
 
-## 📁 Estrutura do Projeto
+## ðŸ“ Estrutura do Projeto
 
 ```
 guiasMEI/
-├── 📱 apps/
-│   ├── web/                 # Frontend React
-│   │   ├── src/
-│   │   │   ├── features/    # Funcionalidades
-│   │   │   │   ├── auth/     # Autenticação
-│   │   │   │   ├── dashboards/ # Dashboards
-│   │   │   │   ├── admin/    # Telas administrativas
-│   │   │   │   └── nfse/     # Emissões NFSe
-│   │   │   ├── components/  # Componentes reutilizáveis
-│   │   │   └── assets/      # Imagens e ícones
-│   │   └── public/          # Arquivos estáticos
-│   └── backend/             # Backend Node.js
-│       ├── src/
-│       │   ├── nfse/        # Módulo NFSe
-│       │   ├── services/    # Serviços
-│       │   └── routes/      # Rotas API
-│       └── dist/            # Build produção
-├── 📦 packages/             # Pacotes compartilhados
-│   ├── config/             # Schemas e tipos
-│   ├── sdk/                # Cliente API
-│   └── ui/                 # Componentes UI
-├── 🗄️ supabase/            # Configuração Supabase
-│   ├── functions/          # Edge Functions
-│   └── migrations/         # Migrações DB
-├── 📚 docs/                # Documentação
-└── 🧪 test/                # Testes
+â”œâ”€â”€ ðŸ“± apps/
+â”‚   â”œâ”€â”€ web/                 # Frontend React
+â”‚   â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”‚   â”œâ”€â”€ features/    # Funcionalidades
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ auth/     # AutenticaÃ§Ã£o
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ dashboards/ # Dashboards
+â”‚   â”‚   â”‚   â”‚   â”œâ”€â”€ admin/    # Telas administrativas
+â”‚   â”‚   â”‚   â”‚   â””â”€â”€ nfse/     # EmissÃµes NFSe
+â”‚   â”‚   â”‚   â”œâ”€â”€ components/  # Componentes reutilizÃ¡veis
+â”‚   â”‚   â”‚   â””â”€â”€ assets/      # Imagens e Ã­cones
+â”‚   â”‚   â””â”€â”€ public/          # Arquivos estÃ¡ticos
+â”‚   â””â”€â”€ backend/             # Backend Node.js
+â”‚       â”œâ”€â”€ src/
+â”‚       â”‚   â”œâ”€â”€ nfse/        # MÃ³dulo NFSe
+â”‚       â”‚   â”œâ”€â”€ services/    # ServiÃ§os
+â”‚       â”‚   â””â”€â”€ routes/      # Rotas API
+â”‚       â””â”€â”€ dist/            # Build produÃ§Ã£o
+â”œâ”€â”€ ðŸ“¦ packages/             # Pacotes compartilhados
+â”‚   â”œâ”€â”€ config/             # Schemas e tipos
+â”‚   â”œâ”€â”€ sdk/                # Cliente API
+â”‚   â””â”€â”€ ui/                 # Componentes UI
+â”œâ”€â”€ ðŸ—„ï¸ supabase/            # ConfiguraÃ§Ã£o Supabase
+â”‚   â”œâ”€â”€ functions/          # Edge Functions
+â”‚   â””â”€â”€ migrations/         # MigraÃ§Ãµes DB
+â”œâ”€â”€ ðŸ“š docs/                # DocumentaÃ§Ã£o
+â””â”€â”€ ðŸ§ª test/                # Testes
 ```
 
-## 📊 Scripts Disponíveis
+## ðŸ“Š Scripts DisponÃ­veis
 
 ### **Root Level (npm)**
-## 🧪 CI/CD (GitHub Actions)
+## ðŸ§ª CI/CD (GitHub Actions)
 
-Este repositório contém pipeline CI em `.github/workflows/ci.yml` com:
+Este repositÃ³rio contÃ©m pipeline CI em `.github/workflows/ci.yml` com:
 
 - Build do frontend (Vite) e backend (TypeScript/tsup)
 - Testes web e backend (Vitest), e job opcional Windows executando `run-tests.ps1`
-- Cache de dependências para Node.js
+- Cache de dependÃªncias para Node.js
 
 Executa em push/PR para `main`. O status aparece no badge no topo do README.
 
 Como rodar localmente (Windows PowerShell):
 
 ```powershell
-| Comando | Descrição |
+| Comando | DescriÃ§Ã£o |
 |---------|-----------|
-| `npm run dev` | Inicia todos os serviços (frontend + backends) |
-| `npm run build` | Build de produção (frontend + packages) |
+| `npm run dev` | Inicia todos os serviÃ§os (frontend + backends) |
+| `npm run build` | Build de produÃ§Ã£o (frontend + packages) |
 | `npm test` | Executa testes (todos os pacotes) |
-| `npm run lint` | Lint de código (ESLint) |
+| `npm run lint` | Lint de cÃ³digo (ESLint) |
 
-Logs e relatórios de testes são salvos na raiz quando aplicável (ex.: `test_results.json`).
+Logs e relatÃ³rios de testes sÃ£o salvos na raiz quando aplicÃ¡vel (ex.: `test_results.json`).
 
 
 ### **Frontend (apps/web)**
-| Comando | Descrição |
+| Comando | DescriÃ§Ã£o |
 |---------|-----------|
 | `npm run dev` | Dev server com hot reload (Vite) |
-| `npm run build` | Build otimizado para produção |
-| `npm run preview` | Pré-visualizar build de produção |
+| `npm run build` | Build otimizado para produÃ§Ã£o |
+| `npm run preview` | PrÃ©-visualizar build de produÃ§Ã£o |
 | `npm test` | Testes com Vitest |
 | `npm run lint` | ESLint check |
 
 ### **Backend Node.js (apps/backend)**
-| Comando | Descrição |
+| Comando | DescriÃ§Ã£o |
 |---------|-----------|
 | `npm run dev` | Dev server com hot reload (tsx watch) |
 | `npm run start` | Inicia servidor (sem hot reload) |
-| `npm run build` | Build para produção |
+| `npm run build` | Build para produÃ§Ã£o |
 | `npm test` | Testes com Vitest |
 
 ### **Backend Python (apps/backend/inss)**
@@ -533,9 +537,9 @@ Logs e relatórios de testes são salvos na raiz quando aplicável (ex.: `test_r
 
 ---
 
-## 🔧 Configuração de Desenvolvimento
+## ðŸ”§ ConfiguraÃ§Ã£o de Desenvolvimento
 
-### **Variáveis de Ambiente**
+### **VariÃ¡veis de Ambiente**
 ```env
 # Supabase
 VITE_SUPABASE_URL=your_supabase_url
@@ -545,12 +549,12 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
-# Sicoob Integration (✅ Implementado 31/10/2025)
+# Sicoob Integration (âœ… Implementado 31/10/2025)
 SICOOB_ENVIRONMENT=sandbox
 SICOOB_API_BASE_URL=https://api-sandbox.sicoob.com.br
 SICOOB_AUTH_URL=https://auth-sandbox.sicoob.com.br/auth/realms/cooperado/protocol/openid-connect/token
 SICOOB_CLIENT_ID=seu_client_id
-# SICOOB_CLIENT_SECRET é opcional - o Sicoob pode não fornecer
+# SICOOB_CLIENT_SECRET Ã© opcional - o Sicoob pode nÃ£o fornecer
 SICOOB_CLIENT_SECRET=
 SICOOB_CERT_PFX_BASE64=base64_do_certificado
 SICOOB_CERT_PFX_PASS=senha_do_certificado
@@ -569,77 +573,77 @@ ADN_NFSE_DANFSE_URL=https://...
 
 # WhatsApp
 WHATSAPP_TOKEN=your_token
-## 💳 Integração Sicoob PIX + Boleto
+## ðŸ’³ IntegraÃ§Ã£o Sicoob PIX + Boleto
 
-### **Visão Geral**
-Integração com o ecossistema Sicoob para gerenciamento de cobranças via PIX e Boleto:
-- 🔐 **Autenticação OAuth 2.0 + mTLS** com certificados ICP-Brasil (✅ Funcionando)
-- 💰 **Cobranças PIX** (imediatas e com vencimento) (✅ Funcionando 31/10/2025)
-- 📄 **Boletos Bancários** (geração, consulta, cancelamento, PDF) (❌ Bloqueado - Sandbox Incompatível 31/10/2025)
-- 🔔 **Webhooks** com validação HMAC e persistência automática (✅ Implementado)
-- ✅ Automações WhatsApp com Twilio: confirmação de pagamento, certificado ativo e lembretes
+### **VisÃ£o Geral**
+IntegraÃ§Ã£o com o ecossistema Sicoob para gerenciamento de cobranÃ§as via PIX e Boleto:
+- ðŸ” **AutenticaÃ§Ã£o OAuth 2.0 + mTLS** com certificados ICP-Brasil (âœ… Funcionando)
+- ðŸ’° **CobranÃ§as PIX** (imediatas e com vencimento) (âœ… Funcionando 31/10/2025)
+- ðŸ“„ **Boletos BancÃ¡rios** (geraÃ§Ã£o, consulta, cancelamento, PDF) (âŒ Bloqueado - Sandbox IncompatÃ­vel 31/10/2025)
+- ðŸ”” **Webhooks** com validaÃ§Ã£o HMAC e persistÃªncia automÃ¡tica (âœ… Implementado)
+- âœ… AutomaÃ§Ãµes WhatsApp com Twilio: confirmaÃ§Ã£o de pagamento, certificado ativo e lembretes
 supabase db diff
 ```
 
-## 💳 Integração Sicoob PIX + Boleto (✅ Implementado 31/10/2025)
+## ðŸ’³ IntegraÃ§Ã£o Sicoob PIX + Boleto (âœ… Implementado 31/10/2025)
 
-### **Visão Geral**
-Integração completa com o ecossistema Sicoob para gerenciamento de cobranças via PIX e Boleto, incluindo:
-- 🔐 **Autenticação OAuth 2.0 + mTLS** com certificados ICP-Brasil
-- 💰 **Cobranças PIX** (imediatas e com vencimento)
-- 📄 **Boletos Bancários** (geração, consulta, cancelamento, PDF)
-- 🔔 **Webhooks** com validação HMAC e persistência automática
-- ✅ Automações WhatsApp com Twilio: confirmação de pagamento, certificado ativo e lembretes
+### **VisÃ£o Geral**
+IntegraÃ§Ã£o completa com o ecossistema Sicoob para gerenciamento de cobranÃ§as via PIX e Boleto, incluindo:
+- ðŸ” **AutenticaÃ§Ã£o OAuth 2.0 + mTLS** com certificados ICP-Brasil
+- ðŸ’° **CobranÃ§as PIX** (imediatas e com vencimento)
+- ðŸ“„ **Boletos BancÃ¡rios** (geraÃ§Ã£o, consulta, cancelamento, PDF)
+- ðŸ”” **Webhooks** com validaÃ§Ã£o HMAC e persistÃªncia automÃ¡tica
+- âœ… AutomaÃ§Ãµes WhatsApp com Twilio: confirmaÃ§Ã£o de pagamento, certificado ativo e lembretes
 
 ### **Arquitetura**
 
-#### **Camada de Serviços (Node.js/TypeScript)**
+#### **Camada de ServiÃ§os (Node.js/TypeScript)**
 ```
 apps/backend/src/services/sicoob/
-├── auth.service.ts          # OAuth 2.0 + mTLS (token cache)
-├── pix.service.ts            # Cobranças PIX (criar, consultar, listar, cancelar)
-├── boleto.service.ts         # Boletos (gerar, consultar, listar, PDF)
-├── webhook.service.ts        # Processamento de webhooks (✅ persistência Supabase)
-└── certificate.util.ts       # Manipulação de certificados mTLS
+â”œâ”€â”€ auth.service.ts          # OAuth 2.0 + mTLS (token cache)
+â”œâ”€â”€ pix.service.ts            # CobranÃ§as PIX (criar, consultar, listar, cancelar)
+â”œâ”€â”€ boleto.service.ts         # Boletos (gerar, consultar, listar, PDF)
+â”œâ”€â”€ webhook.service.ts        # Processamento de webhooks (âœ… persistÃªncia Supabase)
+â””â”€â”€ certificate.util.ts       # ManipulaÃ§Ã£o de certificados mTLS
 ```
 
 #### **Camada de Dados (Supabase)**
 ```sql
 -- Migration: 20251031000001_create_sicoob_tables.sql
-├── sicoob_cobrancas         # Registro de todas as cobranças PIX/Boleto
-├── sicoob_webhook_events    # Histórico de eventos recebidos via webhook
-├── sicoob_notificacoes      # Fila de notificações para WhatsApp
-└── sicoob_test_logs         # Logs dos scripts de teste
+â”œâ”€â”€ sicoob_cobrancas         # Registro de todas as cobranÃ§as PIX/Boleto
+â”œâ”€â”€ sicoob_webhook_events    # HistÃ³rico de eventos recebidos via webhook
+â”œâ”€â”€ sicoob_notificacoes      # Fila de notificaÃ§Ãµes para WhatsApp
+â””â”€â”€ sicoob_test_logs         # Logs dos scripts de teste
 ```
 
-#### **Automação WhatsApp (Python)**
+#### **AutomaÃ§Ã£o WhatsApp (Python)**
 ```
 apps/backend/inss/
-├── process_sicoob_notifications.py   # Processador de notificações (✅ NOVO)
-└── run_sicoob_processor.py           # Script de execução contínua
+â”œâ”€â”€ process_sicoob_notifications.py   # Processador de notificaÃ§Ãµes (âœ… NOVO)
+â””â”€â”€ run_sicoob_processor.py           # Script de execuÃ§Ã£o contÃ­nua
 ```
 
 ### **Scripts de Teste**
 ```bash
-# Autenticação (obtém token)
+# AutenticaÃ§Ã£o (obtÃ©m token)
 npx tsx apps/backend/scripts/test-sicoob-auth.ts
 
-# Testes de PIX (✅ NOVO)
+# Testes de PIX (âœ… NOVO)
 npx tsx apps/backend/scripts/test-sicoob-pix.ts
-# Cria cobranças imediatas/vencimento, consulta, lista e registra no Supabase
+# Cria cobranÃ§as imediatas/vencimento, consulta, lista e registra no Supabase
 
-# Testes de Boleto (✅ NOVO)
+# Testes de Boleto (âœ… NOVO)
 npx tsx apps/backend/scripts/test-sicoob-boleto.ts
 # Gera boletos, consulta, lista, baixa PDF e registra no Supabase
 ```
 
 ### **Endpoints API**
 ```
-POST   /api/sicoob/pix/cobranca-imediata      # Criar cobrança PIX imediata
-POST   /api/sicoob/pix/cobranca-vencimento    # Criar cobrança PIX com vencimento
-GET    /api/sicoob/pix/cobranca/:txid         # Consultar cobrança PIX
-GET    /api/sicoob/pix/cobracas               # Listar cobranças PIX
-DELETE /api/sicoob/pix/cobranca/:txid         # Cancelar cobrança PIX
+POST   /api/sicoob/pix/cobranca-imediata      # Criar cobranÃ§a PIX imediata
+POST   /api/sicoob/pix/cobranca-vencimento    # Criar cobranÃ§a PIX com vencimento
+GET    /api/sicoob/pix/cobranca/:txid         # Consultar cobranÃ§a PIX
+GET    /api/sicoob/pix/cobracas               # Listar cobranÃ§as PIX
+DELETE /api/sicoob/pix/cobranca/:txid         # Cancelar cobranÃ§a PIX
 GET    /api/sicoob/pix/qrcode/:txid           # Consultar QR Code
 
 POST   /api/sicoob/boleto                     # Gerar boleto
@@ -648,14 +652,14 @@ GET    /api/sicoob/boletos                    # Listar boletos
 DELETE /api/sicoob/boleto/:nossoNumero        # Cancelar boleto
 GET    /api/sicoob/boleto/:nossoNumero/pdf    # Baixar PDF do boleto
 
-POST   /api/sicoob/webhook                    # Receber webhooks (✅ com persistência)
+POST   /api/sicoob/webhook                    # Receber webhooks (âœ… com persistÃªncia)
 ```
 
-### **Fluxo de Notificação Automatizada**
+### **Fluxo de NotificaÃ§Ã£o Automatizada**
 
-#### **1. Criação de Cobrança**
+#### **1. CriaÃ§Ã£o de CobranÃ§a**
 ```typescript
-// Backend Node registra cobrança no Supabase
+// Backend Node registra cobranÃ§a no Supabase
 await cobrancaDbService.criarCobranca({
   identificador: resultado.txid,
   tipo: 'PIX_IMEDIATA',
@@ -668,7 +672,7 @@ await cobrancaDbService.criarCobranca({
 
 #### **2. Webhook Recebido**
 ```typescript
-// Webhook service persiste evento e cria notificação
+// Webhook service persiste evento e cria notificaÃ§Ã£o
 await this.persistirEvento(event, 'pix_received');
 await this.atualizarStatusCobranca(txid, 'PAGO', { valor_pago: 100.00 });
 await this.acionarNotificacao(txid, 'pagamento_recebido', dados);
@@ -676,7 +680,7 @@ await this.acionarNotificacao(txid, 'pagamento_recebido', dados);
 
 #### **3. Processador Python Envia WhatsApp**
 ```python
-# Script Python consome fila de notificações
+# Script Python consome fila de notificaÃ§Ãµes
 processor = SicoobNotificationProcessor()
 await processor.processar_notificacoes_pendentes()
 
@@ -685,17 +689,17 @@ mensagem = self._template_pagamento_recebido(cobranca, dados)
 await self.whatsapp_service.enviar_texto(whatsapp, mensagem)
 ```
 
-### **Segurança**
-- ✅ **OAuth 2.0** com refresh automático de tokens
-- ✅ **mTLS** (certificados ICP-Brasil em base64)
-- ✅ **HMAC SHA-256** para validação de webhooks
-- ✅ **Timestamp validation** (tolerância de 5 minutos)
-- ✅ **Rate limiting** (60 req/min padrão, 120 req/min webhooks)
-- ✅ **Criptografia de dados sensíveis** no Supabase
+### **SeguranÃ§a**
+- âœ… **OAuth 2.0** com refresh automÃ¡tico de tokens
+- âœ… **mTLS** (certificados ICP-Brasil em base64)
+- âœ… **HMAC SHA-256** para validaÃ§Ã£o de webhooks
+- âœ… **Timestamp validation** (tolerÃ¢ncia de 5 minutos)
+- âœ… **Rate limiting** (60 req/min padrÃ£o, 120 req/min webhooks)
+- âœ… **Criptografia de dados sensÃ­veis** no Supabase
 
-### **Iniciar Processador de Notificações**
+### **Iniciar Processador de NotificaÃ§Ãµes**
 ```bash
-# Executar processador em loop contínuo
+# Executar processador em loop contÃ­nuo
 cd apps/backend/inss
 python run_sicoob_processor.py
 
@@ -708,14 +712,14 @@ python run_sicoob_processor.py
 # Verificar logs de webhook
 SELECT * FROM sicoob_webhook_events ORDER BY criado_em DESC LIMIT 10;
 
-# Verificar cobranças pendentes
+# Verificar cobranÃ§as pendentes
 SELECT * FROM sicoob_cobrancas WHERE status = 'PENDENTE';
 
-# Verificar notificações na fila
+# Verificar notificaÃ§Ãµes na fila
 SELECT * FROM sicoob_notificacoes WHERE status = 'PENDENTE';
 ```
 
-## 🚀 Deploy e Produção
+## ðŸš€ Deploy e ProduÃ§Ã£o
 
 ### **Frontend (Vercel)**
 ```bash
@@ -735,14 +739,14 @@ supabase db push
 supabase functions deploy
 ```
 
-## 🏁 Próximos Passos - Homologação (Roadmap 2025)
+## ðŸ PrÃ³ximos Passos - HomologaÃ§Ã£o (Roadmap 2025)
 
-### 🔴 **CRÍTICO - Fazer AGORA (Esta Semana)**
+### ðŸ”´ **CRÃTICO - Fazer AGORA (Esta Semana)**
 
 1. **Confirmar Endpoint NFSe com Receita Federal**
-   - Status: ❌ BLOQUEADO
+   - Status: âŒ BLOQUEADO
    - Impacto: Toda funcionalidade NFSe depende disso
-   - Ação: Contato direto com ADN / Receita Federal
+   - AÃ§Ã£o: Contato direto com ADN / Receita Federal
    - Prazo: 1-2 dias
 
 2. **Obter Credenciais Reais**
@@ -752,184 +756,184 @@ supabase functions deploy
    - Prazo: 2-3 dias
 
 3. **Testes End-to-End Completos**
-   - Fluxo MEI: cadastro → emissão → PDF → WhatsApp
-   - Fluxo Parceiro: cadastro → clientes → comissão
-   - Fluxo Admin: certificado → emissão → relatório
+   - Fluxo MEI: cadastro â†’ emissÃ£o â†’ PDF â†’ WhatsApp
+   - Fluxo Parceiro: cadastro â†’ clientes â†’ comissÃ£o
+   - Fluxo Admin: certificado â†’ emissÃ£o â†’ relatÃ³rio
    - Prazo: 3-4 dias
    - Ferramenta: Cypress.io
 
-4. **Testes de Segurança (OWASP Top 10)**
+4. **Testes de SeguranÃ§a (OWASP Top 10)**
    - SQL Injection, XSS, CSRF, Auth bypass
    - Rate limiting, API keys, SSL/TLS
    - Prazo: 2-3 dias
-   - Prazo Estimado de Conclusão: **6-11 de novembro**
+   - Prazo Estimado de ConclusÃ£o: **6-11 de novembro**
 
-### 🟠 **ALTOS - Fazer Semana 2**
+### ðŸŸ  **ALTOS - Fazer Semana 2**
 
-5. **Integração Frontend ↔ Backend**
-   - Consumir APIs INSS (emitir, complementação)
+5. **IntegraÃ§Ã£o Frontend â†” Backend**
+   - Consumir APIs INSS (emitir, complementaÃ§Ã£o)
    - Consumir APIs NFSe (quando endpoint confirmado)
-   - Autenticação Supabase integrada
+   - AutenticaÃ§Ã£o Supabase integrada
    - Prazo: 2-3 dias
 
 6. **Performance & Load Testing**
-   - 100-1000 usuários simultâneos
+   - 100-1000 usuÃ¡rios simultÃ¢neos
    - API response time <500ms (p95)
    - Database query optimization
    - Prazo: 2-3 dias
 
-7. **Integração WhatsApp Business Real**
-   - Webhook de produção configurado
+7. **IntegraÃ§Ã£o WhatsApp Business Real**
+   - Webhook de produÃ§Ã£o configurado
    - Envio/recebimento testado
    - Fallback strategy implementada
    - Prazo: 2-3 dias
 
-### 🟡 **MÉDIOS - Semana 3**
+### ðŸŸ¡ **MÃ‰DIOS - Semana 3**
 
 8. **Staging Environment Completo**
    - Docker Compose production-like
-   - Todos os serviços integrados
+   - Todos os serviÃ§os integrados
    - Dados de teste inclusos
 
 9. **CI/CD Pipeline**
    - GitHub Actions workflow
-   - Lint + testes automáticos
+   - Lint + testes automÃ¡ticos
    - Build Docker image
-   - Deploy automático
+   - Deploy automÃ¡tico
 
 10. **Monitoring & Alerting**
     - Logs centralizados (Datadog/ELK)
-    - Métricas de aplicação
+    - MÃ©tricas de aplicaÃ§Ã£o
     - Alertas para downtime
 
 ---
 
-## � Checklists Disponíveis
+## ï¿½ Checklists DisponÃ­veis
 
-Este projeto inclui 3 checklists para homologação:
+Este projeto inclui 3 checklists para homologaÃ§Ã£o:
 
 1. **`CHECKLIST_HOMOLOGACAO.md`** (109 itens)
    - Checklist completo e detalhado
-   - Inclui status, prioridade, responsável
-   - Para gestão de projeto formal
+   - Inclui status, prioridade, responsÃ¡vel
+   - Para gestÃ£o de projeto formal
 
 2. **`CHECKLIST_HOMOLOGACAO_RESUMIDO.md`** (executivo)
-   - Visão geral do status (14% completo)
+   - VisÃ£o geral do status (14% completo)
    - Top 3 riscos identificados
-   - Próximas ações urgentes
+   - PrÃ³ximas aÃ§Ãµes urgentes
 
 3. **`PLANO_ACAO_HOMOLOGACAO.md`** (3 fases)
-   - Plano de 15 dias para homologação
+   - Plano de 15 dias para homologaÃ§Ã£o
    - Fase 1: Desbloqueio (2-3 dias)
-   - Fase 2: Validação (7-10 dias)
-   - Fase 3: Produção (3-5 dias)
-   - Estimativa: Go-live até **15 de novembro de 2025**
+   - Fase 2: ValidaÃ§Ã£o (7-10 dias)
+   - Fase 3: ProduÃ§Ã£o (3-5 dias)
+   - Estimativa: Go-live atÃ© **15 de novembro de 2025**
 
 **Leia os documentos em:**
 ```
-📄 CHECKLIST_HOMOLOGACAO.md
-📄 CHECKLIST_HOMOLOGACAO_RESUMIDO.md
-📄 PLANO_ACAO_HOMOLOGACAO.md
+ðŸ“„ CHECKLIST_HOMOLOGACAO.md
+ðŸ“„ CHECKLIST_HOMOLOGACAO_RESUMIDO.md
+ðŸ“„ PLANO_ACAO_HOMOLOGACAO.md
 ```
 
 ---
 
-## 🔐 Segurança
+## ðŸ” SeguranÃ§a
 
 ### **Importante: Credenciais e Secrets**
 
-**NUNCA commit secrets em código!**
+**NUNCA commit secrets em cÃ³digo!**
 
-✅ **Fazer:**
+âœ… **Fazer:**
 - Usar `.env` para desenvolvimento
-- Usar Vault/Secrets Manager para produção
-- Rotation automática de credentials
+- Usar Vault/Secrets Manager para produÃ§Ã£o
+- Rotation automÃ¡tica de credentials
 
-❌ **Não fazer:**
+âŒ **NÃ£o fazer:**
 - Commit de `.env` com valores reais
 - Hardcoding de API keys
 - Compartilhar credenciais por email
 
-**Proteção de Dados Sensíveis:**
+**ProteÃ§Ã£o de Dados SensÃ­veis:**
 - CPF/CNPJ: Criptografados com AES-256-GCM
 - Certificados PFX: Senhas criptografadas
 - PDFs: Armazenados em Supabase Storage (privado)
-- Logs: Sem dados sensíveis
+- Logs: Sem dados sensÃ­veis
 
 ---
 
-## 📞 Suporte e Documentação
+## ðŸ“ž Suporte e DocumentaÃ§Ã£o
 
 ---
 
-**GuiasMEI** - Transformando a gestão fiscal através da tecnologia! 🚀
+**GuiasMEI** - Transformando a gestÃ£o fiscal atravÃ©s da tecnologia! ðŸš€
 
 ---
 
-## 📊 STATUS DO PROJETO - OUTUBRO 2025
+## ðŸ“Š STATUS DO PROJETO - OUTUBRO 2025
 
-### 🟢 **Módulo INSS (Python/FastAPI) - PRODUÇÃO PRONTO**
-- ✅ HTTP Endpoints funcionando (200 OK)
-  - `POST /api/v1/guias/emitir` - Emissão de GPS
-  - `POST /api/v1/guias/complementacao` - Complementação
+### ðŸŸ¢ **MÃ³dulo INSS (Python/FastAPI) - PRODUÃ‡ÃƒO PRONTO**
+- âœ… HTTP Endpoints funcionando (200 OK)
+  - `POST /api/v1/guias/emitir` - EmissÃ£o de GPS
+  - `POST /api/v1/guias/complementacao` - ComplementaÃ§Ã£o
   - `GET /` - Health check
-- ✅ Cálculo GPS para: Autônomo, Doméstico, Produtor Rural, Facultativo
-- ✅ Geração de PDF com ReportLab
-- ✅ Logging completo (console + arquivo)
-- ✅ 30+ testes unitários (ALL PASSING)
-- ✅ Validação Pydantic V2 (sem erros)
-- ✅ Integração Supabase (modo produção pronto)
-- ✅ Lifespan context manager com error handling robusto
-- ✅ DebugMiddleware para rastreamento HTTP completo
-- ✅ Global exception handler
+- âœ… CÃ¡lculo GPS para: AutÃ´nomo, DomÃ©stico, Produtor Rural, Facultativo
+- âœ… GeraÃ§Ã£o de PDF com ReportLab
+- âœ… Logging completo (console + arquivo)
+- âœ… 30+ testes unitÃ¡rios (ALL PASSING)
+- âœ… ValidaÃ§Ã£o Pydantic V2 (sem erros)
+- âœ… IntegraÃ§Ã£o Supabase (modo produÃ§Ã£o pronto)
+- âœ… Lifespan context manager com error handling robusto
+- âœ… DebugMiddleware para rastreamento HTTP completo
+- âœ… Global exception handler
 
-**Último Status:** Todas as correções HTTP 500 resolvidas (30/10/2025)
+**Ãšltimo Status:** Todas as correÃ§Ãµes HTTP 500 resolvidas (30/10/2025)
 
-### 🟡 **Módulo NFSe (Node.js/Fastify) - PARCIALMENTE PRONTO**
-- ✅ XML DPS gerado corretamente
-- ✅ XSD validation passando (manual v1.2)
-- ✅ Digital signature implementado
-- ✅ Certificado digital: upload/storage/criptografia
-- ❌ **BLOQUEADO**: Endpoint de homologação ADN não confirmado
-- ❌ Testes E2E com governo não iniciados
+### ðŸŸ¡ **MÃ³dulo NFSe (Node.js/Fastify) - PARCIALMENTE PRONTO**
+- âœ… XML DPS gerado corretamente
+- âœ… XSD validation passando (manual v1.2)
+- âœ… Digital signature implementado
+- âœ… Certificado digital: upload/storage/criptografia
+- âŒ **BLOQUEADO**: Endpoint de homologaÃ§Ã£o ADN nÃ£o confirmado
+- âŒ Testes E2E com governo nÃ£o iniciados
 
-**Ação Necessária:** Confirmar endpoint ADN com Receita Federal
+**AÃ§Ã£o NecessÃ¡ria:** Confirmar endpoint ADN com Receita Federal
 
-### 🔴 **Frontend (React) - ESTRUTURA PRONTA**
-- ✅ Rotas implementadas (Homepage, Cadastros, Dashboards)
-- ✅ Design system com Tailwind CSS
-- ✅ Componentes estruturados
-- ❌ Integração com backend não validada
-- ❌ Testes E2E não iniciados
+### ðŸ”´ **Frontend (React) - ESTRUTURA PRONTA**
+- âœ… Rotas implementadas (Homepage, Cadastros, Dashboards)
+- âœ… Design system com Tailwind CSS
+- âœ… Componentes estruturados
+- âŒ IntegraÃ§Ã£o com backend nÃ£o validada
+- âŒ Testes E2E nÃ£o iniciados
 
-### 🧾 NFSe - Integração Nacional
+### ðŸ§¾ NFSe - IntegraÃ§Ã£o Nacional
 
-### Status Atual (31/10/2025) - ✅ 94% VALIDADO
+### Status Atual (31/10/2025) - âœ… 94% VALIDADO
 
-#### Validação Técnica Completa
-- ✅ **Endpoint SEFIN/ADN**: Acessível via mTLS (`https://adn.producaorestrita.nfse.gov.br/`)
-- ✅ **Certificado ICP-Brasil**: Válido (9124 bytes, decodificado com sucesso)
-- ✅ **Integração REST**: Todos endpoints implementados e testados
-- ✅ **DPS Exemplo**: XML validado e pronto para emissão
-- ✅ **Sistema INSS**: 100% funcional (28/28 testes passaram)
+#### ValidaÃ§Ã£o TÃ©cnica Completa
+- âœ… **Endpoint SEFIN/ADN**: AcessÃ­vel via mTLS (`https://adn.producaorestrita.nfse.gov.br/`)
+- âœ… **Certificado ICP-Brasil**: VÃ¡lido (9124 bytes, decodificado com sucesso)
+- âœ… **IntegraÃ§Ã£o REST**: Todos endpoints implementados e testados
+- âœ… **DPS Exemplo**: XML validado e pronto para emissÃ£o
+- âœ… **Sistema INSS**: 100% funcional (28/28 testes passaram)
 
-#### Relatório de Testes
-📄 Veja o relatório completo em: [`docs/RELATORIO_VALIDACAO_ENDPOINTS.md`](docs/RELATORIO_VALIDACAO_ENDPOINTS.md)
+#### RelatÃ³rio de Testes
+ðŸ“„ Veja o relatÃ³rio completo em: [`docs/RELATORIO_VALIDACAO_ENDPOINTS.md`](docs/RELATORIO_VALIDACAO_ENDPOINTS.md)
 
 **Resumo:** 31/33 testes passaram com sucesso (94% de taxa de sucesso)
 
 ### Endpoints REST NFSe
-| Método | Endpoint                       | Descrição                       | Status |
+| MÃ©todo | Endpoint                       | DescriÃ§Ã£o                       | Status |
 |--------|-------------------------------|---------------------------------|--------|
-| POST   | /nfse                         | Emissão de NFS-e                | ✅     |
-| GET    | /nfse/:chaveAcesso            | Consulta NFS-e por chave        | ✅     |
-| GET    | /dps/:id                      | Consulta DPS                    | ✅     |
-| GET    | /parametros/:municipio        | Parâmetros municipais           | ✅     |
-| GET    | /danfse/:chaveAcesso          | Download DANFSE (PDF)           | ✅     |
-| POST   | /nfse/:chaveAcesso/eventos    | Registrar evento                | ✅     |
-| GET    | /nfse/:chaveAcesso/eventos    | Listar eventos                  | ✅     |
+| POST   | /nfse                         | EmissÃ£o de NFS-e                | âœ…     |
+| GET    | /nfse/:chaveAcesso            | Consulta NFS-e por chave        | âœ…     |
+| GET    | /dps/:id                      | Consulta DPS                    | âœ…     |
+| GET    | /parametros/:municipio        | ParÃ¢metros municipais           | âœ…     |
+| GET    | /danfse/:chaveAcesso          | Download DANFSE (PDF)           | âœ…     |
+| POST   | /nfse/:chaveAcesso/eventos    | Registrar evento                | âœ…     |
+| GET    | /nfse/:chaveAcesso/eventos    | Listar eventos                  | âœ…     |
 
-### Exemplo de Emissão
+### Exemplo de EmissÃ£o
 ```json
 {
   "userId": "123456",
@@ -952,22 +956,22 @@ Este projeto inclui 3 checklists para homologação:
 ```
 
 ### Testes Automatizados
-- **Testes Unitários**: `apps/backend/tests/nfse.test.ts`
-- **Testes de Homologação**: `apps/backend/scripts/test-nfse-homologacao.ts`
-- **Cobertura**: Emissão, consulta, DPS, eventos, parâmetros, DANFSE
+- **Testes UnitÃ¡rios**: `apps/backend/tests/nfse.test.ts`
+- **Testes de HomologaÃ§Ã£o**: `apps/backend/scripts/test-nfse-homologacao.ts`
+- **Cobertura**: EmissÃ£o, consulta, DPS, eventos, parÃ¢metros, DANFSE
 
 #### Como Rodar
 ```bash
-# Testes unitários
+# Testes unitÃ¡rios
 cd apps/backend
 yarn test
 
-# Testes de homologação completos
+# Testes de homologaÃ§Ã£o completos
 cd apps/backend
 npx tsx scripts/test-nfse-homologacao.ts
 ```
 
-### Variáveis .env (NFSe)
+### VariÃ¡veis .env (NFSe)
 ```env
 NFSE_API_URL=https://adn.producaorestrita.nfse.gov.br/
 NFSE_BASE_URL=https://sefin.nfse.gov.br/sefinnacional
@@ -979,60 +983,60 @@ NFSE_CERT_METHOD=supabase_vault
 
 ---
 
-## 📱 WhatsApp + IA - Integração Completa
+## ðŸ“± WhatsApp + IA - IntegraÃ§Ã£o Completa
 
-### Status Atual (31/10/2025) - ✅ 83% OPERACIONAL
+### Status Atual (31/10/2025) - âœ… 83% OPERACIONAL
 
-#### Validação Técnica Completa
-- ✅ **Serviço WhatsApp**: Inicializado e funcional (modo mock para dev)
-- ✅ **IA (OpenAI GPT)**: Conectada e processando mensagens
-- ✅ **Fluxo Webhook E2E**: Validado (receber → processar → responder)
-- ✅ **Entrega de PDF**: Upload Supabase + envio WhatsApp testado
-- ✅ **Base de Conhecimento**: INSS/GPS rules carregadas
-- ⚠️ **Credenciais Twilio**: Placeholder (sistema opera em modo mock)
+#### ValidaÃ§Ã£o TÃ©cnica Completa
+- âœ… **ServiÃ§o WhatsApp**: Inicializado e funcional (modo mock para dev)
+- âœ… **IA (OpenAI GPT)**: Conectada e processando mensagens
+- âœ… **Fluxo Webhook E2E**: Validado (receber â†’ processar â†’ responder)
+- âœ… **Entrega de PDF**: Upload Supabase + envio WhatsApp testado
+- âœ… **Base de Conhecimento**: INSS/GPS rules carregadas
+- âš ï¸ **Credenciais Twilio**: Placeholder (sistema opera em modo mock)
 
-#### Relatório de Testes
-📄 Veja o relatório completo em: [`docs/RELATORIO_WHATSAPP_IA_INTEGRACAO.md`](docs/RELATORIO_WHATSAPP_IA_INTEGRACAO.md)
+#### RelatÃ³rio de Testes
+ðŸ“„ Veja o relatÃ³rio completo em: [`docs/RELATORIO_WHATSAPP_IA_INTEGRACAO.md`](docs/RELATORIO_WHATSAPP_IA_INTEGRACAO.md)
 
 **Resumo:** 5/6 testes passaram com sucesso (83% de taxa de sucesso)
 
 ### Componentes Validados
 
-#### 1. WhatsApp Service (✅ 100%)
+#### 1. WhatsApp Service (âœ… 100%)
 ```python
 # apps/backend/inss/app/services/whatsapp_service.py
 - Envio de mensagens de texto
-- Envio de PDFs com mídia anexada
-- Upload automático para Supabase Storage
+- Envio de PDFs com mÃ­dia anexada
+- Upload automÃ¡tico para Supabase Storage
 - Modo mock para desenvolvimento sem custos
 ```
 
-#### 2. Agente IA (✅ 100%)
+#### 2. Agente IA (âœ… 100%)
 ```python
 # apps/backend/inss/app/services/ai_agent.py
 - ChatOpenAI (GPT-4o) conectado
 - Processamento de perguntas sobre INSS
-- Base de conhecimento SAL (Sistema de Acréscimos Legais)
-- Fallback automático para modo padrão
+- Base de conhecimento SAL (Sistema de AcrÃ©scimos Legais)
+- Fallback automÃ¡tico para modo padrÃ£o
 ```
 
-#### 3. Webhook WhatsApp → IA → Resposta (✅ 100%)
+#### 3. Webhook WhatsApp â†’ IA â†’ Resposta (âœ… 100%)
 ```python
 # Fluxo completo validado:
 1. Receber mensagem via webhook
-2. Validar número WhatsApp
-3. Buscar usuário no Supabase
+2. Validar nÃºmero WhatsApp
+3. Buscar usuÃ¡rio no Supabase
 4. Processar com IA (contexto + pergunta)
 5. Registrar conversa
 6. Enviar resposta via WhatsApp
 ```
 
-#### 4. Entrega de PDF INSS (✅ 100%)
+#### 4. Entrega de PDF INSS (âœ… 100%)
 ```python
 # Fluxo testado:
 1. Gerar PDF da guia INSS (ReportLab)
 2. Upload para Supabase Storage
-3. Gerar URL pública
+3. Gerar URL pÃºblica
 4. Enviar via WhatsApp com mensagem
 ```
 
@@ -1043,20 +1047,20 @@ cd apps/backend/inss
 python test_whatsapp_ia_integracao.py
 
 # Resultado esperado:
-# ✓ Serviço WhatsApp OK
-# ✓ Configuração OpenAI OK
-# ✓ Agente IA OK
-# ✓ Fluxo Webhook Completo OK
-# ✓ Entrega de PDF OK
-# ⚠ Credenciais Twilio (opcional para dev)
+# âœ“ ServiÃ§o WhatsApp OK
+# âœ“ ConfiguraÃ§Ã£o OpenAI OK
+# âœ“ Agente IA OK
+# âœ“ Fluxo Webhook Completo OK
+# âœ“ Entrega de PDF OK
+# âš  Credenciais Twilio (opcional para dev)
 ```
 
-### Variáveis .env (WhatsApp + IA)
+### VariÃ¡veis .env (WhatsApp + IA)
 ```env
 # OpenAI (Essencial)
 OPENAI_API_KEY=sk-proj-...
 
-# Twilio WhatsApp (Opcional para dev, necessário para produção)
+# Twilio WhatsApp (Opcional para dev, necessÃ¡rio para produÃ§Ã£o)
 TWILIO_ACCOUNT_SID=ACxxxx...        # Placeholder: modo mock ativo
 TWILIO_AUTH_TOKEN=your-token        # Placeholder: modo mock ativo
 TWILIO_WHATSAPP_NUMBER=whatsapp:+5548991117268
@@ -1067,15 +1071,15 @@ SUPABASE_URL=https://...
 SUPABASE_KEY=eyJ...
 ```
 
-### Modo Mock vs Produção
+### Modo Mock vs ProduÃ§Ã£o
 
 **Modo Mock (Desenvolvimento):**
-- ✅ Sistema detecta credenciais placeholder automaticamente
-- ✅ Simula envio com sucesso (SID: mock-sid)
-- ✅ Permite desenvolvimento sem custos
-- ✅ Todos os fluxos testáveis
+- âœ… Sistema detecta credenciais placeholder automaticamente
+- âœ… Simula envio com sucesso (SID: mock-sid)
+- âœ… Permite desenvolvimento sem custos
+- âœ… Todos os fluxos testÃ¡veis
 
-**Modo Produção (Credenciais Reais):**
+**Modo ProduÃ§Ã£o (Credenciais Reais):**
 - Basta configurar `TWILIO_ACCOUNT_SID` e `TWILIO_AUTH_TOKEN` reais
 - Sistema muda automaticamente para modo real
 - Mensagens enviadas via Twilio
@@ -1084,71 +1088,71 @@ SUPABASE_KEY=eyJ...
 
 #### Pergunta ao Agente IA
 ```python
-# Usuário envia via WhatsApp:
+# UsuÃ¡rio envia via WhatsApp:
 "Quanto preciso pagar de INSS como MEI?"
 
 # IA responde automaticamente:
-"Como MEI, você deve pagar R$ 75,65 mensalmente..."
+"Como MEI, vocÃª deve pagar R$ 75,65 mensalmente..."
 ```
 
-#### Emissão de Guia GPS
+#### EmissÃ£o de Guia GPS
 ```python
-# Backend gera guia → PDF → Supabase Storage → WhatsApp
-# Usuário recebe:
-# 📄 "Sua guia INSS foi gerada! [PDF anexado]"
+# Backend gera guia â†’ PDF â†’ Supabase Storage â†’ WhatsApp
+# UsuÃ¡rio recebe:
+# ðŸ“„ "Sua guia INSS foi gerada! [PDF anexado]"
 ```
 
-### Próximos Passos
-1. ✅ WhatsApp + IA validados (83% completo)
-2. ⏳ Obter credenciais Twilio reais (quando necessário para produção)
-3. ⏳ Testar envio de links NFSe via WhatsApp
-4. ⏳ Integração Frontend ↔ Backend ↔ WhatsApp
+### PrÃ³ximos Passos
+1. âœ… WhatsApp + IA validados (83% completo)
+2. â³ Obter credenciais Twilio reais (quando necessÃ¡rio para produÃ§Ã£o)
+3. â³ Testar envio de links NFSe via WhatsApp
+4. â³ IntegraÃ§Ã£o Frontend â†” Backend â†” WhatsApp
 
 ---
 
-## 🔗 Integração Frontend ↔ Backend
+## ðŸ”— IntegraÃ§Ã£o Frontend â†” Backend
 
-### Status Atual (31/10/2025) - ⚠️ 50% PARCIAL
+### Status Atual (31/10/2025) - âš ï¸ 50% PARCIAL
 
-#### Validação Técnica Completa
-- ✅ **Backend INSS (FastAPI)**: Rodando em http://127.0.0.1:8000
-- ✅ **CORS Configurado**: Frontend pode comunicar com backends
-- ✅ **Tratamento de Erros**: 404, 422 tratados corretamente
-- ✅ **Fluxo E2E (Estrutura)**: Comunicação validada
-- ❌ **Backend NFSe (Fastify)**: Não iniciado (porta 3333)
-- ❌ **Frontend (React/Vite)**: Não iniciado (porta 5173)
+#### ValidaÃ§Ã£o TÃ©cnica Completa
+- âœ… **Backend INSS (FastAPI)**: Rodando em http://127.0.0.1:8000
+- âœ… **CORS Configurado**: Frontend pode comunicar com backends
+- âœ… **Tratamento de Erros**: 404, 422 tratados corretamente
+- âœ… **Fluxo E2E (Estrutura)**: ComunicaÃ§Ã£o validada
+- âŒ **Backend NFSe (Fastify)**: NÃ£o iniciado (porta 3333)
+- âŒ **Frontend (React/Vite)**: NÃ£o iniciado (porta 5173)
 
-#### Relatório de Testes
-📄 Veja o relatório completo em: [`docs/RELATORIO_FRONTEND_BACKEND_INTEGRACAO.md`](docs/RELATORIO_FRONTEND_BACKEND_INTEGRACAO.md)
+#### RelatÃ³rio de Testes
+ðŸ“„ Veja o relatÃ³rio completo em: [`docs/RELATORIO_FRONTEND_BACKEND_INTEGRACAO.md`](docs/RELATORIO_FRONTEND_BACKEND_INTEGRACAO.md)
 
 **Resumo:** 4/8 testes passaram (50% - Backend INSS + CORS + Erros + Fluxo)
 
 ### Endpoints Backend INSS Funcionais
-| Método | Endpoint | Descrição | Status |
+| MÃ©todo | Endpoint | DescriÃ§Ã£o | Status |
 |--------|----------|-----------|--------|
-| POST | `/api/v1/guias/emitir` | Emitir guia GPS | ✅ |
-| POST | `/api/v1/guias/complementacao` | Complementar contribuição | ✅ |
-| POST | `/api/v1/guias/gerar-pdf` | Gerar PDF da guia | ✅ |
-| GET | `/docs` | Documentação interativa | ✅ |
-| GET | `/health` | Health check | ✅ |
+| POST | `/api/v1/guias/emitir` | Emitir guia GPS | âœ… |
+| POST | `/api/v1/guias/complementacao` | Complementar contribuiÃ§Ã£o | âœ… |
+| POST | `/api/v1/guias/gerar-pdf` | Gerar PDF da guia | âœ… |
+| GET | `/docs` | DocumentaÃ§Ã£o interativa | âœ… |
+| GET | `/health` | Health check | âœ… |
 
-### Como Iniciar os Serviços
+### Como Iniciar os ServiÃ§os
 
-#### Backend INSS (FastAPI) - ✅ RODANDO
+#### Backend INSS (FastAPI) - âœ… RODANDO
 ```bash
 cd apps/backend/inss
 .venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 # Docs: http://127.0.0.1:8000/docs
 ```
 
-#### Backend NFSe (Fastify) - ⏸️ PARADO
+#### Backend NFSe (Fastify) - â¸ï¸ PARADO
 ```bash
 cd apps/backend
 npm run dev
 # API: http://127.0.0.1:3333
 ```
 
-#### Frontend (React/Vite) - ⏸️ PARADO
+#### Frontend (React/Vite) - â¸ï¸ PARADO
 ```bash
 cd apps/web
 npm run dev
@@ -1157,22 +1161,22 @@ npm run dev
 
 ### Testes Automatizados
 ```bash
-# Teste completo de integração
+# Teste completo de integraÃ§Ã£o
 cd apps/backend/inss
 python test_frontend_backend_integracao.py
 
 # Resultado esperado:
-# ✓ Backend INSS Health Check
-# ✓ Configuração CORS
-# ✓ Tratamento de Erros
-# ✓ Fluxo Integração E2E
-# ⚠ Backend NFSe (aguardando início)
-# ⚠ Frontend (aguardando início)
+# âœ“ Backend INSS Health Check
+# âœ“ ConfiguraÃ§Ã£o CORS
+# âœ“ Tratamento de Erros
+# âœ“ Fluxo IntegraÃ§Ã£o E2E
+# âš  Backend NFSe (aguardando inÃ­cio)
+# âš  Frontend (aguardando inÃ­cio)
 ```
 
-### Exemplo de Requisição
+### Exemplo de RequisiÃ§Ã£o
 ```javascript
-// Frontend → Backend INSS
+// Frontend â†’ Backend INSS
 const response = await fetch('http://127.0.0.1:8000/api/v1/guias/emitir', {
   method: 'POST',
   headers: {
@@ -1184,41 +1188,41 @@ const response = await fetch('http://127.0.0.1:8000/api/v1/guias/emitir', {
     valor_base: 1518.00,
     competencia: '202510',
     whatsapp: '+5548991117268',
-    nome: 'João Silva',
+    nome: 'JoÃ£o Silva',
     cpf: '12345678901'
   })
 });
 ```
 
-### Variáveis .env (Frontend ↔ Backend)
+### VariÃ¡veis .env (Frontend â†” Backend)
 ```env
 # Frontend (apps/web/.env)
 VITE_API_URL=http://localhost:3333
 VITE_SUPABASE_URL=https://...
 VITE_SUPABASE_ANON_KEY=...
 
-# Backend INSS já configurado ✅
-# Backend NFSe já configurado ✅
+# Backend INSS jÃ¡ configurado âœ…
+# Backend NFSe jÃ¡ configurado âœ…
 ```
 
-### Próximos Passos
-1. ✅ Backend INSS operacional (50% validado)
-2. ✅ Frontend configurado (85% validado - Passo 4)
-3. ⏳ Teste E2E manual no navegador
-4. ⏳ Iniciar Backend NFSe quando necessário
+### PrÃ³ximos Passos
+1. âœ… Backend INSS operacional (50% validado)
+2. âœ… Frontend configurado (85% validado - Passo 4)
+3. â³ Teste E2E manual no navegador
+4. â³ Iniciar Backend NFSe quando necessÃ¡rio
 
 ---
 
-## 🎯 Passo 4: Testes E2E com Frontend
+## ðŸŽ¯ Passo 4: Testes E2E com Frontend
 
-### Status Atual (31/10/2025) - ✅ 85% VALIDADO
+### Status Atual (31/10/2025) - âœ… 85% VALIDADO
 
-#### Configuração Frontend Completa
-- ✅ **package.json**: React 18.2.0, Vite 5.1.0, React Router 6.22.1
-- ✅ **Dependências**: Supabase JS 2.57.4, React Query 5.24.8, Axios 1.6.7
-- ✅ **TypeScript**: tsconfig.json configurado
-- ✅ **Scripts**: `npm run dev`, `build`, `preview`
-- ✅ **Variáveis .env**: API_URL, SUPABASE_URL, SUPABASE_ANON_KEY
+#### ConfiguraÃ§Ã£o Frontend Completa
+- âœ… **package.json**: React 18.2.0, Vite 5.1.0, React Router 6.22.1
+- âœ… **DependÃªncias**: Supabase JS 2.57.4, React Query 5.24.8, Axios 1.6.7
+- âœ… **TypeScript**: tsconfig.json configurado
+- âœ… **Scripts**: `npm run dev`, `build`, `preview`
+- âœ… **VariÃ¡veis .env**: API_URL, SUPABASE_URL, SUPABASE_ANON_KEY
 
 #### Servidor Vite Validado
 ```bash
@@ -1227,28 +1231,28 @@ npm run dev
 
 # Resultado:
 # VITE v5.4.20  ready in 359-566 ms
-# ➜  Local:   http://localhost:5173/
-# ✅ Servidor inicia sem erros
-# ⚠️  Aviso CJS (não bloqueante)
+# âžœ  Local:   http://localhost:5173/
+# âœ… Servidor inicia sem erros
+# âš ï¸  Aviso CJS (nÃ£o bloqueante)
 ```
 
 #### Estrutura Frontend Validada
 
 **Rotas (React Router):**
-- ✅ `/` - Homepage
-- ✅ `/cadastro-mei` - Cadastro MEI
-- ✅ `/cadastro-autonomo` - Cadastro Autônomo
-- ✅ `/cadastro-parceiro` - Cadastro Parceiro
-- ✅ `/login` - Login
-- ✅ `/dashboard` - Dashboard Usuário
-- ✅ `/parceiro/dashboard` - Dashboard Parceiro
+- âœ… `/` - Homepage
+- âœ… `/cadastro-mei` - Cadastro MEI
+- âœ… `/cadastro-autonomo` - Cadastro AutÃ´nomo
+- âœ… `/cadastro-parceiro` - Cadastro Parceiro
+- âœ… `/login` - Login
+- âœ… `/dashboard` - Dashboard UsuÃ¡rio
+- âœ… `/parceiro/dashboard` - Dashboard Parceiro
 
 **Providers (Context API):**
 ```javascript
 <QueryClientProvider>  // React Query
   <BrowserRouter>      // React Router
     <SdkProvider>      // SDK personalizado
-      <AuthProvider>   // Autenticação
+      <AuthProvider>   // AutenticaÃ§Ã£o
         <App />
       </AuthProvider>
     </SdkProvider>
@@ -1261,34 +1265,34 @@ npm run dev
 - Tailwind CSS configurado
 - Design system estruturado
 
-#### Relatório de Testes E2E
-📄 Veja o relatório completo em: [`docs/RELATORIO_PASSO4_FRONTEND_E2E.md`](docs/RELATORIO_PASSO4_FRONTEND_E2E.md)
+#### RelatÃ³rio de Testes E2E
+ðŸ“„ Veja o relatÃ³rio completo em: [`docs/RELATORIO_PASSO4_FRONTEND_E2E.md`](docs/RELATORIO_PASSO4_FRONTEND_E2E.md)
 
 **Script de Teste Criado:** `apps/backend/inss/test_frontend_e2e.py`
 
-**Cenários de Teste (10 total):**
-1. ✅ Frontend Running - Servidor Vite
-2. ✅ Assets Frontend - CSS, JS, Vite client
-3. ✅ React Hydration - Componentes React
-4. ✅ Rotas React Router - Navegação
-5. ✅ API Connection - CORS e conectividade
-6. ✅ Supabase Config - Variáveis ambiente
-7. ✅ React Providers - Context API setup
-8. ✅ UI Components - Design system
-9. ✅ Integration Flow - Fluxo E2E documentado
-10. ✅ Performance - Tempo de carregamento
+**CenÃ¡rios de Teste (10 total):**
+1. âœ… Frontend Running - Servidor Vite
+2. âœ… Assets Frontend - CSS, JS, Vite client
+3. âœ… React Hydration - Componentes React
+4. âœ… Rotas React Router - NavegaÃ§Ã£o
+5. âœ… API Connection - CORS e conectividade
+6. âœ… Supabase Config - VariÃ¡veis ambiente
+7. âœ… React Providers - Context API setup
+8. âœ… UI Components - Design system
+9. âœ… Integration Flow - Fluxo E2E documentado
+10. âœ… Performance - Tempo de carregamento
 
-#### Status dos Serviços
+#### Status dos ServiÃ§os
 
-| Serviço | Porta | Status | Validação |
+| ServiÃ§o | Porta | Status | ValidaÃ§Ã£o |
 |---------|-------|--------|-----------|
-| Backend INSS (Python/FastAPI) | 8000 | ✅ Operacional | 100% (28/28 testes) |
-| Backend NFSe (Node/Fastify) | 3333 | ⏸️ Não iniciado | Código pronto |
-| Frontend (React/Vite) | 5173 | ⚠️ Configurado | 85% (inicia mas precisa teste manual) |
+| Backend INSS (Python/FastAPI) | 8000 | âœ… Operacional | 100% (28/28 testes) |
+| Backend NFSe (Node/Fastify) | 3333 | â¸ï¸ NÃ£o iniciado | CÃ³digo pronto |
+| Frontend (React/Vite) | 5173 | âš ï¸ Configurado | 85% (inicia mas precisa teste manual) |
 
-#### Como Executar Teste E2E Automático
+#### Como Executar Teste E2E AutomÃ¡tico
 ```bash
-# Terminal 1: Backend INSS (já rodando)
+# Terminal 1: Backend INSS (jÃ¡ rodando)
 cd apps/backend/inss
 .venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 
@@ -1301,21 +1305,21 @@ cd apps/backend/inss
 python test_frontend_e2e.py
 
 # Resultado esperado:
-# ✓ Frontend Running
-# ✓ Assets Carregando
-# ✓ React Hydration
-# ✓ Rotas Configuradas
-# ✓ Backend Conectável
-# ✓ Supabase Configurado
-# ✓ Providers Estruturados
-# ✓ UI Components
-# ✓ Fluxo E2E Documentado
-# ✓ Performance
+# âœ“ Frontend Running
+# âœ“ Assets Carregando
+# âœ“ React Hydration
+# âœ“ Rotas Configuradas
+# âœ“ Backend ConectÃ¡vel
+# âœ“ Supabase Configurado
+# âœ“ Providers Estruturados
+# âœ“ UI Components
+# âœ“ Fluxo E2E Documentado
+# âœ“ Performance
 ```
 
 #### Fluxo E2E Completo (Manual)
 ```bash
-# 1. Iniciar serviços
+# 1. Iniciar serviÃ§os
 cd apps/backend/inss && .venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 cd apps/backend && npm run dev
 cd apps/web && npm run dev
@@ -1324,16 +1328,16 @@ cd apps/web && npm run dev
 http://localhost:5173
 
 # 3. Testar fluxo:
-# → Homepage
-# → Clicar "Cadastrar MEI"
-# → Preencher formulário
-# → Validação (React Hook Form + Zod)
-# → Submit → POST /api/v1/...
-# → Verificar resposta
-# → Navegar para Dashboard
+# â†’ Homepage
+# â†’ Clicar "Cadastrar MEI"
+# â†’ Preencher formulÃ¡rio
+# â†’ ValidaÃ§Ã£o (React Hook Form + Zod)
+# â†’ Submit â†’ POST /api/v1/...
+# â†’ Verificar resposta
+# â†’ Navegar para Dashboard
 ```
 
-#### Variáveis .env Frontend (Configuradas)
+#### VariÃ¡veis .env Frontend (Configuradas)
 ```env
 # apps/web/.env
 VITE_APP_MODE=development
@@ -1346,12 +1350,12 @@ VITE_SUPABASE_URL=https://idvfhgznofvubscjycvt.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (chave completa)
 ```
 
-#### Evidências Técnicas
+#### EvidÃªncias TÃ©cnicas
 ```bash
 # Vite Output
 VITE v5.4.20  ready in 359 ms
-➜  Local:   http://localhost:5173/
-➜  Network: use --host to expose
+âžœ  Local:   http://localhost:5173/
+âžœ  Network: use --host to expose
 
 # package.json (principais)
 "react": "^18.2.0"
@@ -1363,26 +1367,27 @@ VITE v5.4.20  ready in 359 ms
 "react-hook-form": "^7.50.1"
 ```
 
-### Próximos Passos (Passo 4)
-1. ✅ Frontend estruturado e configurado
-2. ✅ Script de teste E2E criado
-3. ⏳ Teste manual completo no navegador
-4. ⏳ Playwright/Cypress para testes automatizados
+### PrÃ³ximos Passos (Passo 4)
+1. âœ… Frontend estruturado e configurado
+2. âœ… Script de teste E2E criado
+3. â³ Teste manual completo no navegador
+4. â³ Playwright/Cypress para testes automatizados
 NFSE_CERT_PFX_BASE64=...
 NFSE_CERT_PFX_PASS=...
 ```
 
-### Checklist Produção/Homologação
-- [ ] Configurar SENDGRID_API_KEY e EMAIL_FROM para disparo de emails em produção
+### Checklist ProduÃ§Ã£o/HomologaÃ§Ã£o
+- [ ] Configurar SENDGRID_API_KEY e EMAIL_FROM para disparo de emails em produÃ§Ã£o
 - [ ] Configurar credenciais Twilio (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_NUMBER)
 - [ ] Executar `supabase db push` para aplicar migrations novas (cert_expiry_notifications)
 - [ ] Atualizar `.env` com CERTISIGN_EMAIL_CERTIFICADORA e chaves Sicoob/Webhooks revisadas
-- [ ] Rodar `npm install` em apps/backend e apps/web para incluir dependências (@sendgrid/mail, twilio, date-fns)
+- [ ] Rodar `npm install` em apps/backend e apps/web para incluir dependÃªncias (@sendgrid/mail, twilio, date-fns)
 - [x] Endpoints REST integrados e testados (94% validados)
 - [x] Certificado ICP-Brasil configurado e validado
 - [x] Testes automatizados rodando
-- [x] Documentação de payloads e respostas
+- [x] DocumentaÃ§Ã£o de payloads e respostas
 - [x] DPS exemplo validado
 - [x] Conectividade mTLS confirmada
-- [ ] Emissão real em ambiente de homologação (aguardando habilitação)
+- [ ] EmissÃ£o real em ambiente de homologaÃ§Ã£o (aguardando habilitaÃ§Ã£o)
 - [x] Sistema INSS 100% funcional
+
