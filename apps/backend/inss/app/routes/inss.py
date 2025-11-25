@@ -42,22 +42,22 @@ async def _obter_ou_criar_usuario(payload: dict[str, Any]) -> dict[str, Any]:
     usuario = await supabase_service.obter_usuario_por_whatsapp(whatsapp)
     if usuario and usuario.get("id"):
         return usuario
-    
+
     # Tentar criar usuário
     usuario_criado = await supabase_service.criar_usuario(
         {
-            "whatsapp": whatsapp,
-            "nome": payload.get("nome"),
-            "cpf": payload.get("cpf"),
-            "nit": payload.get("nit"),
-            "tipo_contribuinte": payload.get("tipo_contribuinte"),
+            "whatsapp_phone": whatsapp,
+            "name": payload.get("nome"),
+            "document": payload.get("cpf"),
+            "pis": payload.get("nit"),
+            "user_type": payload.get("tipo_contribuinte"),
         }
     )
-    
+
     # Garantir que sempre tenha id
     if not usuario_criado.get("id"):
         usuario_criado["id"] = f"mock-{whatsapp}"
-    
+
     return usuario_criado
 
 
@@ -261,7 +261,7 @@ async def emitir_guia(
         tipo_contribuinte = tipo_map.get(guia_data.tipo_contribuinte, guia_data.tipo_contribuinte)
         
         validacao = await validator.validar_completo(
-            cpf=usuario.get("cpf", "00000000000"), # Fallback se não tiver CPF no user
+            cpf=usuario.get("document") or usuario.get("cpf", "00000000000"), # Fallback se não tiver CPF no user
             periodo_mes=mes,
             periodo_ano=ano,
             tipo_contribuinte=tipo_contribuinte,
@@ -336,10 +336,10 @@ async def emitir_guia(
             ref_num = f"GPS-{user_id}-{competencia.replace('/', '')}"
             valor_total = calculo.valor
             guia_save_data = {
-                "cpf": usuario.get("cpf", ""),
-                "nome": usuario.get("nome", "Não Informado"),
+                "cpf": usuario.get("document") or usuario.get("cpf", ""),
+                "nome": usuario.get("name") or usuario.get("nome", "Não Informado"),
                 "rg": usuario.get("rg", ""),
-                "endereco": usuario.get("endereco", ""),
+                "endereco": usuario.get("endereco_logradouro") or usuario.get("endereco", ""),
                 "pis_pasep": usuario.get("pis", ""),
                 "periodo_mes": mes,
                 "periodo_ano": ano,
@@ -407,9 +407,9 @@ async def emitir_complementacao(request: ComplementacaoRequest):
         usuario = await _obter_ou_criar_usuario({"whatsapp": request.whatsapp, "tipo_contribuinte": "complementacao"})
 
         dados_pdf = {
-            "nome": usuario.get("nome"),
-            "cpf": usuario.get("cpf"),
-            "nit": usuario.get("nit"),
+            "nome": usuario.get("name") or usuario.get("nome"),
+            "cpf": usuario.get("document") or usuario.get("cpf"),
+            "nit": usuario.get("pis") or usuario.get("nit"),
             "whatsapp": request.whatsapp,
             "codigo_pagamento": calculo.codigo_gps,
             "competencia": competencia_principal,

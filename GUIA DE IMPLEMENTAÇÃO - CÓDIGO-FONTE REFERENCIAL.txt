@@ -1,0 +1,1271 @@
+GUIA DE IMPLEMENTAÇÃO - CÓDIGO-FONTE REFERENCIAL
+Exemplos Práticos para IA Implementar o Módulo GPS 100%
+
+---
+
+1. CÓDIGO PYTHON - INSSCalculator Refatorado
+
+1.1 Classe SALVersionManager
+
+`python
+from datetime import date
+from decimal import Decimal
+from typing import Optional, Dict, Any
+import redis
+from supabase import create_client
+import json
+
+class SALVersionManager:
+    """
+    Gerenciador de versões das tabelas SAL com suporte a cache Redis.
+    Responsável por recuperar e validar as regras SAL para uma determinada competência.
+    """
+    
+    def __init__(self, supabase_client, redis_client: redis.Redis):
+        self.supabase = supabase_client
+        self.redis = redis_client
+    
+    def get_sal_version(self, data_competencia: date) -> Dict[str, Any]:
+        """
+        Retorna o conjunto de regras SAL válido para a data de competência especificada.
+        Prioridade: Redis Cache > Supabase
+        """
+        ano = data_competencia.year
+        cache_key = f"sal:version:{ano}"
+        
+        # 1. Tentar buscar do Redis
+        cached = self.redis.get(cache_key)
+        if cached:
+            return json.loads(cached)
+        
+        # 2. Buscar do Supabase
+        response = self.supabase.table('sal_version_history').select('*').eq('effective_date', f'{ano}-01-01').execute()
+        
+        if response.data:
+            sal_data = response.data[0]
+            # Armazenar em Redis por 24 horas
+            self.redis.setex(cache_key, 86400, json.dumps(sal_data, default=str))
+            return sal_data
+        
+        raise ValueError(f"Não há regras SAL configuradas para o ano {ano}")
+    
+    def get_teto_inss(self, ano: int) -> Decimal:
+        """Retorna o teto INSS para um determinado ano"""
+        sal_version = self.get_sal_version(date(ano, 1, 1))
+        return Decimal(str(sal_version['teto_inss']))
+    
+    def get_salario_minimo(self, ano: int) -> Decimal:
+        """Retorna o salário mínimo para um determinado ano"""
+        sal_version = self.get_sal_version(date(ano, 1, 1))
+        return Decimal(str(sal_version['salario_minimo']))
+    
+    def get_aliquotas(self, tipo_contribuinte: str, data: date) -> list:
+        """
+        Retorna as faixas e alíquotas para um tipo de contribuinte específico
+        """
+        sal_version = self.get_sal_version(data)
+        aliquotas = sal_version['tabela_aliquotas'].get(tipo_contribuinte, [])
+        
+        if not aliquotas:
+            raise ValueError(f"Alíquotas não encontradas para tipo: {tipo_contribuinte}")
+        
+        return aliquotas
+    
+    def validate_against_sal(self, tipo: str, valor: Decimal, data: date) -> tuple:
+        """
+        Valida se um valor está dentro dos limites SAL
+        Retorna (valido: bool, mensagem: str)
+        """
+        try:
+            teto = self.get_teto_inss(data.year)
+            salario_minimo = self.get_salario_minimo(data.year)
+            
+            if valor > teto:
+                return False, f"Valor {valor} excede teto INSS de {teto}"
+            
+            if valor < salario_minimo and tipo != 'ci_simplificado':
+                return False, f"Valor {valor} abaixo do mínimo {salario_minimo}"
+            
+            return True, "Válido"
+        
+        except Exception as e:
+            return False, f"Erro ao validar: {str(e)}"
+`
+
+1.2 Classe GPSValidator
+
+`python
+from datetime import datetime, timedelta
+from typing import Tuple, Optional
+
+class GPSValidator:
+    """
+    Validador de GPS com todas as regras SAL
+    """
+    
+    def __init__(self, supabase_client, sal_manager: SALVersionManager):
+        self.supabase = supabase_client
+        self.sal_manager = sal_manager
+    
+    def validar_periodo(self, periodo_mes: int, periodo_ano: int) -> Tuple[bool, str]:
+        """
+        Valida se período é válido (< 12 meses atrás, não futuro)
+        """
+        hoje = datetime.now()
+        data_periodo = date(periodo_ano, periodo_mes, 1)
+        
+        # Não pode ser futuro
+        if data_periodo > hoje.date():
+            return False, "GPS não pode ser gerada para períodos futuros"
+        
+        # Não pode ser > 12 meses atrás
+        meses_atras = (hoje.year - periodo_ano) * 12 + (hoje.month - periodo_mes)
+        if meses_atras > 12:
+            return False, f"GPS pode ser gerada apenas para os últimos 12 meses (período tem {meses_atras} meses)"
+        
+        return True, "Período válido"
+    
+    def validar_cpf(self, cpf: str) -> bool:
+        """
+        Valida formato e dígitos verificadores do CPF
+        """
+        # Remove caracteres especiais
+        cpf_limpo = cpf.replace('.', '').replace('-', '').strip()
+        
+        # Verifica se tem 11 dígitos
+        if len(cpf_limpo) != 11 or not cpf_limpo.isdigit():
+            return False
+        
+        # Rejeita padrões inválidos (ex: 111.111.111-11)
+        if cpf_limpo == cpf_limpo[0] * 11:
+            return False
+        
+        # Valida dígitos verificadores
+        def calcular_digito(cpf_parcial, multiplicadores):
+            soma = sum(int(digit) * mult for digit, mult in zip(cpf_parcial, multiplicadores))
+            digito = 11 - (soma % 11)
+            return 0 if digito >= 10 else digito
+        
+        multiplicadores1 = [10, 9, 8, 7, 6, 5, 4, 3, 2]
+        multiplicadores2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2]
+        
+        digito1_calculado = calcular_digito(cpf_limpo[:9], multiplicadores1)
+        if int(cpf_limpo[9]) != digito1_calculado:
+            return False
+        
+        digito2_calculado = calcular_digito(cpf_limpo[:10], multiplicadores2)
+        if int(cpf_limpo[10]) != digito2_calculado:
+            return False
+        
+        return True
+    
+    def validar_valor(self, valor: Decimal, tipo: str, data: date) -> Tuple[bool, str]:
+        """
+        Valida se valor está dentro dos limites SAL
+        """
+        valido, msg = self.sal_manager.validate_against_sal(tipo, valor, data)
+        return valido, msg
+    
+    def validar_duplicidade(self, cpf: str, periodo_mes: int, periodo_ano: int, tipo: str) -> Tuple[bool, Optional[str]]:
+        """
+        Valida se GPS já foi emitida para essa combinação
+        Retorna (existe: bool, reference_number_anterior: Optional[str])
+        """
+        response = self.supabase.table('gps_history').select('reference_number').match({
+            'cpf': cpf,
+            'periodo_mes': periodo_mes,
+            'periodo_ano': periodo_ano,
+            'tipo_contribuinte': tipo
+        }).execute()
+        
+        if response.data:
+            return True, response.data[0]['reference_number']
+        
+        return False, None
+    
+    def validar_tipo_contribuinte(self, tipo: str) -> bool:
+        """
+        Valida se tipo é válido e ativo em sal_classes
+        """
+        response = self.supabase.table('sal_classes').select('id').match({
+            'tipo_contribuinte': tipo,
+            'ativo': True
+        }).execute()
+        
+        return len(response.data) > 0
+    
+    def validar_completo(self, cpf: str, periodo_mes: int, periodo_ano: int, 
+                        tipo_contribuinte: str, valor_base: Decimal) -> Dict[str, Any]:
+        """
+        Realiza validação completa e retorna relatório
+        """
+        erros = []
+        avisos = []
+        
+        # Validação 1: Período
+        valido, msg = self.validar_periodo(periodo_mes, periodo_ano)
+        if not valido:
+            erros.append(msg)
+        
+        # Validação 2: CPF
+        if not self.validar_cpf(cpf):
+            erros.append("CPF inválido")
+        
+        # Validação 3: Tipo de Contribuinte
+        if not self.validar_tipo_contribuinte(tipo_contribuinte):
+            erros.append(f"Tipo de contribuinte inválido: {tipo_contribuinte}")
+        
+        # Validação 4: Valor
+        data_competencia = date(periodo_ano, periodo_mes, 1)
+        valido, msg = self.validar_valor(valor_base, tipo_contribuinte, data_competencia)
+        if not valido:
+            erros.append(msg)
+        
+        # Validação 5: Duplicidade
+        existe, ref_anterior = self.validar_duplicidade(cpf, periodo_mes, periodo_ano, tipo_contribuinte)
+        if existe:
+            erros.append(f"GPS já foi emitida para este período (Referência: {ref_anterior})")
+        
+        return {
+            'valido': len(erros) == 0,
+            'erros': erros,
+            'avisos': avisos
+        }
+`
+
+1.3 Classe INSSCalculator Refatorado
+
+`python
+from datetime import date, timedelta
+from decimal import Decimal, ROUND_HALF_UP
+
+class INSSCalculator:
+    """
+    Calculadora de contribuições INSS com alíquotas progressivas,
+    mora, juros e multa conforme SAL 2025
+    """
+    
+    def __init__(self, sal_manager: SALVersionManager):
+        self.sal_manager = sal_manager
+    
+    def _encontrar_aliquota(self, valor: Decimal, aliquotas: list) -> Decimal:
+        """
+        Encontra a alíquota correta para um valor em uma tabela de faixas
+        Alíquota progressiva
+        """
+        for faixa in aliquotas:
+            faixa_min = Decimal(str(faixa['faixa_min']))
+            faixa_max = Decimal(str(faixa['faixa_max']))
+            
+            if faixa_min <= valor <= faixa_max:
+                return Decimal(str(faixa['aliquota']))
+        
+        # Se valor exceder todas as faixas, usar última
+        return Decimal(str(aliquotas[-1]['aliquota']))
+    
+    def calcular_contribuinte_individual_normal(self, valor: Decimal, data: date) -> dict:
+        """
+        Calcula contribuição para Contribuinte Individual Normal
+        com alíquotas progressivas (7.65%, 9%, 12%, 14%)
+        """
+        aliquotas = self.sal_manager.get_aliquotas('ci_normal', data)
+        
+        # Força mínimo
+        salario_minimo = self.sal_manager.get_salario_minimo(data.year)
+        valor_contrib = max(valor, salario_minimo)
+        
+        # Encontra alíquota progressiva
+        aliquota = self._encontrar_aliquota(valor_contrib, aliquotas)
+        
+        # Calcula contribuição
+        valor_inss = (valor_contrib * aliquota).quantize(
+            Decimal('0.01'), 
+            rounding=ROUND_HALF_UP
+        )
+        
+        return {
+            'valor_base': valor,
+            'valor_contrib': valor_contrib,
+            'aliquota': float(aliquota),
+            'valor_inss': float(valor_inss),
+            'tipo_contribuinte': 'ci_normal'
+        }
+    
+    def calcular_contribuinte_individual_simplificado(self, valor: Decimal, data: date) -> dict:
+        """
+        Calcula contribuição para Contribuinte Individual Simplificado
+        Alíquota: 11% sobre qualquer valor até teto
+        """
+        aliquota = Decimal('0.11')
+        teto = self.sal_manager.get_teto_inss(data.year)
+        
+        # Limita ao teto
+        valor_contrib = min(valor, teto)
+        
+        valor_inss = (valor_contrib * aliquota).quantize(
+            Decimal('0.01'), 
+            rounding=ROUND_HALF_UP
+        )
+        
+        return {
+            'valor_base': valor,
+            'valor_contrib': valor_contrib,
+            'aliquota': float(aliquota),
+            'valor_inss': float(valor_inss),
+            'tipo_contribuinte': 'ci_simplificado'
+        }
+    
+    def calcular_domestico(self, valor: Decimal, data: date) -> dict:
+        """
+        Calcula contribuição para Doméstico
+        Alíquota: 8%
+        """
+        aliquota = Decimal('0.08')
+        teto = self.sal_manager.get_teto_inss(data.year)
+        
+        valor_contrib = min(valor, teto)
+        
+        valor_inss = (valor_contrib * aliquota).quantize(
+            Decimal('0.01'), 
+            rounding=ROUND_HALF_UP
+        )
+        
+        return {
+            'valor_base': valor,
+            'valor_contrib': valor_contrib,
+            'aliquota': float(aliquota),
+            'valor_inss': float(valor_inss),
+            'tipo_contribuinte': 'domestico'
+        }
+    
+    def calcular_rural(self, valor: Decimal, data: date) -> dict:
+        """
+        Calcula contribuição para Produtor Rural
+        Alíquota: 11.5%
+        """
+        aliquota = Decimal('0.115')
+        teto = self.sal_manager.get_teto_inss(data.year)
+        
+        valor_contrib = min(valor, teto)
+        
+        valor_inss = (valor_contrib * aliquota).quantize(
+            Decimal('0.01'), 
+            rounding=ROUND_HALF_UP
+        )
+        
+        return {
+            'valor_base': valor,
+            'valor_contrib': valor_contrib,
+            'aliquota': float(aliquota),
+            'valor_inss': float(valor_inss),
+            'tipo_contribuinte': 'rural'
+        }
+    
+    def aplicar_mora_juros(self, valor_devido: Decimal, data_vencimento: date, 
+                          data_pagamento: Optional[date] = None) -> dict:
+        """
+        Calcula mora (juros de 1% ao mês) e multa se pagamento for após vencimento
+        """
+        if data_pagamento is None:
+            data_pagamento = date.today()
+        
+        if data_pagamento <= data_vencimento:
+            return {
+                'valor_juros': 0.0,
+                'valor_multa': 0.0,
+                'dias_atraso': 0
+            }
+        
+        # Calcula dias de atraso
+        dias_atraso = (data_pagamento - data_vencimento).days
+        
+        # Juros: 1% ao mês (30 dias)
+        meses_atraso = max(1, dias_atraso / 30)
+        valor_juros = (valor_devido  Decimal(str(meses_atraso))  Decimal('0.01')).quantize(
+            Decimal('0.01'), 
+            rounding=ROUND_HALF_UP
+        )
+        
+        # Multa: 20% (normal)
+        valor_multa = (valor_devido * Decimal('0.20')).quantize(
+            Decimal('0.01'), 
+            rounding=ROUND_HALF_UP
+        )
+        
+        return {
+            'valor_juros': float(valor_juros),
+            'valor_multa': float(valor_multa),
+            'dias_atraso': dias_atraso
+        }
+    
+    def calcular_vencimento_padrao(self, periodo_mes: int, periodo_ano: int) -> date:
+        """
+        Calcula vencimento padrão: 15º dia do mês seguinte
+        Ou próximo dia útil se cair em feriado/fim de semana
+        """
+        # 15º do mês seguinte
+        if periodo_mes == 12:
+            vencimento = date(periodo_ano + 1, 1, 15)
+        else:
+            vencimento = date(periodo_ano, periodo_mes + 1, 15)
+        
+        # Se cair em fim de semana (5=sexta, 6=sábado, 0=domingo), postergar
+        while vencimento.weekday() >= 4:  # >= quinta-feira
+            vencimento = vencimento + timedelta(days=1)
+        
+        return vencimento
+`
+
+1.4 Classe LDigitavelGenerator
+
+`python
+class LDigitavelGenerator:
+    """
+    Gera linha digitável conforme ISO 7064 MOD 97-10
+    Formato: AAAAMMCC VVVVVVVVVVVV XX
+    """
+    
+    def gerar_linha_digitavel(self, reference_number: str, valor: Decimal, 
+                             vencimento: date, codigo_gps: str) -> str:
+        """
+        Gera linha digitável completa com dígito verificador
+        reference_number = AAAAMMCC + CPF + SEQUÊNCIA
+        """
+        # Base: Referência (20 chars) + Código GPS (4) + Valor (12) + Vencimento (8)
+        # YYYYMMDDCCPFSEQGPSVALOR(12)VENCIMENTO
+        
+        venc_str = vencimento.strftime('%d%m%Y')
+        valor_str = f"{int(valor*100):012d}"  # Valor em centavos com 12 dígitos
+        
+        base = f"{reference_number}{codigo_gps}{valor_str}{venc_str}"
+        
+        # Calcula dígito verificador ISO 7064 MOD 97-10
+        dv = self._calcular_digito_verificador(base)
+        
+        # Formata linha digitável
+        linha = f"{base[:8]} {base[8:20]} {base[20:]} {dv:02d}"
+        
+        return linha
+    
+    def _calcular_digito_verificador(self, base: str) -> int:
+        """
+        Implementa algoritmo ISO 7064 MOD 97-10
+        """
+        # Converte string para número
+        numero = int(base)
+        
+        # Resto da divisão por 97
+        resto = numero % 97
+        
+        # Dígito verificador = 98 - resto
+        dv = 98 - resto
+        
+        return dv
+    
+    def validar_linha_digitavel(self, linha: str) -> bool:
+        """
+        Valida integridade da linha digitável
+        """
+        # Remove espaços
+        linha_limpa = linha.replace(' ', '')
+        
+        if len(linha_limpa) < 50:
+            return False
+        
+        base = linha_limpa[:-2]
+        dv = int(linha_limpa[-2:])
+        
+        dv_calculado = self._calcular_digito_verificador(base)
+        
+        return dv == dv_calculado
+`
+
+---
+
+2. CÓDIGO PYTHON - PDF Generator Completo
+
+2.1 Classe PDFGenerator 100% SAL 2025
+
+`python
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm, mm
+from reportlab.pdfgen import canvas
+from reportlab.lib.colors import black, white, HexColor
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+import barcode
+from barcode.ean13 import EAN13
+from barcode import image
+from io import BytesIO
+from datetime import date
+
+class PDFGenerator:
+    """
+    Gera PDF de GPS 100% conforme layout oficial SAL 2025
+    """
+    
+    def __init__(self, logo_path: str = None):
+        self.logo_path = logo_path
+        self.page_width, self.page_height = A4
+    
+    def gerar_pdf_completo(self, gps_data: dict) -> bytes:
+        """
+        Gera PDF completo com todos os dados obrigatórios
+        
+        gps_data deve conter:
+        {
+            'cpf': str,
+            'nome': str,
+            'rg': str,
+            'endereco': str,
+            'pis_pasep': str,
+            'tipo_contribuinte': str,
+            'codigo_gps': str,
+            'competencia_mes': int,
+            'competencia_ano': int,
+            'valor_contribuicao': Decimal,
+            'valor_juros': Decimal,
+            'valor_multa': Decimal,
+            'valor_total': Decimal,
+            'vencimento': date,
+            'linha_digitavel': str,
+            'reference_number': str,
+            'whatsapp_suporte': str
+        }
+        """
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=A4)
+        
+        # Margens
+        margin_left = 1.5 * cm
+        margin_right = 1.5 * cm
+        margin_top = 2 * cm
+        
+        y_position = self.page_height - margin_top
+        
+        # ===== CABEÇALHO =====
+        # Logo INSS (se disponível)
+        if self.logo_path:
+            c.drawImage(self.logo_path, margin_left, y_position - 1.2*cm, 
+                       width=2cm, height=1cm, preserveAspectRatio=True)
+        
+        # Título
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(margin_left, y_position - 0.5*cm, "GUIA DE PREVIDÊNCIA SOCIAL - GPS")
+        
+        c.setFont("Helvetica", 9)
+        y_position -= 1.5 * cm
+        c.drawString(margin_left, y_position, f"Tipo: {gps_data['tipo_contribuinte'].upper()}")
+        c.drawString(self.page_width - margin_right - 3*cm, y_position, 
+                    f"Referência: {gps_data['reference_number']}")
+        
+        # Linha divisória
+        y_position -= 0.3 * cm
+        c.setLineWidth(1)
+        c.line(margin_left, y_position, self.page_width - margin_right, y_position)
+        
+        # ===== DADOS DO CONTRIBUINTE =====
+        y_position -= 0.5 * cm
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(margin_left, y_position, "DADOS DO CONTRIBUINTE")
+        
+        y_position -= 0.4 * cm
+        c.setFont("Helvetica", 9)
+        
+        # CPF
+        c.drawString(margin_left, y_position, f"CPF: {gps_data['cpf']}")
+        c.drawString(margin_left + 5*cm, y_position, f"RG: {gps_data.get('rg', 'N/A')}")
+        
+        y_position -= 0.35 * cm
+        c.drawString(margin_left, y_position, f"Nome: {gps_data['nome'].upper()}")
+        
+        y_position -= 0.35 * cm
+        c.drawString(margin_left, y_position, f"Endereço: {gps_data['endereco']}")
+        
+        y_position -= 0.35 * cm
+        c.drawString(margin_left, y_position, f"PIS/PASEP/NIT: {gps_data.get('pis_pasep', 'N/A')}")
+        
+        # Linha divisória
+        y_position -= 0.3 * cm
+        c.line(margin_left, y_position, self.page_width - margin_right, y_position)
+        
+        # ===== DADOS DA GUIA =====
+        y_position -= 0.5 * cm
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(margin_left, y_position, "DADOS DA GUIA")
+        
+        y_position -= 0.4 * cm
+        c.setFont("Helvetica", 9)
+        
+        # Código GPS e Competência
+        competencia_fmt = f"{gps_data['competencia_mes']:02d}/{gps_data['competencia_ano']}"
+        c.drawString(margin_left, y_position, f"Código GPS: {gps_data['codigo_gps']}")
+        c.drawString(margin_left + 5*cm, y_position, f"Competência: {competencia_fmt}")
+        
+        # Valores
+        y_position -= 0.35 * cm
+        c.drawString(margin_left, y_position, 
+                    f"Valor Contribuição: R$ {gps_data['valor_contribuicao']:,.2f}")
+        
+        y_position -= 0.35 * cm
+        if gps_data['valor_juros'] > 0:
+            c.drawString(margin_left, y_position, 
+                        f"Juros (1% a.m.): R$ {gps_data['valor_juros']:,.2f}")
+            y_position -= 0.35 * cm
+        
+        if gps_data['valor_multa'] > 0:
+            c.drawString(margin_left, y_position, 
+                        f"Multa por Atraso: R$ {gps_data['valor_multa']:,.2f}")
+            y_position -= 0.35 * cm
+        
+        # Valor Total - Destacado
+        c.setFont("Helvetica-Bold", 11)
+        c.drawString(margin_left, y_position, 
+                    f"VALOR TOTAL: R$ {gps_data['valor_total']:,.2f}")
+        
+        y_position -= 0.35 * cm
+        c.setFont("Helvetica", 9)
+        c.drawString(margin_left, y_position, 
+                    f"Vencimento: {gps_data['vencimento'].strftime('%d/%m/%Y')}")
+        
+        # Linha divisória
+        y_position -= 0.3 * cm
+        c.line(margin_left, y_position, self.page_width - margin_right, y_position)
+        
+        # ===== LINHA DIGITÁVEL =====
+        y_position -= 0.5 * cm
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(margin_left, y_position, "LINHA DIGITÁVEL")
+        
+        y_position -= 0.4 * cm
+        c.setFont("Courier-Bold", 12)  # Fonte monoespaçada
+        c.drawString(margin_left, y_position, gps_data['linha_digitavel'])
+        
+        # ===== CÓDIGO DE BARRAS (Opcional - Implementar com python-barcode) =====
+        y_position -= 0.8 * cm
+        try:
+            # Gerar código de barras da linha digitável
+            # Simplificado: usar primeiros 13 dígitos da linha
+            barcode_data = gps_data['linha_digitavel'].replace(' ', '')[:13].ljust(13, '0')
+            
+            # Criar código de barras
+            ean = EAN13(barcode_data, check_digit=False)
+            barcode_buffer = BytesIO()
+            ean.write(barcode_buffer)
+            
+            # Desenhar na posição apropriada
+            c.drawImage(barcode_buffer, margin_left, y_position - 1.2*cm, 
+                       width=8cm, height=1cm, preserveAspectRatio=True)
+            
+            y_position -= 1.5 * cm
+        except Exception as e:
+            print(f"Erro ao gerar código de barras: {e}")
+        
+        # ===== INSTRUÇÕES DE PAGAMENTO =====
+        y_position -= 0.5 * cm
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(margin_left, y_position, "INSTRUÇÕES DE PAGAMENTO")
+        
+        y_position -= 0.3 * cm
+        c.setFont("Helvetica", 8)
+        
+        instrucoes = [
+            "1. Esta guia pode ser paga em qualquer agência de instituição financeira credenciada.",
+            "2. Não será aceita a devolução de guia sem o comprovante de quitação.",
+            "3. Em caso de dúvidas, contate o INSS ou acesse www.gov.br/inss",
+            f"4. Suporte: WhatsApp {gps_data.get('whatsapp_suporte', '(11) 99999-9999')}"
+        ]
+        
+        for instrucao in instrucoes:
+            if y_position < 1 * cm:
+                c.showPage()
+                y_position = self.page_height - margin_top
+            
+            c.drawString(margin_left, y_position, instrucao)
+            y_position -= 0.25 * cm
+        
+        # ===== RODAPÉ =====
+        c.setFont("Helvetica", 7)
+        c.drawString(margin_left, 0.5*cm, 
+                    f"Gerado em: {date.today().strftime('%d/%m/%Y')}")
+        c.drawString(self.page_width - margin_right - 4cm, 0.5cm, 
+                    "Documento Eletrônico - Válido sem assinatura")
+        
+        # Finalizar PDF
+        c.save()
+        buffer.seek(0)
+        
+        return buffer.getvalue()
+`
+
+---
+
+3. CÓDIGO PYTHON - FastAPI Endpoints
+
+3.1 Endpoint POST /api/v1/guias/emitir
+
+`python
+from fastapi import FastAPI, HTTPException, status, Depends
+from pydantic import BaseModel, validator
+from datetime import date
+from decimal import Decimal
+import uuid
+
+app = FastAPI()
+
+class GerarGPSRequest(BaseModel):
+    cpf: str
+    periodo_mes: int
+    periodo_ano: int
+    tipo_contribuinte: str
+    valor_base: Decimal
+    nome: str
+    rg: str
+    endereco: str
+    pis_pasep: str
+    whatsapp: str
+    
+    @validator('valor_base')
+    def valor_positivo(cls, v):
+        if v <= 0:
+            raise ValueError('Valor deve ser positivo')
+        return v
+
+@app.post('/api/v1/guias/emitir', status_code=202)
+async def emitir_gps(request: GerarGPSRequest, 
+                     sal_manager: SALVersionManager = Depends(),
+                     validator: GPSValidator = Depends(),
+                     supabase = Depends()): # Assumindo que Supabase client é injetado via Depends
+    """
+    Endpoint para emissão de GPS completa com validação SAL 100%
+    """
+    
+    try:
+        # 1. Validação Completa
+        validacao = validator.validar_completo(
+            cpf=request.cpf,
+            periodo_mes=request.periodo_mes,
+            periodo_ano=request.periodo_ano,
+            tipo_contribuinte=request.tipo_contribuinte,
+            valor_base=request.valor_base
+        )
+        
+        if not validacao['valido']:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    'error': 'VALIDATION_ERROR',
+                    'message': '; '.join(validacao['erros'])
+                }
+            )
+        
+        # 2. Verificar Duplicidade
+        existe, ref_anterior = validator.validar_duplicidade(
+            cpf=request.cpf,
+            periodo_mes=request.periodo_mes,
+            periodo_ano=request.periodo_ano,
+            tipo=request.tipo_contribuinte
+        )
+        
+        if existe:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail={
+                    'error': 'DUPLICATE_GPS',
+                    'message': f'GPS já foi emitida neste período',
+                    'reference_number': ref_anterior
+                }
+            )
+        
+        # 3. Gerar Reference Number
+        reference_number = f"{request.periodo_ano}{request.periodo_mes:02d}{request.cpf}{uuid.uuid4().hex[:6].upper()}"
+        
+        # 4. Calcular Contribuição
+        data_competencia = date(request.periodo_ano, request.periodo_mes, 1)
+        calculator = INSSCalculator(sal_manager)
+        
+        # Selecionar método correto baseado no tipo
+        if request.tipo_contribuinte == 'ci_normal':
+            calculo = calculator.calcular_contribuinte_individual_normal(request.valor_base, data_competencia)
+        elif request.tipo_contribuinte == 'ci_simplificado':
+            calculo = calculator.calcular_contribuinte_individual_simplificado(request.valor_base, data_competencia)
+        elif request.tipo_contribuinte == 'domestico':
+            calculo = calculator.calcular_domestico(request.valor_base, data_competencia)
+        elif request.tipo_contribuinte == 'rural':
+            calculo = calculator.calcular_rural(request.valor_base, data_competencia)
+        else:
+            raise HTTPException(status_code=400, detail='Tipo de contribuinte inválido')
+        
+        # 5. Calcular Vencimento
+        vencimento = calculator.calcular_vencimento_padrao(request.periodo_mes, request.periodo_ano)
+        
+        # 6. Gerar Linha Digitável
+        lg_generator = LDigitavelGenerator()
+        linha_digitavel = lg_generator.gerar_linha_digitavel(
+            reference_number=reference_number,
+            valor=Decimal(str(calculo['valor_inss'])),
+            vencimento=vencimento,
+            codigo_gps='1007'  # Simplificado, deveria consultar sal_classes
+        )
+        
+        # 7. Gerar PDF
+        pdf_generator = PDFGenerator()
+        pdf_bytes = pdf_generator.gerar_pdf_completo({
+            'cpf': request.cpf,
+            'nome': request.nome,
+            'rg': request.rg,
+            'endereco': request.endereco,
+            'pis_pasep': request.pis_pasep,
+            'tipo_contribuinte': request.tipo_contribuinte,
+            'codigo_gps': '1007',  # Exemplo
+            'competencia_mes': request.periodo_mes,
+            'competencia_ano': request.periodo_ano,
+            'valor_contribuicao': Decimal(str(calculo['valor_inss'])),
+            'valor_juros': Decimal('0.00'), # Assumindo que não há juros/multa na emissão inicial
+            'valor_multa': Decimal('0.00'),
+            'valor_total': Decimal(str(calculo['valor_inss'])),
+            'vencimento': vencimento,
+            'linha_digitavel': linha_digitavel,
+            'reference_number': reference_number,
+            'whatsapp_suporte': '(11) 99999-9999'
+        })
+        
+        # 8. Upload PDF para Supabase Storage (S3)
+        pdf_filename = f"gps/{reference_number}.pdf"
+        # Supondo que supabase.storage.from_('guias').upload retorna o URL do arquivo
+        # e que o cliente Supabase está configurado corretamente.
+        # Esta parte pode precisar de ajuste dependendo da sua implementação exata do Supabase client.
+        # Exemplo simplificado:
+        # response_upload = supabase.storage.from_('guias').upload(pdf_filename, pdf_bytes, {'content-type': 'application/pdf'})
+        # pdf_url = response_upload.data['path'] # Ou similar
+        pdf_url = f"https://your_supabase_url/storage/v1/object/public/guias/{pdf_filename}" # Placeholder
+        
+        # 9. Salvar em gps_history
+        gps_id = str(uuid.uuid4())
+        supabase.table('gps_history').insert({
+            'id': gps_id,
+            'cpf': request.cpf,
+            'nome_contribuinte': request.nome,
+            'rg_contribuinte': request.rg,
+            'endereco_contribuinte': request.endereco,
+            'pis_pasep_nit': request.pis_pasep,
+            'periodo_mes': request.periodo_mes,
+            'periodo_ano': request.periodo_ano,
+            'tipo_contribuinte': request.tipo_contribuinte,
+            'codigo_gps': '1007',
+            'valor_base': float(request.valor_base),
+            'aliquota': calculo['aliquota'],
+            'valor_contribuicao': calculo['valor_inss'],
+            'valor_juros': 0,
+            'valor_multa': 0,
+            'valor_total': calculo['valor_inss'],
+            'vencimento': vencimento.isoformat(),
+            'status': 'emitted',
+            'reference_number': reference_number,
+            'linha_digitavel': linha_digitavel,
+            'pdf_url': pdf_url,
+            'emitted_at': date.today().isoformat()
+        }).execute()
+        
+        # 10. Registrar validações em gps_validation_log
+        validacoes = [
+            {'tipo': 'periodo_check', 'resultado': True},
+            {'tipo': 'cpf_check', 'resultado': True},
+            {'tipo': 'valor_check', 'resultado': True},
+            {'tipo': 'tipo_contribuinte_check', 'resultado': True},
+            {'tipo': 'duplicidade_check', 'resultado': False}
+        ]
+        
+        for val in validacoes:
+            supabase.table('gps_validation_log').insert({
+                'gps_id': gps_id,
+                'validation_type': val['tipo'],
+                'passed': val['resultado']
+            }).execute()
+        
+        # 11. Enfileirar para processamento assíncrono (WhatsApp, notificações, etc)
+        # Será implementado via Bull Queue no Node.js
+        
+        # 12. Retornar Resposta (202 Accepted - Processamento Assíncrono)
+        return {
+            'status': 'accepted',
+            'gps_id': gps_id,
+            'reference_number': reference_number,
+            'linha_digitavel': linha_digitavel,
+            'valor_total': float(calculo['valor_inss']),
+            'vencimento': vencimento.isoformat(),
+            'pdf_url': pdf_url,
+            'message': 'GPS será enviada ao WhatsApp em breve'
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                'error': 'INTERNAL_ERROR',
+                'message': str(e)
+            }
+        )
+`
+
+---
+
+4. CÓDIGO NODE.JS - Handler Melhorado
+
+4.1 Handler handleGenerateGps com Validações e Retry
+
+`typescript
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import axios from 'axios';
+import { Queue } from 'bull';
+import winston from 'winston';
+import { generateGPSQueue } from './queues'; // Assumindo que 'queues' exporta generateGPSQueue
+
+// Logger estruturado
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'gps-generation.log' })
+  ]
+});
+
+interface GenerateGPSRequest {
+  cpf: string;
+  periodo_mes: number;
+  periodo_ano: number;
+  tipo_contribuinte: string;
+  valor_base: number;
+  user_id: string;
+  whatsapp: string;
+  // Adicionar campos do usuário para o PDF
+  nome: string;
+  rg: string;
+  endereco: string;
+  pis_pasep: string;
+}
+
+export async function handleGenerateGps(
+  req: FastifyRequest<{ Body: GenerateGPSRequest }>,
+  reply: FastifyReply
+) {
+  const { cpf, periodo_mes, periodo_ano, tipo_contribuinte, valor_base, user_id, whatsapp, nome, rg, endereco, pis_pasep } = req.body;
+  
+  logger.info('GPS generation requested', {
+    cpf: cpf.substring(0, 3) + '*', // Proteger PII em logs
+    periodo: ${periodo_mes}/${periodo_ano},
+    tipo: tipo_contribuinte,
+    user_id
+  });
+  
+  try {
+    // 1. Validação Local (Rápido, antes de chamar Python)
+    const validation = validarLocalmente({
+      cpf,
+      periodo_mes,
+      periodo_ano,
+      valor_base,
+      tipo_contribuinte
+    });
+    
+    if (!validation.valido) {
+      logger.warn('Local validation failed', { erros: validation.erros });
+      return reply.status(400).send({
+        error: 'VALIDATION_ERROR',
+        message: validation.erros.join('; '),
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // 2. Chamar Python API com Retry Logic
+    let pythonResponse;
+    const maxRetries = 3;
+    let tentativa = 0;
+    
+    while (tentativa < maxRetries) {
+      try {
+        logger.info(Tentativa ${tentativa + 1} de ${maxRetries} para Python API, { cpf: cpf.substring(0, 3) });
+        
+        pythonResponse = await axios.post(
+          'http://python-api:8000/api/v1/guias/emitir',
+          {
+            cpf,
+            periodo_mes,
+            periodo_ano,
+            tipo_contribuinte,
+            valor_base,
+            nome,
+            rg,
+            endereco,
+            pis_pasep,
+            whatsapp
+          },
+          {
+            timeout: 30000, // 30 segundos
+            headers: {
+              'X-API-Key': process.env.PYTHON_API_KEY || ''
+            }
+          }
+        );
+        
+        logger.info('Python API call successful', {
+          reference_number: pythonResponse.data.reference_number
+        });
+        
+        break; // Sucesso, sair do loop
+        
+      } catch (error) {
+        tentativa++;
+        
+        if (tentativa === maxRetries) {
+          logger.error('Python API failed after retries', {
+            error: error instanceof Error ? error.message : 'Unknown error',
+            tentativas: maxRetries
+          });
+          throw error;
+        }
+        
+        // Backoff exponencial: 1s, 2s, 4s
+        const delayMs = Math.pow(2, tentativa - 1) * 1000;
+        logger.warn(Retry after ${delayMs}ms, { tentativa });
+        
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    }
+    
+    // 3. Enfileirar para Processamento Assíncrono (PDF WhatsApp)
+    const jobId = gps-${user_id}-${Date.now()};
+    
+    await generateGPSQueue.add(
+      {
+        gps_id: pythonResponse.data.gps_id,
+        reference_number: pythonResponse.data.reference_number,
+        cpf,
+        whatsapp,
+        pdf_url: pythonResponse.data.pdf_url,
+        user_id
+      },
+      {
+        priority: 5,
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 2000
+        },
+        jobId,
+        removeOnComplete: true
+      }
+    );
+    
+    logger.info('Job enqueued for processing', { jobId });
+    
+    // 4. Resposta Imediata (202 Accepted)
+    return reply.status(202).send({
+      status: 'accepted',
+      message: 'GPS será gerada em breve',
+      reference_number: pythonResponse.data.reference_number,
+      job_id: jobId,
+      valor_total: pythonResponse.data.valor_total,
+      vencimento: pythonResponse.data.vencimento,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    logger.error('GPS generation error', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      cpf: cpf.substring(0, 3)
+    });
+    
+    // 5. Mapear erro da Python API para mensagem amigável
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 409) {
+        return reply.status(409).send({
+          error: 'DUPLICATE_GPS',
+          message: 'GPS já foi emitida para este período',
+          reference_number: error.response.data?.reference_number,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      if (error.response?.status === 400) {
+        return reply.status(400).send({
+          error: error.response.data?.error || 'VALIDATION_ERROR',
+          message: error.response.data?.message || 'Erro na validação',
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+    
+    return reply.status(500).send({
+      error: 'INTERNAL_ERROR',
+      message: 'Erro ao processar GPS. Tente novamente em breve.',
+      timestamp: new Date().toISOString()
+    });
+  }
+}
+
+function validarLocalmente(data: any): { valido: boolean; erros: string[] } {
+  const erros: string[] = [];
+  const hoje = new Date();
+  
+  // Validação 1: CPF formato
+  const cpfLimpo = data.cpf.replace(/\D/g, '');
+  if (cpfLimpo.length !== 11 || !/^\d+$/.test(cpfLimpo)) {
+    erros.push('CPF deve ter 11 dígitos');
+  }
+  
+  // Validação 2: Período não pode ser futuro
+  const dataPeriodo = new Date(data.periodo_ano, data.periodo_mes - 1, 1);
+  if (dataPeriodo > hoje) {
+    erros.push('GPS não pode ser gerada para períodos futuros');
+  }
+  
+  // Validação 3: Período não pode ser > 12 meses
+  const mesesAtras = (hoje.getFullYear() - data.periodo_ano) * 12 + (hoje.getMonth() - (data.periodo_mes - 1));
+  if (mesesAtras > 12) {
+    erros.push('GPS pode ser gerada apenas para os últimos 12 meses');
+  }
+  
+  // Validação 4: Valor entre SM e Teto (simplificado)
+  const SM_2025 = 1412.00;
+  const TETO_2025 = 7786.00;
+  
+  if (data.valor_base < SM_2025) {
+    erros.push(Valor abaixo do salário mínimo (R$ ${SM_2025}));
+  }
+  
+  if (data.valor_base > TETO_2025) {
+    erros.push(Valor acima do teto (R$ ${TETO_2025}));
+  }
+  
+  // Validação 5: Tipo de contribuinte
+  const tiposValidos = ['ci_normal', 'ci_simplificado', 'domestico', 'rural'];
+  if (!tiposValidos.includes(data.tipo_contribuinte)) {
+    erros.push('Tipo de contribuinte inválido');
+  }
+  
+  return {
+    valido: erros.length === 0,
+    erros
+  };
+}
+`
+
+4.2 Queue Processor para Bull
+
+`typescript
+import { Queue } from 'bull';
+// import { whatsappService } from './services/whatsapp'; // Assumindo que existe um serviço de WhatsApp
+// import { supabase } from './lib/supabase'; // Assumindo que o cliente Supabase está configurado
+import winston from 'winston'; // Importar logger
+
+// Logger estruturado para o processador da fila
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'gps-queue-processor.log' })
+  ]
+});
+
+// Placeholder para whatsappService e supabase, caso não estejam definidos globalmente
+const whatsappService = {
+  sendDocument: async (to: string, data: { url: string; caption: string }) => {
+    logger.info(Simulando envio de WhatsApp para ${to} com URL: ${data.url});
+    // Implementação real aqui (Z-API/Twilio)
+    return Promise.resolve({ status: 'sent' });
+  }
+};
+
+const supabase = {
+  from: (tableName: string) => ({
+    update: (data: any) => ({
+      eq: (column: string, value: any) => {
+        logger.info(Simulando update no Supabase na tabela ${tableName}: ${JSON.stringify(data)} onde ${column} = ${value});
+        return Promise.resolve({ data: [], error: null });
+      }
+    }),
+    insert: (data: any) => {
+      logger.info(Simulando insert no Supabase na tabela ${tableName}: ${JSON.stringify(data)});
+      return Promise.resolve({ data: [], error: null });
+    }
+  })
+};
+
+
+export const generateGPSQueue = new Queue('gps-generation', {
+  redis: {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: parseInt(process.env.REDIS_PORT || '6379')
+  }
+});
+
+// Processador da fila
+generateGPSQueue.process(async (job) => {
+  const { gps_id, reference_number, cpf, whatsapp, pdf_url, user_id } = job.data;
+  
+  logger.info('Processing GPS job', { jobId: job.id, reference_number });
+  
+  try {
+    // 1. Enviar PDF via WhatsApp
+    await whatsappService.sendDocument(whatsapp, {
+      url: pdf_url,
+      caption: 🎉 Sua GPS foi gerada!\n\nReferência: ${reference_number}\n\n📥 Clique no ícone de download para salvar o PDF
+    });
+    
+    logger.info('PDF sent via WhatsApp', { whatsapp: whatsapp.substring(0, 5) + '*' });
+    
+    // 2. Atualizar status em gps_history
+    await supabase
+      .from('gps_history')
+      .update({ status: 'sent' })
+      .eq('id', gps_id);
+    
+    // 3. Notificar usuário
+    await supabase
+      .from('user_notifications')
+      .insert({
+        user_id,
+        type: 'gps_ready',
+        data: { reference_number, gps_id },
+        read: false
+      });
+    
+    return {
+      success: true,
+      message: 'GPS processada com sucesso',
+      reference_number
+    };
+    
+  } catch (error) {
+    logger.error('GPS processing failed', {
+      jobId: job.id,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+    
+    throw error; // Bull vai retentar
+  }
+});
+
+// Eventos da fila
+generateGPSQueue.on('failed', (job, error) => {
+  logger.error('Job failed', {
+    jobId: job.id,
+    error: error.message,
+    attempts: job.attemptsMade
+  });
+});
+
+generateGPSQueue.on('completed', (job) => {
+  logger.info('Job completed', { jobId: job.id });
+});
+`
+
+---
+
+Fim do Guia de Implementação.
+Este documento fornece código pronto para sua IA integrar diretamente no projeto!

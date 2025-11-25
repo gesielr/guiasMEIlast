@@ -4,6 +4,32 @@ import logger from '../../utils/logger';
 
 const { admin } = createSupabaseClients();
 
+/**
+ * Normaliza número de telefone removendo caracteres especiais e aplicando regras consistentes
+ * Retorna apenas dígitos, garantindo formato unificado para comparação
+ * EXPORTADA para uso em outros serviços (ai-agent, etc)
+ */
+export function normalizePhone(phone: string | null | undefined): string {
+  if (!phone) return '';
+
+  // Remover todos os caracteres não-numéricos
+  let digits = phone.replace(/\D+/g, '');
+
+  // Remover prefixo 55 se presente
+  if (digits.startsWith('55')) {
+    digits = digits.substring(2);
+  }
+
+  // Garantir que tem 11 dígitos (DDD + 9 dígitos)
+  // Se tem 10 dígitos, adicionar 9 após o DDD (posição 2)
+  if (digits.length === 10) {
+    digits = digits.substring(0, 2) + '9' + digits.substring(2);
+  }
+
+  // Retornar com prefixo 55 para formato padrão
+  return '55' + digits;
+}
+
 export type DualMenuState = 
   | 'idle'
   | 'showing_menu'
@@ -71,21 +97,34 @@ export async function isDualUser(userId: string, userType: string | null): Promi
       .maybeSingle();
     
     if (!profileError && currentProfile?.whatsapp_phone) {
-      // Buscar todos os perfis com o mesmo telefone
-      const { data: profilesWithSamePhone, error: profilesError } = await admin
+      // Normalizar telefone do perfil atual
+      const normalizedCurrentPhone = normalizePhone(currentProfile.whatsapp_phone);
+
+      // Buscar TODOS os perfis para comparar telefones normalizados
+      const { data: allProfiles, error: profilesError } = await admin
         .from('profiles')
-        .select('user_type, id')
-        .eq('whatsapp_phone', currentProfile.whatsapp_phone);
-      
-      if (!profilesError && profilesWithSamePhone && profilesWithSamePhone.length > 1) {
-        // Verificar se tem perfis com user_type diferentes
-        const userTypes = new Set(profilesWithSamePhone.map(p => p.user_type).filter(Boolean));
-        const hasMei = userTypes.has('mei');
-        const hasAutonomo = userTypes.has('autonomo');
-        
-        if (hasMei && hasAutonomo) {
-          logger.info(`[DUAL MENU] Usuário ${userId} é duplo (tem perfis MEI e Autônomo no mesmo telefone ${currentProfile.whatsapp_phone})`);
-          return true;
+        .select('user_type, id, whatsapp_phone');
+
+      if (!profilesError && allProfiles) {
+        // Filtrar perfis que têm o mesmo telefone normalizado
+        const profilesWithSamePhone = allProfiles.filter(p => {
+          const normalizedPhone = normalizePhone(p.whatsapp_phone);
+          return normalizedPhone === normalizedCurrentPhone;
+        });
+
+        if (profilesWithSamePhone.length > 1) {
+          // Verificar se tem perfis com user_type diferentes
+          const userTypes = new Set(profilesWithSamePhone.map(p => p.user_type).filter(Boolean));
+          const hasMei = userTypes.has('mei');
+          const hasAutonomo = userTypes.has('autonomo');
+
+          if (hasMei && hasAutonomo) {
+            logger.info(`[DUAL MENU] Usuário ${userId} é duplo (tem perfis MEI e Autônomo no mesmo telefone)`, {
+              normalizedPhone: normalizedCurrentPhone,
+              profilesFound: profilesWithSamePhone.map(p => ({ id: p.id, type: p.user_type, phone: p.whatsapp_phone }))
+            });
+            return true;
+          }
         }
       }
     }

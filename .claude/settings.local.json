@@ -15,7 +15,13 @@
       "Bash(git add:*)",
       "Bash(del nul 2)",
       "Bash($null)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(Select-Object -Last 30)",
+      "Bash(tasklist:*)",
+      "Bash(netstat:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

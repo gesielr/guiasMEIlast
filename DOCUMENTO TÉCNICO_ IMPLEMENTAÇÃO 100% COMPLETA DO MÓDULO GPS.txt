@@ -1,0 +1,698 @@
+DOCUMENTO TÉCNICO: IMPLEMENTAÇÃO 100% COMPLETA DO MÓDULO GPS
+Sistema GuiasMEI - Geração Automática de Guias de Previdência Social
+
+1. EXECUTIVE SUMMARY
+
+Este documento técnico detalha a implementação completa e robusta do módulo de Geração de Guias de Previdência Social (GPS) para o sistema GuiasMEI. Com a expectativa de atender milhões de usuários, o objetivo principal é garantir que a geração de GPS seja 100% compatível com as regras do Sistema de Acréscimos Legais (SAL) de 2025 e demais regulamentações governamentais, incluindo cálculos precisos de alíquotas, mora e juros, além de um layout de PDF idêntico ao oficial. A arquitetura será escalável, resiliente e segura, utilizando tecnologias modernas e padrões de desenvolvimento de alta performance.
+
+2. ARQUITETURA ATUAL vs NECESSÁRIA
+
+2.1 Arquitetura Existente (Validar e Melhorar)
+
+O sistema híbrido atual possui a seguinte estrutura:
+
+*   Node.js (Fastify): Responsável pela orquestração das interações via WhatsApp e por expor APIs internas para o frontend.
+*   Python (FastAPI): Utilizado para a execução de cálculos de INSS e a geração de documentos PDF.
+*   Supabase (PostgreSQL): Atua como a camada de persistência de dados, gerenciando o banco de dados relacional.
+*   Z-API/Twilio: Plataformas para o envio e recebimento de mensagens via WhatsApp, utilizando webhooks para notificar o backend.
+
+Status Atual:
+
+*   ✅ Fluxo de comunicação via WhatsApp funcional.
+*   ✅ API Python para cálculos básicos de INSS.
+*   ✅ Geração inicial de PDFs utilizando a biblioteca reportlab.
+*   ⚠️ Validações das regras do SAL incompletas.
+*   ❌ Ausência de versionamento para tabelas de regras (ex: teto INSS, salário mínimo).
+*   ❌ Não há implementação de cache distribuído.
+*   ❌ Falta de uma fila de processamento assíncrono para tarefas pesadas.
+*   ❌ Ausência de ferramentas de monitoramento e observabilidade.
+
+2.2 Arquitetura Necessária para Produção (Milhões de Usuários)
+
+Para suportar milhões de usuários e garantir a robustez e escalabilidade necessárias, a arquitetura será aprimorada conforme a descrição textual abaixo:
+
+A arquitetura de produção será composta por uma camada de proteção e otimização de tráfego, utilizando CloudFlare para CDN, proteção WAF (Web Application Firewall) e Rate Limiting. O tráfego será então direcionado para um Load Balancer (como Kong ou NGINX) que distribuirá as requisições para um cluster de instâncias do Node.js (Fastify), configurado com no mínimo 3 instâncias para alta disponibilidade e escalabilidade horizontal.
+
+As aplicações Node.js se comunicarão com um cluster de instâncias do Python (FastAPI), também com no mínimo 3 instâncias, para lidar com os cálculos complexos e a geração de PDFs.
+
+Para otimização de performance, um servidor Redis será utilizado para caching de dados frequentemente acessados (como tabelas SAL e validações) e para gerenciamento de sessões.
+
+Tarefas de processamento intensivo, como a geração de PDFs e o envio de mensagens WhatsApp, serão descarregadas para uma Bull Queue, garantindo que as respostas ao usuário sejam rápidas e que o processamento seja assíncrono e resiliente.
+
+O banco de dados PostgreSQL (Supabase) será configurado com Read Replicas para distribuir a carga de leitura e melhorar a performance.
+
+Para garantir a observabilidade do sistema, serão implementadas soluções de monitoramento com Prometheus para coleta de métricas e Grafana para visualização e alertas. Os logs estruturados serão centralizados e analisados através de um ELK Stack (Elasticsearch, Logstash, Kibana).
+
+Os PDFs gerados serão armazenados em um serviço de armazenamento de objetos como S3 e distribuídos via CDN para acesso rápido e eficiente.
+
+3. FLUXO COMPLETO GPS 100%
+
+3.1 Fluxo Atualmente Implementado
+
+O fluxo atual de geração de GPS é o seguinte:
+
+1.  O usuário inicia a interação enviando uma mensagem via WhatsApp.
+2.  A plataforma Z-API/Twilio recebe a mensagem e envia um webhook para o serviço Node.js.
+3.  O serviço Node.js processa a requisição, realiza validações básicas e chama a API Python para os cálculos e geração do PDF.
+4.  A API Python executa os cálculos de INSS e gera o documento PDF.
+5.  O serviço Node.js recebe o PDF gerado e o envia de volta ao usuário via WhatsApp.
+6.  Os dados da GPS gerada são persistidos no Supabase.
+
+3.2 Melhorias Críticas Necessárias
+
+Para atingir a conformidade de 100% e a escalabilidade desejada, as seguintes melhorias críticas são indispensáveis:
+
+3.2.1 Validações SAL 2025 Completas
+
+Todas as validações abaixo devem ser implementadas na API Python, utilizando dados versionados do banco de dados:
+
+A. Validação de Período Válido
+*   ✅ A GPS pode ser gerada apenas para os últimos 12 meses a partir da data atual.
+*   ✅ Não será permitido gerar GPS para períodos futuros.
+*   ✅ Períodos muito antigos (mais de 12 meses) serão bloqueados, a menos que haja uma regra específica de recuperação de contribuições.
+*   Lógica: Verificar se (data_atual - data_competência) é menor ou igual a 12 meses.
+
+B. Validação de Teto INSS Versionado
+*   ✅ O valor do Teto do INSS muda anualmente, geralmente em janeiro.
+*   ✅ Para 2025, o teto é um valor específico (ex: R$ 7.786,00).
+*   ✅ Será implementada uma tabela versionada no banco de dados (sal_version_history) para armazenar os tetos e outras regras por período de competência.
+*   ✅ O sistema buscará o teto correto com base na data de competência da GPS.
+
+C. Validação de Alíquota Progressiva Correta
+*   ✅ As alíquotas devem ser aplicadas corretamente conforme o tipo de contribuinte e a faixa salarial, utilizando a tabela versionada do SAL.
+    *   Contribuinte Individual Normal:
+        *   7.65% para valores até R$ 1.412,00
+        *   9% para valores de R$ 1.412,01 até R$ 2.347,00
+        *   12% para valores de R$ 2.347,01 até R$ 3.532,50
+        *   14% para valores de R$ 3.532,51 até o teto do INSS
+    *   Contribuinte Individual Simplificado: 11% sobre o salário mínimo (ou valor declarado, limitado ao teto).
+    *   Doméstico: 8% sobre o salário de contribuição.
+    *   Rural: 11,5% sobre o valor da produção (com aproveitamento de créditos).
+*   ✅ A alíquota aplicada deve ser a CORRETA para a faixa salarial e tipo de contribuinte.
+
+D. Validação de Valor Mínimo
+*   ✅ O valor mínimo de contribuição é o Salário Mínimo vigente (ex: R$ 1.412,00 para 2025).
+*   ✅ Esta regra se aplica a todos os tipos de contribuinte, exceto o Contribuinte Individual Simplificado, que pode optar por contribuir sobre um valor inferior ao salário mínimo, desde que respeite a alíquota de 11%.
+*   ✅ O sistema deve forçar o arredondamento do valor final da contribuição para múltiplos de R$ 0,05.
+
+E. Validação de Duplicidade
+*   ✅ Será implementada uma UNIQUE constraint no banco de dados na tabela gps_history para os campos (cpf, periodo_mes, periodo_ano, tipo_contribuinte).
+*   ✅ Isso evitará a emissão de duas GPS idênticas para o mesmo contribuinte no mesmo período e tipo.
+*   ✅ Se uma GPS já existir, o sistema deve retornar o reference_number da guia anterior, informando ao usuário que a guia já foi emitida.
+
+F. Validação de CPF/CNPJ
+*   ✅ O CPF (11 dígitos) ou CNPJ (14 dígitos) deve ter o formato correto.
+*   ✅ Serão validados os dígitos verificadores para garantir a autenticidade do número.
+*   ✅ Não serão aceitos padrões inválidos (ex: "111.111.111-11", "00.000.000/0000-00").
+
+G. Validação de Tipo de Contribuinte
+*   ✅ Apenas os valores válidos e ativos do SAL serão aceitos para o tipo de contribuinte.
+*   ✅ Será utilizada uma tabela sal_classes no banco de dados para gerenciar os códigos GPS e seus tipos correspondentes.
+*   ✅ O sistema bloqueará tipos de contribuinte descontinuados ou inválidos.
+
+3.2.2 Cálculos Corretos com Mora e Juros
+
+Os cálculos devem incluir:
+
+*   ✅ Contribuição base: Calculada pela aplicação da alíquota correta sobre o valor de contribuição.
+*   ✅ Juros: Aplicados à taxa de 1% ao mês (ou fração) sobre o valor devido, caso a GPS esteja vencida.
+*   ✅ Multa: Aplicada à taxa de 20% sobre o valor devido para pagamentos em atraso. Em casos de comprovação de ilicitude, a multa pode ser de 75%.
+*   ✅ Vencimento padrão: O 15º dia do mês subsequente ao mês de competência. Se o dia 15 cair em feriado ou fim de semana, o vencimento é prorrogado para o próximo dia útil.
+*   ✅ Descontos: Se aplicável, considerar descontos para pagamentos antecipados ou em programas de regularização.
+
+3.2.3 Geração de Linha Digitável Correta
+
+*   ✅ A linha digitável deve ser gerada estritamente de acordo com a norma ISO 7064 MOD 97-10, que define o algoritmo para o cálculo do dígito verificador.
+*   ✅ O formato bancário padrão para a linha digitável deve ser seguido: AAAAMMCC VVVVVVVVVVVV XX, onde AAAAMM é o ano e mês de competência, CC é o código da GPS, VVVVVVVVVVVV é o valor e XX são os dígitos verificadores.
+*   ✅ Será implementada uma validação interna do código de barras antes da impressão para garantir que a linha digitável e o código de barras correspondam e sejam lidos corretamente.
+
+3.2.4 Geração de PDF 100% Conforme Layout SAL
+
+O PDF gerado deve ser visualmente idêntico e conter todas as informações exigidas pela Receita Federal para uma GPS oficial:
+
+*   ✅ Logo INSS: Inserção do logotipo oficial do INSS.
+*   ✅ Tipo de guia: Indicação clara de "GUIA DE PREVIDÊNCIA SOCIAL - GPS".
+*   ✅ Dados do contribuinte: CPF, Nome completo, RG, Endereço completo.
+*   ✅ Número de inscrição: PIS/PASEP/NIT, conforme aplicável ao tipo de contribuinte.
+*   ✅ Código GPS: O código específico da GPS (ex: 1007 para CI, 1163 para CI Simplificado).
+*   ✅ Competência: Mês e ano de referência da contribuição (ex: MM/AAAA).
+*   ✅ Valor da contribuição: O valor principal devido.
+*   ✅ Juros e multas: Campos separados para juros e multas, se houver.
+*   ✅ Valor total: A soma da contribuição, juros e multas.
+*   ✅ Data de vencimento: A data limite para o pagamento.
+*   ✅ Banco de crédito recomendado: Informações sobre onde a guia pode ser paga.
+*   ✅ Linha digitável: Apresentada de forma clara e legível, em fonte monoespaçada e tamanho adequado.
+*   ✅ Código de barras: Implementação de um código de barras funcional que possa ser lido por leitores bancários.
+*   ✅ Instruções de pagamento: Breves instruções sobre como efetuar o pagamento.
+*   ✅ Whatsapp do suporte: Contato para suporte ao usuário.
+
+3.2.5 Integração com Sistema SAL Real
+
+Para garantir a máxima conformidade e evitar problemas futuros, será implementada uma integração com o sistema SAL oficial (ou APIs governamentais equivalentes, se disponíveis):
+
+*   ✅ Validação de emissão: Consultar o sistema SAL para verificar se uma GPS para o mesmo período e contribuinte já foi emitida oficialmente.
+*   ✅ Verificação de débitos: Consultar débitos anteriores do contribuinte junto ao INSS.
+*   ✅ Histórico de pagamentos: Acessar o histórico de pagamentos para auxiliar o usuário e validar informações.
+*   ✅ Validação de inscrição: Confirmar o status de inscrição do contribuinte (Contribuinte Individual, MEI, Doméstico) no sistema governamental.
+
+4. IMPLEMENTAÇÃO DETALHADA
+
+4.1 Schema Banco de Dados (Supabase/PostgreSQL)
+
+As seguintes tabelas serão criadas e gerenciadas via migrations no Supabase:
+
+Tabela: sal_version_history
+`sql
+CREATE TABLE sal_version_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  effective_date DATE NOT NULL,
+  teto_inss DECIMAL(10,2) NOT NULL,
+  salario_minimo DECIMAL(10,2) NOT NULL,
+  tabela_aliquotas JSONB NOT NULL, -- Estrutura JSON completa das faixas e alíquotas
+  tabela_codes JSONB NOT NULL,     -- Mapeamento de códigos GPS e tipos de contribuinte
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_sal_effective_date ON sal_version_history (effective_date DESC);
+
+-- RLS Policy: Apenas administradores podem gerenciar
+ALTER TABLE sal_version_history ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Enable read access for all users" ON sal_version_history FOR SELECT USING (TRUE);
+`
+
+Tabela: gps_history
+`sql
+CREATE TABLE gps_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, -- Assumindo integração com auth.users do Supabase
+  cpf VARCHAR(11) NOT NULL,
+  nome_contribuinte TEXT,
+  rg_contribuinte TEXT,
+  endereco_contribuinte TEXT,
+  pis_pasep_nit VARCHAR(15),
+  periodo_mes INT NOT NULL CHECK (periodo_mes >= 1 AND periodo_mes <= 12),
+  periodo_ano INT NOT NULL CHECK (periodo_ano >= 1900),
+  tipo_contribuinte VARCHAR(50) NOT NULL, -- Enum: ci_normal, ci_simplificado, domestico, rural, etc
+  codigo_gps VARCHAR(10) NOT NULL,
+  valor_base DECIMAL(10,2) NOT NULL,
+  aliquota DECIMAL(5,2) NOT NULL,
+  valor_contribuicao DECIMAL(10,2) NOT NULL,
+  valor_juros DECIMAL(10,2) DEFAULT 0.00,
+  valor_multa DECIMAL(10,2) DEFAULT 0.00,
+  valor_total DECIMAL(10,2) NOT NULL,
+  vencimento DATE NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'emitted', 'paid', 'cancelled', 'overdue')),
+  reference_number VARCHAR(50) UNIQUE NOT NULL,
+  linha_digitavel VARCHAR(60) NOT NULL,
+  pdf_url TEXT,
+  emitted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  paid_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  
+  UNIQUE(cpf, periodo_mes, periodo_ano, tipo_contribuinte)
+);
+
+CREATE INDEX idx_gps_cpf_emitted_at ON gps_history (cpf, emitted_at DESC);
+CREATE INDEX idx_gps_status ON gps_history (status);
+CREATE INDEX idx_gps_vencimento ON gps_history (vencimento);
+CREATE INDEX idx_gps_user_id ON gps_history (user_id);
+
+-- RLS Policy: Usuário só pode ver suas próprias GPSs
+ALTER TABLE gps_history ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Enable read access for users based on user_id" ON gps_history FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Enable insert for users" ON gps_history FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Enable update for users" ON gps_history FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Enable delete for users" ON gps_history FOR DELETE USING (auth.uid() = user_id);
+`
+
+Tabela: gps_validation_log
+`sql
+CREATE TABLE gps_validation_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  gps_id UUID REFERENCES gps_history(id) ON DELETE CASCADE,
+  validation_type VARCHAR(50) NOT NULL, -- Ex: 'teto_check', 'periodo_check', 'duplicidade_check', 'cpf_check'
+  passed BOOLEAN NOT NULL,
+  error_message TEXT,
+  checked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_validation_gps_id ON gps_validation_log (gps_id);
+CREATE INDEX idx_validation_checked_at ON gps_validation_log (checked_at);
+
+-- RLS Policy: Apenas administradores podem ver logs, ou usuários podem ver logs de suas GPSs
+ALTER TABLE gps_validation_log ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Enable read access for users on their GPS validations" ON gps_validation_log FOR SELECT USING (
+  (SELECT user_id FROM gps_history WHERE id = gps_id) = auth.uid()
+);
+CREATE POLICY "Enable insert for users on their GPS validations" ON gps_validation_log FOR INSERT WITH CHECK (
+  (SELECT user_id FROM gps_history WHERE id = gps_id) = auth.uid()
+);
+`
+
+Tabela: processing_queue
+`sql
+CREATE TABLE processing_queue (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  gps_id UUID REFERENCES gps_history(id),
+  status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
+  retry_count INT DEFAULT 0,
+  error_details JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  processed_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE INDEX idx_queue_status ON processing_queue (status);
+CREATE INDEX idx_queue_created_at ON processing_queue (created_at);
+`
+
+Tabela: sal_classes (Dados Mestre)
+`sql
+CREATE TABLE sal_classes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  codigo_gps VARCHAR(10) UNIQUE NOT NULL,
+  descricao TEXT NOT NULL,
+  tipo_contribuinte VARCHAR(50) NOT NULL, -- Ex: 'ci_normal', 'ci_simplificado', 'domestico', 'rural'
+  aliquota_minima DECIMAL(5,2),
+  aliquota_maxima DECIMAL(5,2),
+  requer_nit BOOLEAN DEFAULT FALSE,
+  ativo BOOLEAN DEFAULT TRUE,
+  valid_from DATE NOT NULL,
+  valid_to DATE, -- NULL se válido indefinidamente
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_sal_classes_codigo_gps ON sal_classes (codigo_gps);
+CREATE INDEX idx_sal_classes_tipo_contribuinte ON sal_classes (tipo_contribuinte);
+CREATE INDEX idx_sal_classes_validity ON sal_classes (valid_from, valid_to);
+
+-- RLS Policy: Apenas administradores podem gerenciar
+ALTER TABLE sal_classes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Enable read access for all users" ON sal_classes FOR SELECT USING (TRUE);
+`
+
+4.2 Python API - Módulo INSS Completo
+
+A API Python (FastAPI) será estruturada com as seguintes classes e endpoints:
+
+Classe: SALVersionManager
+*   Método: get_sal_version(data_competencia: date) -> dict: Retorna o conjunto de regras SAL (teto, salário mínimo, alíquotas) válido para a data_competencia especificada, buscando de sal_version_history ou do cache Redis.
+*   Método: get_teto_inss(ano: int) -> Decimal: Retorna o teto do INSS para um determinado ano.
+*   Método: get_salario_minimo(ano: int) -> Decimal: Retorna o salário mínimo para um determinado ano.
+*   Método: get_aliquotas(tipo: str, data: date) -> list: Retorna as faixas e alíquotas aplicáveis para um tipo_contribuinte e data_competencia.
+*   Método: validate_against_sal(tipo: str, valor: Decimal, data: date) -> (bool, str): Valida se um valor está dentro dos limites (mínimo/máximo) para um tipo_contribuinte e data_competencia.
+
+Classe: INSSCalculator
+*   Método: calcular_contribuinte_individual_normal(valor: Decimal, data: date) -> dict: Calcula a contribuição para CI Normal, aplicando a alíquota progressiva.
+*   Método: calcular_contribuinte_individual_simplificado(valor: Decimal, data: date) -> dict: Calcula a contribuição para CI Simplificado (11%).
+*   Método: calcular_domestico(valor: Decimal, data: date) -> dict: Calcula a contribuição para Doméstico (8%).
+*   Método: calcular_rural(valor: Decimal, data: date) -> dict: Calcula a contribuição para Rural (11.5%).
+*   Método: aplicar_mora_juros(valor_devido: Decimal, data_vencimento: date, data_pagamento: date) -> dict: Calcula juros de 1% ao mês (ou fração) sobre o valor_devido com base nas datas de vencimento e pagamento.
+*   Método: calcular_multa(valor_devido: Decimal, data_vencimento: date, data_pagamento: date, tipo_multa: str = 'normal') -> Decimal: Calcula multa de 20% (normal) ou 75% (ilicitude) sobre o valor_devido se o pagamento for após o vencimento.
+*   Retorna: Um dicionário contendo { valor_base, aliquota, valor_contribuicao, valor_juros, valor_multa, valor_total, vencimento }.
+
+Classe: GPSValidator
+*   Método: validar_periodo(periodo_mes: int, periodo_ano: int) -> (bool, str): Verifica se o período está dentro dos últimos 12 meses e não é futuro.
+*   Método: validar_cpf(cpf: str) -> bool: Valida formato e dígitos verificadores do CPF.
+*   Método: validar_valor(valor: Decimal, tipo: str, data: date) -> (bool, str): Valida se o valor está entre o salário mínimo e o teto para o tipo e data específicos.
+*   Método: validar_duplicidade(cpf: str, periodo_mes: int, periodo_ano: int, tipo: str) -> (bool, Optional[str]): Consulta gps_history para verificar duplicidade, retornando reference_number se existir.
+*   Método: validar_tipo_contribuinte(tipo: str) -> bool: Verifica se o tipo é válido e ativo em sal_classes.
+*   Retorna: Um dicionário { valido: bool, erros: list[str], avisos: list[str] }.
+
+Classe: LDigitavelGenerator
+*   Método: gerar_linha_digitavel(reference_number: str, valor: Decimal, vencimento: date, codigo_gps: str) -> str: Gera a linha digitável completa, incluindo o cálculo do dígito verificador.
+*   Método: calcular_digito_verificador(base: str) -> str: Implementa o algoritmo ISO 7064 MOD 97-10.
+*   Método: validar_linha_digitavel(linha: str) -> bool: Valida a integridade de uma linha digitável.
+*   Retorna: A linha_digitavel formatada com o dígito verificador.
+
+Classe: PDFGenerator (melhorado)
+*   Método: gerar_pdf_completo(gps_data: dict) -> bytes: Gera o PDF completo da GPS.
+*   Conteúdo OBRIGATÓRIO:
+    *   Logo INSS (carregado de um arquivo estático ou S3).
+    *   Cabeçalho "GUIA DE PREVIDÊNCIA SOCIAL - GPS".
+    *   Tipo de guia (ex: "Contribuinte Individual").
+    *   Competência (MM/AAAA).
+    *   Dados do contribuinte (CPF, Nome, RG, Endereço).
+    *   PIS/PASEP/NIT (se aplicável).
+    *   Código GPS (ex: 1007).
+    *   Valor da contribuição, Juros, Multas, Valor Total.
+    *   Data de vencimento.
+    *   Banco de crédito recomendado.
+    *   Linha digitável (fonte monoespaçada, tamanho grande).
+    *   Código de barras (utilizando python-barcode ou similar).
+    *   Instruções de pagamento.
+    *   Telefone WhatsApp de suporte.
+
+Endpoint: POST /api/v1/guias/emitir
+*   Entrada: { cpf, periodo_mes, periodo_ano, tipo_contribuinte, valor_base, nome, rg, endereco, pis_pasep, whatsapp }
+*   Processo:
+    1.  Validar entrada com Pydantic schema.
+    2.  Chamar GPSValidator.validar_* para todas as validações (período, CPF, valor, tipo).
+    3.  Chamar GPSValidator.validar_duplicidade. Se duplicado, retornar 409 Conflict com reference_number anterior.
+    4.  Obter regras SAL para a competência via SALVersionManager.
+    5.  Chamar INSSCalculator.calcular_* o método correto para o tipo de contribuinte.
+    6.  Calcular mora e juros se a data de pagamento for posterior ao vencimento.
+    7.  Gerar reference_number.
+    8.  Chamar LDigitavelGenerator.gerar_linha_digitavel.
+    9.  Chamar PDFGenerator.gerar_pdf_completo.
+    10. Fazer upload do PDF para Supabase Storage (S3).
+    11. Salvar registro completo em gps_history com status='emitted'.
+    12. Registrar todas as validações e seus resultados em gps_validation_log.
+    13. Enviar o PDF via WhatsApp (esta etapa será assíncrona via Bull Queue).
+    14. Retornar: { gps_id, reference_number, linha_digitavel, valor_total, vencimento, pdf_url } com status 202 Accepted (devido ao processamento assíncrono do PDF/WhatsApp).
+*   Erros: Retornar 400 Bad Request para validações falhas, 409 Conflict para duplicidade, 500 Internal Server Error para falhas internas, com mensagens claras e códigos de erro.
+
+Endpoint: POST /api/v1/guias/complementacao
+*   Entrada: { gps_id_anterior, valor_novo_aliquota }
+*   Processo: Calcula a diferença entre a alíquota original (ex: 11%) e a alíquota desejada (ex: 20%) sobre o valor de contribuição. Gera uma nova GPS de complementação com o valor da diferença.
+
+Endpoint: GET /api/v1/guias/{gps_id}
+*   Retorna: Dados completos de uma GPS emitida, incluindo status de pagamento e links para o PDF.
+
+Endpoint: GET /api/v1/guias/periodo/{cpf}/{mes}/{ano}
+*   Retorna: Uma lista de GPS emitidas para um determinado CPF em um período específico.
+
+4.3 Node.js - Integração WhatsApp Melhorada
+
+Os handlers e middlewares do Node.js (Fastify) serão otimizados:
+
+Handler: handleGenerateGps
+*   Entrada: Recebe dados do webhook do WhatsApp ou de uma API interna, contendo { cpf, periodo_mes, periodo_ano, tipo_contribuinte, valor_base, user_id }.
+*   Validação local: Realiza validações rápidas (formato CPF, período básico, valor entre SM e teto) antes de chamar a API Python para evitar carga desnecessária.
+*   Chamada à Python API: Invoca o endpoint POST /api/v1/guias/emitir da API Python.
+*   Tratamento de erro com retry: Implementa lógica de retry (ex: 3 tentativas com backoff exponencial) para chamadas à API Python em caso de falhas transitórias.
+*   Confirmação WhatsApp: Envia uma mensagem de confirmação imediata ao usuário via WhatsApp, informando que a GPS está sendo processada e fornecendo o reference_number ou job_id da fila.
+*   Log estruturado: Utiliza Winston para registrar todas as etapas do processo, incluindo entradas, saídas, erros e tempos de resposta.
+
+Middleware: ValidationMiddleware
+*   Função: Intercepta requisições de entrada para realizar validações rápidas e essenciais.
+*   Validações:
+    *   Formato do CPF/CNPJ.
+    *   Período de competência (não pode ser futuro, não pode ser muito antigo).
+    *   Valor de contribuição (deve estar entre o salário mínimo e o teto do INSS).
+*   Retorno: Em caso de falha, retorna 400 Bad Request com uma mensagem de erro clara em português.
+
+Middleware: RateLimiting
+*   Função: Protege a API contra uso excessivo e ataques de negação de serviço.
+*   Limites:
+    *   100 requisições por minuto por endereço IP.
+    *   1000 requisições por dia por usuário autenticado.
+*   Implementação: Utilizar um plugin de rate limiting para Fastify (ex: @fastify/rate-limit).
+
+Middleware: ErrorHandler
+*   Função: Captura e processa erros que ocorrem na aplicação.
+*   Mapeamento: Mapeia erros específicos da API Python (ex: DUPLICATE_GPS, VALIDATION_ERROR) para mensagens amigáveis em português e códigos de status HTTP apropriados (ex: 409 Conflict, 400 Bad Request).
+*   Log: Registra os erros de forma estruturada para análise posterior.
+
+4.4 Redis Cache - Implementação
+
+O Redis será utilizado para cache de dados e otimização de performance:
+
+*   Key: sal:version:{ano}
+    *   Value: JSON completo contendo teto, salário mínimo, faixas de alíquotas e códigos GPS para um determinado ano.
+    *   TTL: 86400 segundos (24 horas). Será atualizado manualmente ou via webhook quando as regras do SAL mudarem.
+*   Key: user:validation:{cpf}
+    *   Value: JSON com { valid: bool, tipo_contribuinte: str, ativo: bool } para um CPF específico, resultado de uma consulta ao sistema SAL real.
+    *   TTL: 3600 segundos (1 hora).
+*   Key: gps:duplicate:{cpf}:{periodo}:{tipo}
+    *   Value: JSON com { exists: bool, reference_number: str } indicando se uma GPS já foi emitida para a combinação de CPF, período e tipo.
+    *   TTL: 3600 segundos (1 hora).
+*   Key: processing:queue:length
+    *   Value: O número atual de itens na fila de processamento.
+    *   TTL: 60 segundos (1 minuto). Usado para monitoramento.
+
+4.5 Bull Queue - Processamento Assíncrono
+
+Uma fila Bull será implementada para gerenciar tarefas de processamento assíncrono:
+
+*   Queue: gps-generation
+    *   Job: Cada job na fila representará uma solicitação de geração de GPS, contendo { cpf, periodo_mes, periodo_ano, tipo_contribuinte, valor_base, user_id, whatsapp_number }.
+    *   Processor: Um worker (Node.js ou Python) será responsável por processar os jobs. As etapas incluem:
+        1.  Chamar a API Python para gerar o PDF.
+        2.  Fazer upload do PDF para o S3.
+        3.  Enviar o PDF finalizado ao usuário via WhatsApp.
+        4.  Atualizar o status da GPS em gps_history para 'emitted' ou 'failed'.
+    *   Priority: Jobs podem ter prioridade (ex: 5 para normal, 1 para urgente).
+    *   Attempts: Cada job terá 3 tentativas de execução em caso de falha.
+    *   Backoff: Um mecanismo de backoff exponencial (ex: 2000ms, 4000ms, 8000ms) será aplicado entre as tentativas.
+    *   Timeout: Um timeout de 30000ms (30 segundos) será configurado para cada job.
+    *   OnFailed: Em caso de falha persistente, o erro será registrado em gps_validation_log ou processing_queue.error_details, e um alerta será enviado aos administradores. O usuário será notificado via WhatsApp sobre a falha.
+    *   OnCompleted: Após a conclusão bem-sucedida, o sucesso será logado, e o usuário será notificado via WhatsApp com o PDF.
+
+5. CHECKLIST DE IMPLEMENTAÇÃO
+
+Fase 1: Banco de Dados (1-2 dias)
+
+*   [ ] Criar migrations Supabase para sal_version_history, gps_history, gps_validation_log, processing_queue, sal_classes.
+*   [ ] Criar todos os índices para performance conforme especificado.
+*   [ ] Criar RLS policies para garantir que usuários vejam apenas suas próprias GPSs e que administradores gerenciem tabelas de regras.
+*   [ ] Implementar backup automático do Supabase.
+*   [ ] Testar as constraints UNIQUE para evitar duplicidade de GPS.
+
+Fase 2: Python API - Fundações (3-5 dias)
+
+*   [ ] Implementar a classe SALVersionManager com todos os métodos.
+*   [ ] Implementar a classe INSSCalculator com todos os métodos de cálculo e aplicação de mora/juros/multa.
+*   [ ] Implementar a classe GPSValidator com todas as validações (período, CPF, valor, duplicidade, tipo).
+*   [ ] Popular a tabela sal_classes com dados de 2025.
+*   [ ] Desenvolver testes unitários (pytest) para todos os métodos de cálculo e validação, cobrindo cenários reais e limites.
+
+Fase 3: Python API - Geração (2-3 dias)
+
+*   [ ] Implementar a classe LDigitavelGenerator com o algoritmo ISO 7064 MOD 97-10.
+*   [ ] Implementar a classe PDFGenerator para gerar PDFs completos com logo INSS, todos os campos obrigatórios, linha digitável e código de barras (usando python-barcode).
+*   [ ] Adicionar o arquivo do logo INSS ao projeto.
+*   [ ] Testar visualmente os PDFs gerados para garantir conformidade com o layout oficial.
+
+Fase 4: Python API - Endpoints (2-3 dias)
+
+*   [ ] Criar o endpoint POST /api/v1/guias/emitir com toda a lógica de validação, cálculo, geração e persistência.
+*   [ ] Criar o endpoint POST /api/v1/guias/complementacao.
+*   [ ] Criar o endpoint GET /api/v1/guias/{gps_id}.
+*   [ ] Criar o endpoint GET /api/v1/guias/periodo/{cpf}/{mes}/{ano}.
+*   [ ] Testar todos os endpoints exaustivamente com ferramentas como Postman ou Insomnia.
+*   [ ] Documentar a API com Swagger/OpenAPI.
+
+Fase 5: Node.js Integração (2-3 dias)
+
+*   [ ] Refatorar o handler handleGenerateGps para incluir validações locais, chamadas à API Python e tratamento de erros.
+*   [ ] Implementar o ValidationMiddleware para validações rápidas.
+*   [ ] Implementar o RateLimiting para proteger a API.
+*   [ ] Implementar o ErrorHandler para mapear erros e fornecer feedback amigável.
+*   [ ] Testar o fluxo completo via WhatsApp, desde a entrada do usuário até a resposta.
+
+Fase 6: Redis + Bull Queue (2-3 dias)
+
+*   [ ] Configurar o Redis (Docker local ou serviço em nuvem).
+*   [ ] Integrar o SALVersionManager com o Redis para cache de tabelas SAL.
+*   [ ] Criar a fila gps-generation com Bull Queue.
+*   [ ] Implementar o job processor que consome da fila e executa a geração de PDF, upload e envio de WhatsApp.
+*   [ ] Testar a fila com múltiplos jobs, verificando prioridade, retries e tratamento de falhas.
+
+Fase 7: Monitoramento (2-3 dias)
+
+*   [ ] Implementar Winston para logs estruturados em Node.js e Python.
+*   [ ] Configurar Prometheus para coletar métricas de CPU, memória, latência de API, taxa de erros, e tamanho da fila Bull.
+*   [ ] Configurar Grafana com dashboards para visualização das métricas.
+*   [ ] Configurar alertas no Grafana para eventos críticos (ex: CPU > 80%, taxa de erro > 1%, fila Bull muito longa).
+*   [ ] Implementar health checks (/health, /readiness, /liveness) para Node.js e Python.
+
+Fase 8: Testes (3-5 dias)
+
+*   [ ] Testes unitários: Garantir cobertura de código para todas as classes e funções críticas (pytest para Python, Jest para Node.js).
+*   [ ] Testes de integração: Validar a comunicação entre Node.js e Python, e entre Python e Supabase/Redis.
+*   [ ] Testes de carga: Utilizar ferramentas como k6 ou Artillery para simular 10.000 requisições simultâneas e 100 GPS geradas por segundo. Validar tempo de resposta (< 5s) e taxa de erro (< 0.1%).
+*   [ ] Testes de segurança: Realizar varreduras para SQL injection, XSS, e outras vulnerabilidades comuns.
+*   [ ] Testes E2E (End-to-End): Utilizar Selenium ou Cypress para simular o fluxo completo do usuário via WhatsApp, desde a solicitação até o recebimento do PDF e a validação no BD.
+
+Fase 9: Deploy Produção (2-3 dias)
+
+*   [ ] Preparar todas as variáveis de ambiente para produção.
+*   [ ] Utilizar um secrets manager para credenciais sensíveis.
+*   [ ] Configurar CI/CD (GitHub Actions, GitLab CI) para automação de builds e deploys.
+*   [ ] Implementar estratégia de blue-green deployment para deploys sem downtime.
+*   [ ] Definir e testar a estratégia de rollback em caso de falhas no deploy.
+
+6. INSTRUÇÕES PARA IA - IMPLEMENTAÇÃO CÓDIGO
+
+6.1 Para Ajustar Python API
+
+Sua IA deve:
+
+1.  Analisar os arquivos python/inss_calculator.py, python/gps_generator.py, e python/main.py (endpoints FastAPI).
+2.  Refatorar a classe INSSCalculator para utilizar SALVersionManager e implementar todos os métodos de cálculo de contribuição, mora e juros conforme a seção 4.2.
+3.  Adicionar todas as validações descritas na seção 4.2 (período, teto, alíquota, mínimo, duplicidade, CPF/CNPJ, tipo de contribuinte) dentro da classe GPSValidator e integrá-las aos endpoints.
+4.  Gerar o PDF conforme o layout SAL 2025, incluindo logo INSS, todos os dados do contribuinte, valores detalhados, linha digitável e código de barras.
+5.  Implementar a classe LDigitavelGenerator com o algoritmo ISO 7064 MOD 97-10.
+6.  Criar testes unitários abrangentes com pytest para todas as novas funcionalidades.
+7.  Adicionar docstrings em português para todas as classes e métodos.
+
+Comandos para IA:
+`
+"Analise o arquivo python/inss_calculator.py e refatore a classe INSSCalculator 
+para implementar todas as validações SAL 2025 descritas na seção 4.2 deste documento. 
+Inclua os métodos: calcular_contribuinte_individual_normal, 
+calcular_contribuinte_individual_simplificado, calcular_domestico, calcular_rural, 
+aplicar_mora_juros, e calcular_multa. Retorne código completo e pronto para produção."
+
+"Analise o arquivo python/gps_generator.py e refatore a classe PDFGenerator 
+para gerar PDFs 100% conformes ao layout SAL 2025, incluindo logo INSS, 
+todos os dados do contribuinte, valores detalhados, linha digitável e código de barras. 
+Utilize a biblioteca python-barcode para o código de barras. Retorne o código completo."
+
+"Analise o arquivo python/main.py e ajuste o endpoint POST /api/v1/guias/emitir 
+para integrar as classes SALVersionManager, INSSCalculator, GPSValidator, 
+LDigitavelGenerator e PDFGenerator. Implemente o fluxo completo de validação, 
+cálculo, geração de PDF, upload para S3 e persistência em gps_history. 
+Garanta que o retorno seja 202 Accepted e inclua o job_id da fila Bull."
+`
+
+6.2 Para Ajustar Node.js
+
+Sua IA deve:
+
+1.  Analisar o arquivo apps/server/src/routes/gps.ts.
+2.  Refatorar o handler handleGenerateGps para incluir validações locais, chamadas à API Python com retry logic e backoff exponencial, e logs estruturados com Winston.
+3.  Implementar um ValidationMiddleware para validações rápidas de entrada.
+4.  Implementar um RateLimiting para proteção da API.
+5.  Implementar um ErrorHandler para mapear erros da API Python para mensagens amigáveis.
+6.  Adicionar a lógica para enfileirar o job na Bull Queue e enviar confirmação imediata ao usuário via WhatsApp.
+7.  Adicionar comentários e tipos TypeScript completos.
+
+Comandos para IA:
+`
+"Refatore o handler handleGenerateGps em apps/server/src/routes/gps.ts 
+para implementar as seguintes melhorias descritas na seção 4.3:
+1. Validação local antes de chamar Python.
+2. Retry logic com 3 tentativas e backoff exponencial para chamadas à API Python.
+3. Logs estruturados com Winston.
+4. Tratamento de erros específicos da Python API, mapeando para mensagens amigáveis.
+5. Enviar confirmação WhatsApp com reference_number ou job_id da fila.
+6. Adicionar o job à fila Bull para processamento assíncrono.
+Retorne código TypeScript com tipos completos."
+
+"Crie um ValidationMiddleware para Fastify em apps/server/src/middlewares/validation.ts 
+que valide o formato do CPF, se o período está dentro dos últimos 12 meses e se o valor 
+está entre o salário mínimo e o teto do INSS. Retorne 400 Bad Request em caso de falha."
+
+"Crie um ErrorHandler para Fastify em apps/server/src/middlewares/error.ts 
+que capture erros da API Python (ex: DUPLICATE_GPS, VALIDATION_ERROR) e os mapeie 
+para mensagens amigáveis em português e códigos de status HTTP apropriados."
+`
+
+6.3 Para Criar SQL Migrations
+
+Sua IA deve:
+
+1.  Criar um arquivo supabase/migrations/[timestamp]_create_gps_tables.sql.
+2.  Implementar todas as tabelas detalhadas na seção 4.1 (sal_version_history, gps_history, gps_validation_log, processing_queue, sal_classes).
+3.  Incluir todos os índices para performance.
+4.  Criar as RLS policies para cada tabela conforme especificado.
+5.  Adicionar triggers para updated_at automático em todas as tabelas.
+
+Comandos para IA:
+`
+"Crie uma migration Supabase (arquivo .sql) que implemente todas as tabelas 
+descritas na seção 4.1 deste documento: sal_version_history, gps_history, 
+gps_validation_log, processing_queue, sal_classes. Inclua índices, constraints 
+UNIQUE, RLS policies para usuários verem apenas suas próprias GPSs, 
+e triggers para atualizar updated_at automaticamente."
+`
+
+7. ROTEIROS DE TESTE
+
+7.1 Teste Unitário - Cálculo INSS
+
+Caso 1: CI Normal com valor em faixa 1 (7.65%)
+*   Entrada: valor_base=1200.00, tipo_contribuinte='ci_normal', data_competencia=2025-01-15
+*   Esperado: aliquota=0.0765, valor_contribuicao=91.80
+*   Assert: resultado['aliquota'] == 0.0765 e resultado['valor_contribuicao'] == 91.80
+
+Caso 2: CI Normal com valor em faixa 4 (14%)
+*   Entrada: valor_base=5000.00, tipo_contribuinte='ci_normal', data_competencia=2025-01-15
+*   Esperado: aliquota=0.14, valor_contribuicao=700.00
+*   Assert: resultado['aliquota'] == 0.14 e resultado['valor_contribuicao'] == 700.00
+
+Caso 3: Validação Teto INSS
+*   Entrada: valor_base=8000.00, tipo_contribuinte='ci_normal', data_competencia=2025-01-15
+*   Esperado: Erro de validação indicando "Valor excede teto INSS".
+*   Assert: resultado['valido'] == False e resultado['erros'][0] contém "Excede teto".
+
+Caso 4: Validação Período Futuro
+*   Entrada: periodo_mes=1, periodo_ano=2026 (assumindo data atual 2025)
+*   Esperado: Erro de validação indicando "GPS não pode ser gerada para períodos futuros".
+*   Assert: resultado['valido'] == False e resultado['erros'][0] contém "períodos futuros".
+
+Caso 5: Mora e Juros (1 mês de atraso)
+*   Entrada: valor_devido=1000.00, data_vencimento=2025-01-15, data_pagamento=2025-02-15
+*   Esperado: valor_juros=10.00 (1% de 1000), valor_multa=200.00 (20% de 1000)
+*   Assert: resultado['valor_juros'] == 10.00 e resultado['valor_multa'] == 200.00
+
+7.2 Teste Integração - Fluxo Completo
+
+1.  Pré-condição: Usuário autenticado e com número de WhatsApp configurado.
+2.  Ação: Usuário envia mensagem WhatsApp: "Quero gerar uma GPS para CI Normal, valor 1500, competência 01/2025".
+3.  Validação 1: O sistema Node.js recebe a mensagem, valida localmente e enfileira um job na Bull Queue. Responde ao usuário com "Sua GPS está sendo processada. ID do pedido: [job_id]".
+4.  Validação 2: O worker da Bull Queue processa o job:
+    *   Chama a API Python com os dados.
+    *   A API Python realiza todas as validações SAL, calcula a contribuição, mora e juros (se aplicável), gera a linha digitável e o PDF.
+    *   O PDF é enviado para o Supabase Storage (S3).
+    *   Um registro é salvo na tabela gps_history com status='emitted' e todos os detalhes.
+    *   Registros são criados em gps_validation_log.
+5.  Validação 3: O sistema envia o PDF da GPS para o WhatsApp do usuário.
+6.  Validação 4: Verificar no Supabase:
+    *   A GPS está salva em gps_history com status='emitted'.
+    *   O reference_number e linha_digitavel estão corretos.
+    *   O pdf_url aponta para o PDF no S3.
+    *   O PDF no S3 é acessível e contém todas as informações corretas e o layout oficial.
+    *   Os logs em gps_validation_log mostram que todas as validações passaram.
+
+7.3 Teste de Carga
+
+*   Ferramenta: k6 ou Artillery.
+*   Cenário: Simular a geração de GPS para 10.000 usuários simultâneos.
+*   Taxa de requisições: 100 requisições de geração de GPS por segundo.
+*   Métricas a validar:
+    *   Tempo de resposta médio: Deve ser inferior a 5 segundos para a resposta inicial do Node.js (enfileiramento).
+    *   Taxa de erro: Deve ser inferior a 0.1% para todas as APIs.
+    *   Utilização de recursos: CPU e memória dos clusters Node.js e Python, Redis e PostgreSQL devem permanecer dentro dos limites aceitáveis (ex: CPU < 80%).
+    *   Tamanho da fila Bull: O número de jobs pendentes na fila deve ser gerenciável e não crescer indefinidamente.
+
+8. CRONOGRAMA DE IMPLEMENTAÇÃO
+
+Total Estimado: 5-6 semanas para produção.
+
+*   Semana 1: Banco de Dados (Migrations, Índices, RLS) + Python API - Fundações (SALVersionManager, INSSCalculator, GPSValidator).
+*   Semana 2: Python API - Geração (LDigitavelGenerator, PDFGenerator) + Python API - Endpoints (Implementação e testes iniciais).
+*   Semana 3: Node.js Integração (Refatorar handlers, Middlewares de validação, rate limiting, error handling) + Redis Cache + Bull Queue (Setup e integração).
+*   Semana 4: Monitoramento (Prometheus, Grafana, ELK Stack, Health Checks) + Testes (Unitários, Integração, E2E iniciais).
+*   Semana 5: Ajustes finos, otimizações de performance, Testes de Carga, Testes de Segurança.
+*   Semana 6: Deploy em Produção, Homologação final, Documentação operacional.
+
+9. ALERTAS E RISCOS
+
+🚨 CRÍTICO (Bloqueadores para produção):
+
+*   Sem validações SAL completas: As GPS geradas serão rejeitadas pelo governo, causando problemas legais e financeiros para os usuários.
+*   Sem cache Redis: O banco de dados (Supabase) será sobrecarregado com picos de tráfego, resultando em lentidão e falhas.
+*   Sem Bull Queue: O processamento síncrono de PDFs e envios de WhatsApp excederá o tempo limite de resposta do WhatsApp (>30s), resultando em falha na entrega.
+*   Sem monitoramento e observabilidade: Será impossível identificar e depurar problemas em produção de forma eficiente, levando a longos períodos de inatividade.
+*   Linha digitável incorreta: Guias não poderão ser pagas, gerando insatisfação e problemas para o usuário.
+
+⚠️ IMPORTANTE (Impacto significativo na experiência do usuário e conformidade):
+
+*   Teto INSS muda anualmente: A falta de atualização ou versionamento da tabela SAL resultará em cálculos incorretos a cada virada de ano.
+*   PDF sem conteúdo correto ou layout oficial: Pode levar à rejeição da guia por parte do INSS ou instituições financeiras.
+*   Rate limiting inadequado: A aplicação estará vulnerável a ataques de negação de serviço (DDoS) ou uso abusivo.
+*   Falta de testes de carga: O sistema pode falhar inesperadamente sob alta demanda, mesmo com a arquitetura escalável.
+*   Não conformidade com LGPD: Risco de multas e perda de confiança dos usuários devido ao tratamento inadequado de dados pessoais.
+
+10. PRÓXIMOS PASSOS
+
+1.  Revisão deste documento: Realizar uma revisão detalhada deste documento técnico com toda a equipe de desenvolvimento e stakeholders.
+2.  Criação de Issues: Transformar cada item do "CHECKLIST DE IMPLEMENTAÇÃO" em issues detalhadas no sistema de gerenciamento de projetos (ex: GitHub Issues, Jira).
+3.  Designação de Desenvolvedores: Atribuir responsabilidades claras para os desenvolvedores de Node.js e Python para cada fase da implementação.
+4.  Setup de Ambiente de Homologação: Configurar um ambiente de homologação (staging) que replique a arquitetura de produção para testes e validações.
+5.  Início da Fase 1 (BD): Começar imediatamente com a implementação das migrations e schemas de banco de dados.

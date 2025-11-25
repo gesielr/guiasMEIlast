@@ -102,7 +102,7 @@ class SupabaseService:
             return None
 
         try:
-            records = await self.get_records("usuarios", {"whatsapp": whatsapp})
+            records = await self.get_records("profiles", {"whatsapp_phone": whatsapp})
             return records[0] if records else None
         except Exception as exc:  # pragma: no cover
             print(f"[ERROR] Erro ao obter usuario: {str(exc)[:60]}...")
@@ -112,13 +112,13 @@ class SupabaseService:
         """Cria novo usuario."""
         if not self.client:
             print("[WARN] Supabase indisponivel - retornando dados em memoria")
-            return {**data, "id": f"mock-{data.get('whatsapp', 'unknown')}"}
+            return {**data, "id": f"mock-{data.get('whatsapp_phone', 'unknown')}"}
 
         try:
-            return await self.create_record("usuarios", data)
+            return await self.create_record("profiles", data)
         except Exception as exc:  # pragma: no cover
             print(f"[ERROR] Erro ao criar usuario: {str(exc)[:60]}...")
-            return {**data, "id": f"error-{data.get('whatsapp', 'unknown')}"}
+            return {**data, "id": f"error-{data.get('whatsapp_phone', 'unknown')}"}
 
     async def salvar_guia(self, user_id: str, guia_data: Dict[str, Any]) -> Dict[str, Any]:
         """Salva guia no banco de dados."""

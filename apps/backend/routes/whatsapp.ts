@@ -1,6 +1,8 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { getCertWhatsappService } from "../src/services/whatsapp/cert-whatsapp.service";
+import { getAIAgent, buscarPerfilPorTelefone } from "../src/services/ai/ai-agent.service";
+import { isDualUser, getDualMenuMessage, processDualMenuChoice, isShowingDualMenu, setShowingDualMenu, getDualMenuChoice } from "../src/services/whatsapp/dual-menu.service";
 
 const outboundSchema = z.object({
   to: z.string().min(8),
@@ -78,11 +80,8 @@ export async function registerWhatsappRoutes(app: FastifyInstance) {
     // Log completo do payload recebido para debug
     console.log("\n=== WEBHOOK RECEBIDO ===");
     console.log("Tipo do body:", typeof request.body);
-    console.log("Body é null?:", request.body === null);
-    console.log("Body é undefined?:", request.body === undefined);
     console.log("Body completo:", JSON.stringify(request.body, null, 2));
     console.log("Content-Type:", request.headers["content-type"]);
-    console.log("Keys do body:", request.body ? Object.keys(request.body) : "sem keys");
     console.log("========================\n");
 
     request.log.info({
@@ -97,57 +96,72 @@ export async function registerWhatsappRoutes(app: FastifyInstance) {
     console.log("From extraído:", from);
     console.log("Message extraído:", message);
 
-    request.log.info({ from, message, bodyKeys: Object.keys(request.body || {}) }, "Webhook WhatsApp - dados extraídos");
+    request.log.info({ from, message }, "Webhook WhatsApp - dados extraídos");
 
     if (!from || !message) {
-      request.log.warn({ 
-        body: request.body, 
-        from, 
-        message 
-      }, "Webhook WhatsApp - payload inválido");
+      request.log.warn({ body: request.body, from, message }, "Webhook WhatsApp - payload inválido");
       return { ok: false, reason: "payload inválido", received: { from, message } };
     }
 
-    const normalized = message.toLowerCase();
-    let resposta: string;
-
-    if (normalized.includes("certificado") && normalized.includes("status")) {
-      resposta = [
-        "🧾 *Status do Certificado Digital*",
-        "1. Gere o pagamento PIX de R$150 no painel ou peça o link por aqui.",
-        "2. Após o pagamento enviaremos seu agendamento com a Certisign.",
-        "3. Quando o certificado estiver ativo você receberá uma notificação automática.",
-        "Deseja que eu gere o QR Code novamente?"
-      ].join("\n\n");
-    } else if (normalized.includes("pagar") || normalized.includes("pix")) {
-      resposta = [
-        "🔗 *Pagamento do Certificado*",
-        "Enviei um novo QR Code PIX de R$150 para você completar o processo.",
-        "Depois do pagamento acompanhe por aqui. Qualquer dúvida é só responder."
-      ].join("\n\n");
-    } else if (normalized.includes("ajuda") || normalized.includes("suporte")) {
-      resposta = [
-        "👋 *Equipe GuiasMEI*",
-        "Estou aqui para ajudar com certificado, NFSe e INSS.",
-        "Para falar com um especialista humano basta responder \"humano\" e encaminharemos o atendimento."
-      ].join("\n\n");
-    } else {
-      resposta = [
-        "🙋 *Fluxo Certificado GuiasMEI*",
-        "1. Gere o pagamento PIX de R$150.",
-        "2. Aguarde o contato da Certisign para validar seus documentos.",
-        "3. Assim que estiver ativo liberamos a emissão de NFS-e.",
-        "Precisa refazer alguma etapa? É só me contar."
-      ].join("\n\n");
-    }
-
     try {
+      // CORRIGIDO: Usar o sistema de agente IA que reconhece usuários cadastrados
+      const aiAgent = getAIAgent();
+
+      // Buscar perfil do usuário
+      const userProfile = await buscarPerfilPorTelefone(from);
+
+      request.log.info({ from, userProfile: userProfile ? { userId: userProfile.userId, userType: userProfile.userType } : null }, "Perfil de usuário encontrado");
+
+      // Se usuário tem perfil e é duplo (MEI + Autônomo), mostrar menu duplo
+      if (userProfile && userProfile.userId) {
+        const isDual = await isDualUser(userProfile.userId, userProfile.userType || null);
+
+        if (isDual) {
+          // Verificar se está escolhendo do menu
+          if (isShowingDualMenu(from)) {
+            const choice = processDualMenuChoice(from, message);
+            if (choice.valid && choice.response) {
+              await whatsappService.enviarMensagemDireta(from, choice.response);
+              request.log.info({ from, choice: choice.choice }, "Opção do menu duplo escolhida");
+              return { ok: true, dualMenuChoice: choice.choice };
+            }
+          }
+
+          // Se não tem escolha ativa, mostrar menu duplo
+          const lastChoice = getDualMenuChoice(from);
+          if (!lastChoice) {
+            setShowingDualMenu(from, userProfile.nome);
+            const menuMessage = getDualMenuMessage(userProfile.nome);
+            await whatsappService.enviarMensagemDireta(from, menuMessage);
+            request.log.info({ from }, "Menu duplo exibido para usuário MEI+Autônomo");
+            return { ok: true, showedDualMenu: true };
+          }
+        }
+      }
+
+      // Processar mensagem com IA (inclui verificação de perfil, menu duplo, etc)
+      const context = {
+        user: userProfile,
+        conversationHistory: [] // Pode ser expandido para incluir histórico do banco
+      };
+
+      const resposta = await aiAgent.processarMensagem(message, context);
+
       await whatsappService.enviarMensagemDireta(from, resposta);
       request.log.info({ from, respostaLength: resposta.length }, "Resposta enviada com sucesso via WhatsApp");
       return { ok: true };
     } catch (error) {
-      request.log.error({ error, from, message }, "Erro ao enviar resposta via WhatsApp");
-      return { ok: false, reason: "erro ao enviar resposta", error: (error as Error).message };
+      request.log.error({ error, from, message }, "Erro ao processar mensagem via IA");
+
+      // Fallback: resposta genérica em caso de erro
+      const respostaFallback = "Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes.";
+      try {
+        await whatsappService.enviarMensagemDireta(from, respostaFallback);
+      } catch (fallbackError) {
+        request.log.error({ fallbackError }, "Erro ao enviar mensagem de fallback");
+      }
+
+      return { ok: false, reason: "erro ao processar mensagem", error: (error as Error).message };
     }
   });
 }
