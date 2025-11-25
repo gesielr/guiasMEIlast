@@ -12,19 +12,41 @@ const outboundSchema = z.object({
 type OutboundPayload = z.infer<typeof outboundSchema>;
 
 function extractWhatsappNumber(body: any): string | null {
-  const from = body?.From ?? body?.from ?? body?.telefone;
+  // Z-API envia como "phone"
+  // Twilio envia como "From" no formato "whatsapp:+5511999999999"
+  const from = body?.phone ?? body?.From ?? body?.from ?? body?.telefone;
   if (typeof from === "string" && from.length > 0) {
-    return from;
+    // Remove o prefixo "whatsapp:" se existir, mantendo o "+" e o número
+    // Retorna no formato "+5511999999999" ou "554891589495"
+    return from.replace(/^whatsapp:/, "").trim();
   }
   return null;
 }
 
 function extractMessage(body: any): string {
-  return (body?.Body ?? body?.body ?? body?.mensagem ?? "").toString().trim();
+  // Z-API envia como "text.message"
+  // Twilio envia como "Body"
+  const message = body?.text?.message ?? body?.Body ?? body?.body ?? body?.mensagem ?? "";
+  return message.toString().trim();
 }
 
 export async function registerWhatsappRoutes(app: FastifyInstance) {
   const whatsappService = getCertWhatsappService();
+
+  console.log("🔵 Rotas WhatsApp registradas - código atualizado!");
+
+  // Endpoint de teste super simples - sem depender de body parsing
+  app.get("/whatsapp/ping", async () => {
+    console.log("PING RECEBIDO!");
+    return { pong: true, timestamp: new Date().toISOString() };
+  });
+
+  // Endpoint de teste para debug
+  app.post("/whatsapp/test", async (request: FastifyRequest) => {
+    console.log("🟢🟢🟢 POST TESTE - Handler chamado!");
+    console.log("Body:", JSON.stringify(request.body));
+    return { ok: true, received: request.body };
+  });
 
   app.post("/whatsapp", async (request: FastifyRequest<{ Body: OutboundPayload }>) => {
     const payload = outboundSchema.parse(request.body);
@@ -53,12 +75,37 @@ export async function registerWhatsappRoutes(app: FastifyInstance) {
   });
 
   app.post("/whatsapp/webhook", async (request: FastifyRequest) => {
+    // Log completo do payload recebido para debug
+    console.log("\n=== WEBHOOK RECEBIDO ===");
+    console.log("Tipo do body:", typeof request.body);
+    console.log("Body é null?:", request.body === null);
+    console.log("Body é undefined?:", request.body === undefined);
+    console.log("Body completo:", JSON.stringify(request.body, null, 2));
+    console.log("Content-Type:", request.headers["content-type"]);
+    console.log("Keys do body:", request.body ? Object.keys(request.body) : "sem keys");
+    console.log("========================\n");
+
+    request.log.info({
+      body: request.body,
+      headers: request.headers,
+      contentType: request.headers["content-type"]
+    }, "Webhook WhatsApp recebido - payload completo");
+
     const from = extractWhatsappNumber(request.body);
     const message = extractMessage(request.body);
-    request.log.info({ from, message }, "Webhook WhatsApp recebido");
+
+    console.log("From extraído:", from);
+    console.log("Message extraído:", message);
+
+    request.log.info({ from, message, bodyKeys: Object.keys(request.body || {}) }, "Webhook WhatsApp - dados extraídos");
 
     if (!from || !message) {
-      return { ok: false, reason: "payload inválido" };
+      request.log.warn({ 
+        body: request.body, 
+        from, 
+        message 
+      }, "Webhook WhatsApp - payload inválido");
+      return { ok: false, reason: "payload inválido", received: { from, message } };
     }
 
     const normalized = message.toLowerCase();
@@ -94,8 +141,14 @@ export async function registerWhatsappRoutes(app: FastifyInstance) {
       ].join("\n\n");
     }
 
-    await whatsappService.enviarMensagemDireta(from, resposta);
-    return { ok: true };
+    try {
+      await whatsappService.enviarMensagemDireta(from, resposta);
+      request.log.info({ from, respostaLength: resposta.length }, "Resposta enviada com sucesso via WhatsApp");
+      return { ok: true };
+    } catch (error) {
+      request.log.error({ error, from, message }, "Erro ao enviar resposta via WhatsApp");
+      return { ok: false, reason: "erro ao enviar resposta", error: (error as Error).message };
+    }
   });
 }
 

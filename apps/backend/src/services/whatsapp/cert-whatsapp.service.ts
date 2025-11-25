@@ -1,14 +1,15 @@
 // apps/backend/src/services/whatsapp/cert-whatsapp.service.ts
 // Serviço especializado em notificações WhatsApp relacionadas ao fluxo de certificado digital
 
-import twilio from "twilio";
+import axios from "axios";
 import { createSupabaseClients } from "../../../services/supabase";
 
 const { admin } = createSupabaseClients();
 
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_WHATSAPP_NUMBER = process.env.TWILIO_WHATSAPP_NUMBER;
+const ZAPI_BASE_URL = process.env.ZAPI_BASE_URL;
+const ZAPI_INSTANCE_ID = process.env.ZAPI_INSTANCE_ID;
+const ZAPI_TOKEN = process.env.ZAPI_TOKEN;
+const ZAPI_CLIENT_TOKEN = process.env.ZAPI_CLIENT_TOKEN;
 
 function sanitizeWhatsApp(number?: string | null): string | null {
   if (!number) return null;
@@ -17,46 +18,49 @@ function sanitizeWhatsApp(number?: string | null): string | null {
   const digits = number.replace(/\D+/g, "");
   if (digits.length < 10) return null;
 
-  if (number.startsWith("whatsapp:")) {
-    return number;
-  }
-
+  // Para Z-API, retorna apenas os dígitos
   // Assume número brasileiro (55) se vier com DDD
   const full = digits.startsWith("55") ? digits : `55${digits}`;
-  return `whatsapp:+${full}`;
+  return full;
 }
 
 export class CertWhatsappService {
   private enabled: boolean;
-  private client: twilio.Twilio | null = null;
 
   constructor() {
-    this.enabled = Boolean(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && TWILIO_WHATSAPP_NUMBER);
+    this.enabled = Boolean(ZAPI_BASE_URL && ZAPI_INSTANCE_ID && ZAPI_TOKEN);
     if (this.enabled) {
-      this.client = twilio(TWILIO_ACCOUNT_SID!, TWILIO_AUTH_TOKEN!);
-      console.log("[WHATSAPP] Twilio configurado para notificações de certificado.");
+      console.log("[WHATSAPP] Z-API configurado para notificações de certificado.");
     } else {
-      console.warn("[WHATSAPP] Variáveis Twilio ausentes. Notificações serão apenas logadas.");
+      console.warn("[WHATSAPP] Variáveis Z-API ausentes. Notificações serão apenas logadas.");
     }
   }
 
   private async sendMessage(to: string, body: string): Promise<void> {
-    if (!this.enabled || !this.client) {
-      console.log("[WHATSAPP:MOCK]", { from: TWILIO_WHATSAPP_NUMBER, to, body });
+    if (!this.enabled) {
+      console.log("[WHATSAPP:MOCK]", { to, body });
       return;
     }
 
     try {
-      await this.client.messages.create({
-        from: TWILIO_WHATSAPP_NUMBER!,
-        to,
-        body
-      });
-      console.log("[WHATSAPP] Mensagem enviada", { to });
+      const response = await axios.post(
+        `${ZAPI_BASE_URL}/send-text`,
+        {
+          phone: to,
+          message: body
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Client-Token': ZAPI_CLIENT_TOKEN
+          }
+        }
+      );
+      console.log("[WHATSAPP] Mensagem enviada via Z-API", { to, response: response.data });
     } catch (error: any) {
-      console.error("[WHATSAPP] Falha ao enviar mensagem", {
+      console.error("[WHATSAPP] Falha ao enviar mensagem via Z-API", {
         to,
-        error: error?.message || error
+        error: error?.response?.data || error?.message || error
       });
     }
   }

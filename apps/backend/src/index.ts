@@ -83,11 +83,6 @@ async function buildServer() {
   if (hasSicoobConfiguration()) {
     await app.register(fastifyExpress);
 
-    // Adicionar parsers Express para corpo e raw body
-    const express = (await import('express')).default;
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-
     initializeSicoobServices({
       environment: env.SICOOB_ENVIRONMENT ?? "sandbox",
       baseUrl: (env.SICOOB_API_BASE_URL || (env as any).SICOOB_PIX_BASE_URL)!,

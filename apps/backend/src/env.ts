@@ -1,7 +1,7 @@
 import { config as loadEnv } from "dotenv";
 import { z } from "zod";
 
-loadEnv();
+loadEnv({ override: true });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -14,12 +14,19 @@ const envSchema = z.object({
   WHATSAPP_WELCOME_TEMPLATE: z
     .string()
     .default("Olá! Sou a IA do GuiasMEI. Estou aqui para te ajudar com suas guias e notas fiscais."),
+
+  // Z-API WhatsApp Configuration
+  ZAPI_BASE_URL: z.string().url().optional(),
+  ZAPI_INSTANCE_ID: z.string().optional(),
+  ZAPI_TOKEN: z.string().optional(),
+  ZAPI_CLIENT_TOKEN: z.string().optional(),
+
   STRIPE_PRICE_ID: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
-  
+
   // Ambiente da API NFS-e (production | homologation)
   NFSE_ENVIRONMENT: z.enum(['production', 'homologation']).default('production'),
-  
+
   // URLs baseadas no ambiente
   NFSE_BASE_URL: z.string().url().transform((val, ctx) => {
     const env = (ctx as any)._data?.NFSE_ENVIRONMENT || 'production';
@@ -28,12 +35,12 @@ const envSchema = z.object({
     }
     return val;
   }),
-  
+
   // URLs específicas para diferentes módulos
   NFSE_CONTRIBUINTES_BASE_URL: z.string().url().optional(),
   NFSE_PARAMETROS_BASE_URL: z.string().url().optional(),
   NFSE_DANFSE_BASE_URL: z.string().url().optional(),
-  
+
   NFSE_CERT_PFX_PATH: z.string().optional(),
   NFSE_CERT_PFX_BASE64: z.string().optional(),
   NFSE_CERT_PFX_PASS: z.string().optional(),

@@ -1,0 +1,31 @@
+// ============================================================================
+// INSTRUÇÕES: Como adicionar INSS_API_URL ao env.ts
+// ============================================================================
+//
+// 1. Abra o arquivo: apps/backend/src/env.ts
+//
+// 2. Encontre a linha 43 que contém:
+//    NFSE_CREDENTIAL_SECRET: z.string().min(16, "NFSE_CREDENTIAL_SECRET must be at least 16 characters"),
+//
+// 3. Adicione IMEDIATAMENTE APÓS essa linha (antes do comentário "// Configurações Sicoob"):
+//
+//   // Configurações INSS (API Python)
+//   INSS_API_URL: z.string().url().default("http://localhost:8000"),
+//
+// 4. O resultado final deve ficar assim:
+//
+//   NFSE_CREDENTIAL_SECRET: z.string().min(16, "NFSE_CREDENTIAL_SECRET must be at least 16 characters"),
+//
+//   // Configurações INSS (API Python)
+//   INSS_API_URL: z.string().url().default("http://localhost:8000"),
+//
+//   // Configurações Sicoob
+//   SICOOB_ENVIRONMENT: z.enum(['sandbox', 'production']).optional(),
+//
+// 5. Salve o arquivo
+//
+// 6. O servidor Node.js vai reiniciar automaticamente
+//
+// 7. Teste novamente pelo WhatsApp!
+//
+// ============================================================================
