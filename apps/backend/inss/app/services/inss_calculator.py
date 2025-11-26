@@ -23,7 +23,9 @@ class CalculoSAL:
 class INSSCalculator:
     """Realiza cálculos de contribuições conforme regras SAL."""
 
-    def __init__(self) -> None:
+    def __init__(self, sal_manager=None) -> None:
+        # sal_manager é aceito para compatibilidade com chamadas que injetam SALVersionManager
+        self.sal_manager = sal_manager
         settings = get_settings()
         self.salario_minimo_2025 = settings.salario_minimo_2025
         self.teto_inss_2025 = settings.teto_inss_2025

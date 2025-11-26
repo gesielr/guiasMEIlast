@@ -3,6 +3,8 @@ import { z } from "zod";
 import { getCertWhatsappService } from "../src/services/whatsapp/cert-whatsapp.service";
 import { getAIAgent, buscarPerfilPorTelefone } from "../src/services/ai/ai-agent.service";
 import { isDualUser, getDualMenuMessage, processDualMenuChoice, isShowingDualMenu, setShowingDualMenu, getDualMenuChoice } from "../src/services/whatsapp/dual-menu.service";
+import { processarFluxoGps, isInGpsFlow } from "../src/services/whatsapp/gps-emission-flow.service";
+import { processarFluxoEmissao, isInEmissionFlow } from "../src/services/whatsapp/nfse-emission-flow.service";
 
 const outboundSchema = z.object({
   to: z.string().min(8),
@@ -112,18 +114,92 @@ export async function registerWhatsappRoutes(app: FastifyInstance) {
 
       request.log.info({ from, userProfile: userProfile ? { userId: userProfile.userId, userType: userProfile.userType } : null }, "Perfil de usuário encontrado");
 
+      // Fluxos GPS/NFS-e têm prioridade sobre menu ou IA se já estiverem ativos
+      if (userProfile?.userId) {
+        const normalized = message.toLowerCase();
+        const shouldStartGps = normalized.includes("emitir gps") || normalized.includes("emitir guia");
+        const shouldStartNfse =
+          normalized.includes("emitir nota") ||
+          normalized.includes("emitir nfse") ||
+          normalized.includes("nota fiscal");
+
+        // Fluxo GPS (INSS)
+        if (isInGpsFlow(from) || shouldStartGps) {
+          const flow = await processarFluxoGps(from, message, userProfile.userId, userProfile);
+          if (flow.response) {
+            await whatsappService.enviarMensagemDireta(from, flow.response);
+          }
+          if (flow.pdfUrl) {
+            await whatsappService.enviarMensagemDireta(from, `Segue o PDF da guia:\n${flow.pdfUrl}`);
+          }
+          return {
+            ok: true,
+            flow: "gps",
+            emissaoConcluida: flow.emissaoConcluida ?? false,
+            linhaDigitavel: flow.linhaDigitavel
+          };
+        }
+
+        // Fluxo NFS-e
+        if (isInEmissionFlow(from) || shouldStartNfse) {
+          const flow = await processarFluxoEmissao(from, message, userProfile.userId, userProfile);
+          if (flow.response) {
+            await whatsappService.enviarMensagemDireta(from, flow.response);
+          }
+          if (flow.pdfUrl) {
+            await whatsappService.enviarMensagemDireta(from, `Segue o PDF da NFS-e:\n${flow.pdfUrl}`);
+          }
+          return {
+            ok: true,
+            flow: "nfse",
+            emissaoConcluida: flow.emissaoConcluida ?? false
+          };
+        }
+      }
+
       // Se usuário tem perfil e é duplo (MEI + Autônomo), mostrar menu duplo
       if (userProfile && userProfile.userId) {
         const isDual = await isDualUser(userProfile.userId, userProfile.userType || null);
 
         if (isDual) {
-          // Verificar se está escolhendo do menu
-          if (isShowingDualMenu(from)) {
-            const choice = processDualMenuChoice(from, message);
-            if (choice.valid && choice.response) {
-              await whatsappService.enviarMensagemDireta(from, choice.response);
-              request.log.info({ from, choice: choice.choice }, "Opção do menu duplo escolhida");
-              return { ok: true, dualMenuChoice: choice.choice };
+          // Se já está em fluxo de GPS/NFS-e, não mostrar menu novamente
+          if (isInGpsFlow(from) || isInEmissionFlow(from)) {
+            request.log.info({ from }, "Usuário em fluxo ativo - menu duplo pulado");
+          } else {
+            // Verificar se está escolhendo do menu
+            if (isShowingDualMenu(from)) {
+              const choice = processDualMenuChoice(from, message);
+              if (choice.valid && choice.response) {
+                await whatsappService.enviarMensagemDireta(from, choice.response);
+                 request.log.info({ from, choice: choice.choice }, "Opção do menu duplo escolhida");
+
+                 // Iniciar o fluxo escolhido logo após a confirmação
+                 if (userProfile.userId) {
+                   if (choice.choice === "gps") {
+                     const flow = await processarFluxoGps(from, "emitir guia", userProfile.userId, userProfile);
+                     if (flow.response) {
+                       await whatsappService.enviarMensagemDireta(from, flow.response);
+                     }
+                     if (flow.pdfUrl) {
+                       await whatsappService.enviarMensagemDireta(from, `Segue o PDF da guia:\n${flow.pdfUrl}`);
+                     }
+                     return { ok: true, dualMenuChoice: choice.choice, flowStarted: "gps" };
+                   }
+
+                   if (choice.choice === "nfse") {
+                     const flow = await processarFluxoEmissao(from, "emitir nota", userProfile.userId, userProfile);
+                     if (flow.response) {
+                       await whatsappService.enviarMensagemDireta(from, flow.response);
+                     }
+                     if (flow.pdfUrl) {
+                       await whatsappService.enviarMensagemDireta(from, `Segue o PDF da NFS-e:\n${flow.pdfUrl}`);
+                     }
+                     return { ok: true, dualMenuChoice: choice.choice, flowStarted: "nfse" };
+                   }
+                 }
+
+                 return { ok: true, dualMenuChoice: choice.choice };
+               }
             }
           }
 
@@ -140,6 +216,7 @@ export async function registerWhatsappRoutes(app: FastifyInstance) {
       }
 
       // Processar mensagem com IA (inclui verificação de perfil, menu duplo, etc)
+
       const context = {
         user: userProfile,
         conversationHistory: [] // Pode ser expandido para incluir histórico do banco

@@ -27,10 +27,12 @@ class GuiasMEIAgent {
   private enabled: boolean = false;
 
   constructor() {
-    if (env.OPENAI_API_KEY && env.OPENAI_API_KEY.length > 0) {
+    const apiKey = (env.OPENAI_API_KEY || "").trim();
+
+    if (apiKey.length > 0) {
       try {
         this.openai = new OpenAI({
-          apiKey: env.OPENAI_API_KEY
+          apiKey
         });
         this.enabled = true;
         console.log("[AI AGENT] OpenAI configurado com sucesso");
@@ -768,4 +770,3 @@ export async function buscarPerfilPorTelefone(telefone: string): Promise<UserCon
     return null;
   }
 }
-

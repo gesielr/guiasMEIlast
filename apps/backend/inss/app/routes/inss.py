@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import logging
 import traceback
-from datetime import datetime
+from datetime import datetime, date
 from decimal import Decimal
 from io import BytesIO
 from typing import Any, Dict, Optional
@@ -178,6 +178,28 @@ from ..services.inss_calculator import INSSCalculator
 from ..services.l_digitavel_generator import LDigitavelGenerator
 from ..services.gps_pdf_generator_v2 import PDFGeneratorV2
 
+
+def _variacoes_whatsapp(numero: str) -> list[str]:
+    """Gera variações do número com e sem o 9 após o DDD."""
+    digits = "".join(filter(str.isdigit, numero))
+    if not digits.startswith("55"):
+        digits = "55" + digits
+
+    variacoes = {digits}
+    sem_55 = digits[2:]
+
+    # Se faltar o 9 (10 dígitos), inserir após o DDD
+    if len(sem_55) == 10:
+        with_9 = "55" + sem_55[:2] + "9" + sem_55[2:]
+        variacoes.add(with_9)
+
+    # Se tiver 11 dígitos e o terceiro for 9, gerar sem o 9 também
+    if len(sem_55) == 11 and sem_55[2] == "9":
+        without_9 = "55" + sem_55[:2] + sem_55[3:]
+        variacoes.add(without_9)
+
+    return list(variacoes)
+
 @router.post("/emitir")
 async def emitir_guia(
     guia_data: EmitirGuiaRequest, 
@@ -205,87 +227,76 @@ async def emitir_guia(
         }
         
         target_user_type = user_type_map.get(guia_data.tipo_contribuinte, 'autonomo')
-        
-        # Tentar buscar usuário específico por whatsapp + tipo
-        print(f"[INSS] Buscando usuário whatsapp={guia_data.whatsapp} tipo={target_user_type}")
-        usuario = await supabase_service.obter_usuario_por_whatsapp_e_tipo(
-            guia_data.whatsapp,
-            target_user_type
-        )
-        
-        # Se não encontrar, tentar com variação do WhatsApp (adicionar/remover 9)
-        if not usuario:
-            # Tentar variação do número (554891589495 <-> 5548991589495)
-            whatsapp_original = guia_data.whatsapp
-            if len(whatsapp_original) == 12 and whatsapp_original[4] != '9':
-                # Adicionar o 9: 554891589495 -> 5548991589495
-                whatsapp_variacao = whatsapp_original[:4] + '9' + whatsapp_original[4:]
-            elif len(whatsapp_original) == 13 and whatsapp_original[4] == '9':
-                # Remover o 9: 5548991589495 -> 554891589495
-                whatsapp_variacao = whatsapp_original[:4] + whatsapp_original[5:]
-            else:
-                whatsapp_variacao = None
-            
-            if whatsapp_variacao:
-                print(f"[INSS] Tentando variação do WhatsApp: {whatsapp_variacao}")
-                usuario = await supabase_service.obter_usuario_por_whatsapp_e_tipo(
-                    whatsapp_variacao,
-                    target_user_type
+        # Tentar buscar usuario especifico por whatsapp + tipo (inclui variacoes com/sem 9)
+        print(f"[INSS] Buscando usuario whatsapp={guia_data.whatsapp} tipo={target_user_type}")
+        usuario = None
+        for phone in _variacoes_whatsapp(guia_data.whatsapp):
+            try:
+                registros = await supabase_service.get_records(
+                    "profiles",
+                    {"whatsapp_phone": phone, "user_type": target_user_type}
                 )
-        
-        # Fallback: se não encontrar específico, busca genérico
+                if registros:
+                    usuario = registros[0]
+                    guia_data.whatsapp = phone  # manter consistente para downstream
+                    break
+            except Exception as e:
+                print(f"[INSS] Falha na busca especifica ({phone}): {e}")
+
+        # Fallback: se nao encontrar especifico, busca generico (qualquer tipo)
         if not usuario:
-            print(f"[INSS] Usuário específico tipo={target_user_type} não encontrado. Tentando busca genérica.")
-            usuario = await supabase_service.obter_usuario_por_whatsapp(guia_data.whatsapp)
-            
+            print(f"[INSS] Usuario especifico tipo={target_user_type} nao encontrado. Tentando busca generica.")
+            for phone in _variacoes_whatsapp(guia_data.whatsapp):
+                usuario = await supabase_service.obter_usuario_por_whatsapp(phone)
+                if usuario:
+                    guia_data.whatsapp = phone
+                    break
+
         if not usuario or not usuario.get("id"):
-             print(f"[ERROR] Usuário não encontrado para whatsapp={guia_data.whatsapp}")
-             raise HTTPException(status_code=500, detail="Falha ao identificar usuário.")
+            print(f"[ERROR] Usuario nao encontrado para whatsapp={guia_data.whatsapp}")
+            raise HTTPException(status_code=500, detail="Falha ao identificar usuario.")
+
         user_id = usuario["id"]
-        print(f"[INSS] Usuário identificado: id={user_id}, pis={usuario.get('pis')}")
-        
-        # 3. Validação Completa
-        # Converter string 'MM/AAAA' para int
+        print(f"[INSS] Usuario identificado: id={user_id}, pis={usuario.get('pis')}")
+        # Converter competencia para mes/ano
         try:
-            mes, ano = map(int, guia_data.competencia.split('/'))
+            mes, ano = map(int, guia_data.competencia.split("/"))
             competencia = guia_data.competencia
-        except:
-            raise HTTPException(status_code=400, detail="Formato de competência inválido. Use MM/AAAA")
-            
-        # Mapear tipo de contribuinte
+        except Exception:
+            raise HTTPException(status_code=400, detail="Formato de competencia invalido. Use MM/AAAA")
+
         tipo_map = {
             "autonomo": "ci_normal",
             "autonomo_simplificado": "ci_simplificado",
-            "individual": "ci_normal"
+            "individual": "ci_normal",
         }
         tipo_contribuinte = tipo_map.get(guia_data.tipo_contribuinte, guia_data.tipo_contribuinte)
         
         validacao = await validator.validar_completo(
-            cpf=usuario.get("document") or usuario.get("cpf", "00000000000"), # Fallback se não tiver CPF no user
+            cpf=usuario.get("document") or usuario.get("cpf", "00000000000"),  # Fallback se nao tiver CPF no user
             periodo_mes=mes,
             periodo_ano=ano,
             tipo_contribuinte=tipo_contribuinte,
             valor_base=Decimal(str(guia_data.valor_base))
         )
         
-        if not validacao['valido']:
+        if not validacao["valido"]:
+            raise HTTPException(status_code=400, detail="Erro de validacao: " + "; ".join(validacao["erros"]))
             raise HTTPException(status_code=400, detail=f"Erro de validação: {'; '.join(validacao['erros'])}")
 
         # 4. Calcular
+        # 4. Calcular
         data_competencia = date(ano, mes, 1)
         if tipo_contribuinte == "ci_simplificado":
-            calculo = await calculator.calcular_contribuinte_individual_simplificado(Decimal(str(guia_data.valor)), data_competencia)
-            codigo_gps = "1163"
+            calculo = calculator.calcular_contribuinte_individual(float(guia_data.valor_base), "simplificado")
+            codigo_gps = calculo.codigo_gps or "1163"
         elif tipo_contribuinte == "domestico":
-            # Adaptar retorno de CalculoSAL para dict se necessário, ou usar método que retorna dict
-            # O método calcular_domestico retorna CalculoSAL object
-            calc_obj = await calculator.calcular_domestico(guia_data.valor, data_competencia)
+            calc_obj = await calculator.calcular_domestico(float(guia_data.valor_base), data_competencia)
             calculo = calc_obj.detalhes
             codigo_gps = calc_obj.codigo_gps
         else:
-            calculo = await calculator.calcular_contribuinte_individual_normal(Decimal(str(guia_data.valor)), data_competencia)
-            codigo_gps = "1007"
-            
+            calculo = calculator.calcular_contribuinte_individual(float(guia_data.valor_base), "normal")
+            codigo_gps = calculo.codigo_gps or "1007"
         # 6. Emissão via GPSHybridService (Sempre usa o oficial ou SAL)
         print(f"[DEBUG] Iniciando emissão híbrida para {competencia}")
         try:
@@ -298,7 +309,7 @@ async def emitir_guia(
                 "cpf": usuario.get("cpf") or usuario.get("document"),
                 "nit": usuario.get("pis") or usuario.get("nit"),
                 "endereco": usuario.get("endereco") or usuario.get("address"),
-                "telefone": usuario.get("telefone") or request.whatsapp,
+                "telefone": usuario.get("telefone") or guia_data.whatsapp,
                 "uf": usuario.get("endereco_uf") or usuario.get("uf"),
             }
 

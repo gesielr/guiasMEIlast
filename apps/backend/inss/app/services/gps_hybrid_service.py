@@ -215,11 +215,10 @@ class GPSHybridService:
         # Validar código de barras gerado (deve ter 48 dígitos)
         if not codigo_barras or len(codigo_barras) != 48:
             raise ValueError(f"Código de barras inválido: deve ter 48 dígitos, recebido {len(codigo_barras) if codigo_barras else 0}")
-        
-        # Validar usando o serviço (método estático)
-        from ..services.codigo_barras_gps import CodigoBarrasGPS
+        # Validar usando o servico (metodo estatico)
         if not CodigoBarrasGPS.validar(codigo_barras):
-            raise ValueError("Código de barras gerado não passou na validação")
+            raise ValueError("Codigo de barras gerado nao passou na validacao")
+        
         
         print(f"[GPS HYBRID] Código de barras gerado e validado: {codigo_barras[:10]}...{codigo_barras[-5:]}")
         

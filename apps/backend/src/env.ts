@@ -15,6 +15,10 @@ const envSchema = z.object({
     .string()
     .default("Olá! Sou a IA do GuiasMEI. Estou aqui para te ajudar com suas guias e notas fiscais."),
 
+  OPENAI_API_KEY: z.string().optional(),
+  OPENAI_MODEL: z.string().default("gpt-4o"),
+  INSS_API_URL: z.string().url().default("http://127.0.0.1:8000"),
+
   // Z-API WhatsApp Configuration
   ZAPI_BASE_URL: z.string().url().optional(),
   ZAPI_INSTANCE_ID: z.string().optional(),
