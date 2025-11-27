@@ -1,27 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(findstr:*)",
-      "Bash(timeout /t 3)",
-      "Bash(taskkill:*)",
-      "Bash(powershell -Command \"Get-Process node | Stop-Process -Force\")",
-      "Bash(powershell:*)",
-      "Bash(npm run dev:*)",
-      "Bash(dir:*)",
-      "Bash(node:*)",
-      "Bash(move test-zapi-direct.js test-zapi-direct.cjs)",
-      "Bash(ren:*)",
-      "Bash(git remote:*)",
-      "Bash(git add:*)",
-      "Bash(del nul 2)",
-      "Bash($null)",
-      "Bash(git rm:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(Select-Object -Last 30)",
-      "Bash(tasklist:*)",
-      "Bash(netstat:*)",
-      "Bash(npm install:*)"
+      "Bash(Remove-Item -Force)",
+      "Bash(py verificar_dv.py)",
+      "Bash(py verificar_dv_simples.py)",
+      "Bash(py verificar_codigo_oficial.py:*)",
+      "Bash(py -c:*)"
     ],
     "deny": [],
     "ask": []

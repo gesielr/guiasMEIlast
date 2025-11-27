@@ -257,13 +257,10 @@ class GPSPDFGeneratorOficial:
         Returns:
             BytesIO com PDF gerado
         """
-        
-        # Cria buffer ou arquivo em A4 PORTRAIT (conforme prompt oficial)
-        if output_path:
-            c = canvas.Canvas(output_path, pagesize=A4)
-        else:
-            buffer = BytesIO()
-            c = canvas.Canvas(buffer, pagesize=A4)
+
+        # Cria buffer em A4 PORTRAIT (conforme prompt oficial)
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=A4)
         
         # Desenha todos os elementos
         self._desenhar_cabecalho(c)
@@ -278,12 +275,10 @@ class GPSPDFGeneratorOficial:
         
         # Finaliza
         c.save()
-        
-        if output_path:
-            return output_path
-        else:
-            buffer.seek(0)
-            return buffer
+
+        # Retorna buffer
+        buffer.seek(0)
+        return buffer
     
     def _desenhar_cabecalho(self, c: canvas.Canvas):
         """
@@ -709,13 +704,11 @@ class GPSPDFGeneratorOficial:
             # e usar o valor do prompt como referência máxima
             bar_width_base_prompt = GPSEstilo.CODIGO_BARRAS_LARGURA_BARRA  # 0.75mm do prompt
             
-            # Calcular módulo fino ideal para ~150mm de largura total
-            # Se o cálculo resultar em valor muito diferente, usar o calculado
-            # mas limitado pelo valor do prompt (não mais que 0.75mm)
-            bar_width_otimizado = min(bar_width_calculado, bar_width_base_prompt)
-            
-            # Garantir mínimo para legibilidade (não menos que 0.2mm)
-            bar_width_otimizado = max(bar_width_otimizado, 0.2 * mm)
+            # CORREÇÃO CRÍTICA: Para leitores bancários funcionarem, o módulo fino
+            # precisa estar entre 0.33mm e 0.43mm (padrão ISO/IEC 15417)
+            # O valor calculado (~0.27mm) é muito pequeno para leitura confiável
+            # Vamos usar 0.38mm que é o ideal para scanners bancários
+            bar_width_otimizado = 0.38 * mm  # Módulo fino ideal para scanners bancários
             
             print(f"[PDF] [DEBUG] Código de barras: {num_caracteres} caracteres, ~{modulos_estimados} módulos")
             print(f"[PDF] [DEBUG] barWidth calculado: {bar_width_calculado/mm:.3f}mm, otimizado: {bar_width_otimizado/mm:.3f}mm")

@@ -333,19 +333,23 @@ async def emitir_guia(
             if not pdf_bytes and not pdf_url:
                 raise HTTPException(status_code=500, detail="Falha na geração do PDF (sem bytes nem URL).")
 
-            # Se não tem URL (foi gerado localmente), fazer upload
-            if not pdf_url and pdf_bytes:
+            # Se não tem URL pública (foi gerado localmente ou tem URL temporária), fazer upload
+            if pdf_bytes and (not pdf_url or pdf_url.startswith("temp://")):
                 print(f"[DEBUG] Fazendo upload do PDF gerado localmente...")
                 from datetime import datetime
                 filename = f"gps_{user_id}_{competencia.replace('/', '-')}_{int(datetime.now().timestamp())}.pdf"
-                pdf_url = await supabase_service.upload_file("gps-pdfs", filename, pdf_bytes, "application/pdf")
+                # Usa bucket 'guias' que já existe e é público
+                pdf_url = await supabase_service.upload_file("guias", filename, pdf_bytes, "application/pdf")
                 print(f"[DEBUG] Upload concluído: {pdf_url}")
             
             # Preparar dados para salvar (ou atualizar)
             print(f"[DEBUG] Preparando dados para salvar...")
-            venc_padrao = calcular_vencimento_padrao(data_competencia)
+            venc_padrao = calcular_vencimento_padrao(competencia)
             ref_num = f"GPS-{user_id}-{competencia.replace('/', '')}"
             valor_total = calculo.valor
+
+            # Dados completos para a tabela guias_inss (após adicionar colunas via SQL)
+            # Nota: usuario_id será adicionado pelo método salvar_guia
             guia_save_data = {
                 "cpf": usuario.get("document") or usuario.get("cpf", ""),
                 "nome": usuario.get("name") or usuario.get("nome", "Não Informado"),
@@ -356,23 +360,27 @@ async def emitir_guia(
                 "periodo_ano": ano,
                 "tipo_contribuinte": tipo_contribuinte,
                 "codigo_gps": codigo_gps,
-                "valor_base": float(guia_data.valor),
-                "aliquota": calculo.detalhes.get('aliquota', 0.0),
+                "competencia": competencia,
+                "valor_base": float(guia_data.valor_base),
+                "aliquota": calculo.detalhes.get('aliquota', 0.0) if hasattr(calculo, 'detalhes') else 0.0,
                 "valor_contribuicao": float(calculo.valor),
-                "valor_juros": 0.0, # TODO: Implementar cálculo de juros se necessário
+                "valor_juros": 0.0,
                 "valor_multa": 0.0,
                 "valor_total": float(calculo.valor),
+                "valor": float(calculo.valor),  # Campo original da tabela
                 "vencimento": venc_padrao.isoformat(),
-            "status": "emitted",
-            "reference_number": ref_num,
-            "linha_digitavel": linha_digitavel,
-            "codigo_barras": linha_digitavel,
-            "pdf_url": pdf_url,
-            "metodo_emissao": "v2_secure"
-        }
+                "data_vencimento": venc_padrao.isoformat(),  # Campo original da tabela
+                "status": "emitida",
+                "reference_number": ref_num,
+                "linha_digitavel": linha_digitavel,
+                "codigo_barras": codigo_barras,
+                "pdf_url": pdf_url,
+                "metodo_emissao": "v2_secure",
+                "validado_sal": False  # Validação SAL não implementada neste fluxo
+            }
         
             print(f"[DEBUG] Salvando GPS v2...")
-            guia_salva = await supabase_service.salvar_gps_v2(user_id=user_id, gps_data=guia_save_data)
+            guia_salva = await supabase_service.salvar_guia(user_id=user_id, guia_data=guia_save_data)
             print(f"[DEBUG] GPS salva: {guia_salva.keys() if guia_salva else 'None'}")
         
             # Garantir ID no retorno (Correção do Bug Original)

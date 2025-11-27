@@ -1,0 +1,36 @@
+TESTE DE CORREÇÃO DO CÓDIGO DE BARRAS GPS
+==========================================
+
+Dados do PDF do usuário:
+- NIT: 273.17621.95-5 (27317621955)
+- Código: 1163
+- Competência: 11/2025
+- Valor: R$ 166,98
+
+ANTES DA CORREÇÃO (ERRADO):
+---------------------------
+NIT processado: 7317621955 (removeu primeiro dígito "2")
+Campo livre: 2000 (primeiro dígito "2" + "000")
+Linha digitável: 85820000001-8 66980270116-8 30001731762-1 19552025113-2
+Resultado: BANCO NÃO RECONHECE ❌
+
+DEPOIS DA CORREÇÃO (CORRETO):
+-----------------------------
+NIT processado: 2731762195 (removeu último dígito verificador "5")
+Campo livre: 5000 (dígito verificador "5" + "000")
+Linha digitável: (será calculada corretamente agora)
+Resultado: BANCO DEVE RECONHECER ✅
+
+EXPLICAÇÃO:
+-----------
+O NIT/PIS/PASEP brasileiro tem 11 dígitos:
+- 10 dígitos base
+- 1 dígito verificador (o último)
+
+Para GPS, o código de barras deve usar os 10 primeiros dígitos (sem o verificador),
+e o dígito verificador pode ser usado no campo livre.
+
+A correção altera:
+- codigo_barras_gps.py linhas 101-117
+- De: nit_10_digitos = nit_limpo[1:11] (remove primeiro)
+- Para: nit_10_digitos = nit_limpo[:10] (remove último)

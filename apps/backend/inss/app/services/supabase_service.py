@@ -77,22 +77,32 @@ class SupabaseService:
             return f"temp://{file_path}"
 
         try:
+            print(f"[DEBUG] Iniciando upload para bucket '{bucket}', path '{file_path}'")
+
             def _upload():
                 return self.client.storage.from_(bucket).upload(
-                    file_path, file_data, {"content-type": content_type}
+                    file_path, file_data, {"content-type": content_type, "upsert": "true"}
                 )
 
-            await asyncio.to_thread(_upload)
+            upload_result = await asyncio.to_thread(_upload)
+            print(f"[DEBUG] Upload concluído: {upload_result}")
 
             def _get_public_url():
                 return self.client.storage.from_(bucket).get_public_url(file_path)
 
             public_url = await asyncio.to_thread(_get_public_url)
+            print(f"[DEBUG] URL pública gerada: {public_url}")
+
             if not public_url:
                 raise RuntimeError("Nao foi possivel obter URL publica do arquivo")
             return public_url
         except Exception as exc:  # pragma: no cover
-            print(f"[ERROR] Erro ao fazer upload: {str(exc)[:60]}...")
+            import traceback
+            print(f"[ERROR] Erro ao fazer upload do arquivo:")
+            print(f"[ERROR]   Bucket: {bucket}")
+            print(f"[ERROR]   Path: {file_path}")
+            print(f"[ERROR]   Erro: {str(exc)}")
+            print(f"[ERROR]   Traceback: {traceback.format_exc()}")
             return f"temp://{file_path}"
 
     async def obter_usuario_por_whatsapp(self, whatsapp: str) -> Optional[Dict[str, Any]]:
@@ -124,14 +134,16 @@ class SupabaseService:
         """Salva guia no banco de dados."""
         if not self.client:
             print("[WARN] Supabase indisponivel - guia nao sera persistida")
-            return {**guia_data, "id": "mock-guia", "user_id": user_id}
+            return {**guia_data, "id": "mock-guia", "usuario_id": user_id}
 
         try:
-            data = {**guia_data, "user_id": user_id}
-            return await self.create_record("guias", data)
+            # Remove usuario_id se já existe (será adicionado abaixo)
+            data_clean = {k: v for k, v in guia_data.items() if k != "usuario_id"}
+            data = {**data_clean, "usuario_id": user_id}
+            return await self.create_record("guias_inss", data)
         except Exception as exc:  # pragma: no cover
             print(f"[ERROR] Erro ao salvar guia: {str(exc)[:60]}...")
-            return {**guia_data, "id": "error-guia", "user_id": user_id}
+            return {**guia_data, "id": "error-guia", "usuario_id": user_id}
 
     async def subir_pdf(self, bucket: str, caminho: str, conteudo: bytes) -> str:
         """Alias para upload_file - mantem compatibilidade retroativa."""
