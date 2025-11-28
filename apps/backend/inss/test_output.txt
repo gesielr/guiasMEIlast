@@ -1,0 +1,80 @@
+Traceback (most recent call last):
+  File "C:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI02\apps\backend\inss\testar_novo_gps.py", line 161, in <module>
+    testar_geracao_completa()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI02\apps\backend\inss\testar_novo_gps.py", line 101, in testar_geracao_completa
+    resultado = CodigoBarrasGPS.gerar(
+        codigo_pagamento="1163",
+    ...<2 lines>...
+        nit="27317621955"
+    )
+  File "C:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI02\apps\backend\inss\app\services\codigo_barras_gps.py", line 100, in gerar
+    print(f"\U0001f527 [GPS] DEBUG - GERANDO GPS")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\carlo\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in position 0: character maps to <undefined>
+
+====================================================================================================
+TESTES DE VALIDACAO - NOVAS MUDANCAS GPS
+====================================================================================================
+====================================================================================================
+TESTE: COMPARAÇÃO DV MÓDULO 10 vs MÓDULO 11 - LINHA DIGITÁVEL GPS
+====================================================================================================
+
+Código de barras (44 dígitos): 85810000001669802701163000173176219552025113
+ID de Valor (pos 3): 8
+
+Campos (11 dígitos cada):
+  Campo 1: 85810000001
+  Campo 2: 66980270116
+  Campo 3: 30001731762
+  Campo 4: 19552025113
+
+----------------------------------------------------------------------------------------------------
+METODO ANTIGO: DV MODULO 10 (INCORRETO PARA GPS)
+----------------------------------------------------------------------------------------------------
+  Campo 1: 85810000001 -> DV Mod10: 8 -> 85810000001-8
+  Campo 2: 66980270116 -> DV Mod10: 1 -> 66980270116-1
+  Campo 3: 30001731762 -> DV Mod10: 3 -> 30001731762-3
+  Campo 4: 19552025113 -> DV Mod10: 1 -> 19552025113-1
+
+Linha digitável Mod10: 85810000001-8 66980270116-1 30001731762-3 19552025113-1
+Total: 48 dígitos
+
+----------------------------------------------------------------------------------------------------
+METODO NOVO: DV MODULO 11 (CORRETO PARA GPS/ARRECADACAO)
+----------------------------------------------------------------------------------------------------
+  Campo 1: 85810000001 -> DV Mod11: 3 -> 85810000001-3
+  Campo 2: 66980270116 -> DV Mod11: 2 -> 66980270116-2
+  Campo 3: 30001731762 -> DV Mod11: 1 -> 30001731762-1
+  Campo 4: 19552025113 -> DV Mod11: 2 -> 19552025113-2
+
+Linha digitável Mod11: 85810000001-3 66980270116-2 30001731762-1 19552025113-2
+Total: 48 dígitos
+
+====================================================================================================
+COMPARAÇÃO:
+====================================================================================================
+
+Módulo 10 (antigo): 85810000001-8 66980270116-1 30001731762-3 19552025113-1
+Módulo 11 (novo):   85810000001-3 66980270116-2 30001731762-1 19552025113-2
+
+OK: As linhas sao DIFERENTES! DVs foram alterados corretamente.
+
+Diferencas por campo:
+  Campo 1: 85810000001-8 (Mod10) -> 85810000001-3 (Mod11)
+  Campo 2: 66980270116-1 (Mod10) -> 66980270116-2 (Mod11)
+  Campo 3: 30001731762-3 (Mod10) -> 30001731762-1 (Mod11)
+  Campo 4: 19552025113-1 (Mod10) -> 19552025113-2 (Mod11)
+
+
+
+====================================================================================================
+TESTE: GERAÇÃO COMPLETA GPS COM MÓDULO 11
+====================================================================================================
+
+================================================================================
+
+ERRO durante os testes: 'charmap' codec can't encode character '\U0001f527' in position 0: character maps to <undefined>

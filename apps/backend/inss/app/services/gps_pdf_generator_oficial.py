@@ -8,7 +8,7 @@ from reportlab.lib.units import mm, cm
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
-from reportlab.graphics.barcode import code128
+from reportlab.graphics.barcode import common  # Para Interleaved 2 of 5
 from reportlab.graphics import renderPDF
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -644,139 +644,6 @@ class GPSPDFGeneratorOficial:
         # Guardar posição Y para referência do código de barras
         self._y_competencias = y
     
-    def _desenhar_codigo_barras(self, c: canvas.Canvas, dados: Dict):
-        """
-        Desenha código de barras Code128 conforme GPSEstilo EXATAMENTE como especificado:
-        - Tipo: Code128
-        - Altura: 12mm (GPSEstilo.CODIGO_BARRAS_ALTURA)
-        - Largura de barra: 0.75mm (GPSEstilo.CODIGO_BARRAS_LARGURA_BARRA)
-        - Largura total visual: 150mm (GPSEstilo.CODIGO_BARRAS_LARGURA_TOTAL)
-        - Posicionamento: Centralizado horizontalmente
-        - Linha digitável será desenhada ABAIXO (em método separado)
-        
-        IMPORTANTE: Seguindo EXATAMENTE o prompt oficial.
-        O prompt especifica CODIGO_BARRAS_LARGURA_BARRA = 0.75mm.
-        No ReportLab Code128, barWidth é a largura do MÓDULO FINO (thin bar).
-        Vamos usar o valor do prompt e ajustar apenas se necessário para atingir largura total de 150mm.
-        """
-        codigo_barras = dados.get('codigo_barras', '')
-        
-        if not codigo_barras:
-            print("[PDF] [WARN] Código de barras não fornecido")
-            return
-        
-        # Validar que tem 48 dígitos
-        if len(codigo_barras) != 48:
-            print(f"[PDF] [WARN] Código de barras deve ter 48 dígitos, recebido: {len(codigo_barras)}")
-            # Tentar usar mesmo assim
-        
-        # Posição Y conforme GPSEstilo
-        y_barcode_bottom = GPSEstilo.CODIGO_BARRAS_Y - GPSEstilo.CODIGO_BARRAS_ALTURA
-        
-        try:
-            # [OK] CORREÇÃO: Usar especificações EXATAS do prompt
-            # O prompt especifica CODIGO_BARRAS_LARGURA_BARRA = 0.75mm
-            # No ReportLab, barWidth é o módulo fino. Para Code128 legível:
-            # - Módulo fino muito pequeno (< 0.2mm) = barras muito finas, difícil de escanear
-            # - Módulo fino muito grande (> 0.3mm) = barras muito grossas, código muito largo
-            # 
-            # Estratégia: Calcular barWidth para atingir ~150mm de largura total
-            # Code128 com 48 dígitos tem aproximadamente:
-            # - Start code: 11 módulos
-            # - 48 caracteres × 11 módulos = 528 módulos
-            # - Stop code: 13 módulos
-            # - Total: ~552 módulos
-            # 
-            # Para 150mm de largura total: barWidth = 150mm / 552 ≈ 0.27mm
-            
-            num_caracteres = len(codigo_barras)
-            # Code128: start (11) + caracteres (11 cada) + stop (13) ≈ 11 + (num_caracteres * 11) + 13
-            modulos_estimados = 11 + (num_caracteres * 11) + 13
-            largura_desejada = GPSEstilo.CODIGO_BARRAS_LARGURA_TOTAL  # 150mm
-            
-            # Calcular barWidth inicial para atingir largura desejada
-            bar_width_calculado = largura_desejada / modulos_estimados
-            
-            # [OK] USAR VALOR BASEADO NO PROMPT: CODIGO_BARRAS_LARGURA_BARRA = 0.75mm
-            # No ReportLab Code128, barWidth é a largura do MÓDULO FINO (thin bar)
-            # O prompt especifica 0.75mm, mas como módulo fino isso resulta em código muito largo
-            # Vamos calcular o módulo fino necessário para atingir ~150mm de largura total
-            # e usar o valor do prompt como referência máxima
-            bar_width_base_prompt = GPSEstilo.CODIGO_BARRAS_LARGURA_BARRA  # 0.75mm do prompt
-            
-            # CORREÇÃO CRÍTICA: Para leitores bancários funcionarem, o módulo fino
-            # precisa estar entre 0.33mm e 0.43mm (padrão ISO/IEC 15417)
-            # O valor calculado (~0.27mm) é muito pequeno para leitura confiável
-            # Vamos usar 0.38mm que é o ideal para scanners bancários
-            bar_width_otimizado = 0.38 * mm  # Módulo fino ideal para scanners bancários
-            
-            print(f"[PDF] [DEBUG] Código de barras: {num_caracteres} caracteres, ~{modulos_estimados} módulos")
-            print(f"[PDF] [DEBUG] barWidth calculado: {bar_width_calculado/mm:.3f}mm, otimizado: {bar_width_otimizado/mm:.3f}mm")
-            
-            # Gerar código de barras com barWidth otimizado
-            barcode = code128.Code128(
-                codigo_barras,
-                barWidth=bar_width_otimizado,  # [OK] Módulo fino otimizado para barras finas
-                barHeight=GPSEstilo.CODIGO_BARRAS_ALTURA,  # [OK] 12mm conforme prompt
-                humanReadable=False  # Não mostrar números (será desenhado separadamente abaixo)
-            )
-            
-            # Verificar largura gerada
-            barcode_width = barcode.width
-            
-            print(f"[PDF] [DEBUG] Código de barras gerado: largura={barcode_width/mm:.1f}mm, altura={GPSEstilo.CODIGO_BARRAS_ALTURA/mm:.1f}mm")
-            
-            # Se a largura estiver muito diferente de 150mm, fazer ajuste fino
-            # Mas manter dentro de limites razoáveis para legibilidade
-            diferenca = abs(barcode_width - largura_desejada)
-            if diferenca > 10 * mm:  # Se diferença > 10mm, ajustar
-                fator_ajuste = largura_desejada / barcode_width
-                bar_width_ajustado = bar_width_otimizado * fator_ajuste
-                
-                # Limitar ajuste baseado no valor do prompt (0.75mm)
-                # Se precisar ajustar, manter proporcional ao valor original
-                bar_width_minimo = GPSEstilo.CODIGO_BARRAS_LARGURA_BARRA * 0.5  # 50% do valor original
-                bar_width_maximo = GPSEstilo.CODIGO_BARRAS_LARGURA_BARRA * 1.5  # 150% do valor original
-                bar_width_ajustado = min(max(bar_width_ajustado, bar_width_minimo), bar_width_maximo)
-                
-                print(f"[PDF] [DEBUG] Ajustando barWidth: {bar_width_ajustado/mm:.3f}mm (fator: {fator_ajuste:.3f})")
-                
-                # Regenerar código de barras com largura ajustada
-                barcode = code128.Code128(
-                    codigo_barras,
-                    barWidth=bar_width_ajustado,
-                    barHeight=GPSEstilo.CODIGO_BARRAS_ALTURA,
-                    humanReadable=False
-                )
-                barcode_width = barcode.width
-                print(f"[PDF] [DEBUG] Código de barras ajustado: largura={barcode_width/mm:.1f}mm")
-            
-            # Centraliza horizontalmente
-            x_barcode = (GPSEstilo.PAGINA_LARGURA - barcode_width) / 2
-            
-            print(f"[PDF] [DEBUG] Desenhando código de barras: x={x_barcode/mm:.1f}mm, y={y_barcode_bottom/mm:.1f}mm, width={barcode_width/mm:.1f}mm, height={GPSEstilo.CODIGO_BARRAS_ALTURA/mm:.1f}mm")
-            
-            barcode.drawOn(c, x_barcode, y_barcode_bottom)
-            
-            # Guardar posição Y do código de barras para desenhar linha digitável abaixo
-            self._y_barcode_bottom = y_barcode_bottom
-            
-            print(f"[PDF] [OK] Código de barras desenhado com sucesso (largura: {barcode_width/mm:.1f}mm, barWidth: {bar_width_otimizado/mm:.3f}mm)")
-            
-        except Exception as e:
-            print(f"[PDF] [ERRO] Erro ao gerar código de barras: {e}")
-            import traceback
-            print(traceback.format_exc())
-            # Fallback: desenha apenas texto
-            c.setFont("Courier", 6)
-            text_width = c.stringWidth(codigo_barras, "Courier", 6)
-            x_centro = GPSEstilo.PAGINA_LARGURA / 2
-            c.drawString(x_centro - text_width/2, y_barcode_bottom, codigo_barras)
-            self._y_barcode_bottom = y_barcode_bottom
-    
-    # [OK] MÉTODO REMOVIDO: Linha digitável agora é desenhada ACIMA do código de barras
-    # na seção de "Competências consolidadas" conforme especificação oficial
-    
     def _desenhar_autenticacao_bancaria(self, c: canvas.Canvas):
         """
         Desenha texto "AUTENTICAÇÃO BANCÁRIA" no canto direito conforme GPSEstilo
@@ -788,6 +655,108 @@ class GPSPDFGeneratorOficial:
         text_width = c.stringWidth(texto, GPSEstilo.FONTE_LABEL, GPSEstilo.TAMANHO_LABEL)
         x_texto = GPSEstilo.PAGINA_LARGURA - GPSEstilo.MARGEM_DIREITA - text_width
         c.drawString(x_texto, y_referencia, texto)
+
+    def _desenhar_codigo_barras(self, c: canvas.Canvas, dados: Dict):
+        """
+        Desenha código de barras Interleaved 2 of 5 (I2of5) conforme padrão FEBRABAN
+        para GPS/Arrecadação:
+        - Tipo: Interleaved 2 of 5 (padrão FEBRABAN para produto 8)
+        - Altura: 12mm (GPSEstilo.CODIGO_BARRAS_ALTURA)
+        - Largura de barra: ajustada para ~150mm total
+        """
+        codigo_barras = dados.get('codigo_barras', '')
+
+        if not codigo_barras:
+            print("[PDF] [WARN] Código de barras não fornecido")
+            return
+
+        # GPS tem 44 dígitos
+        if len(codigo_barras) != 44:
+            print(f"[PDF] [WARN] Código de barras GPS deve ter 44 dígitos, recebido: {len(codigo_barras)}")
+            # Tentar usar mesmo assim
+
+        # Posição Y conforme GPSEstilo
+        y_barcode_bottom = GPSEstilo.CODIGO_BARRAS_Y - GPSEstilo.CODIGO_BARRAS_ALTURA
+
+        try:
+            # Interleaved 2 of 5 (I2of5) é o padrão FEBRABAN para GPS/Arrecadação
+            #
+            # Características I2of5:
+            # - Codifica apenas dígitos numéricos (0-9)
+            # - Número PAR de dígitos (44 é par ✓)
+            # - Cada par de dígitos codificado em 5 barras
+            # - Largura de barras: fina (1x) ou grossa (2x ou 3x o módulo)
+            
+            # Para I2of5, barWidth é o módulo fino
+            # Padrão bancário: módulo fino entre 0.33mm e 0.52mm
+            # Vamos usar 0.43mm para boa legibilidade
+            bar_width_i2of5 = 0.43 * mm
+
+            print(f"[PDF] [DEBUG] Gerando Interleaved 2 of 5: {len(codigo_barras)} dígitos")
+            print(f"[PDF] [DEBUG] barWidth (módulo fino): {bar_width_i2of5/mm:.3f}mm")
+
+            # Gerar código de barras I2of5
+            barcode = common.I2of5(
+                codigo_barras,
+                barWidth=bar_width_i2of5,  # Módulo fino
+                barHeight=GPSEstilo.CODIGO_BARRAS_ALTURA,  # 12mm
+                humanReadable=False,  # Não mostrar números (linha digitável separada)
+                checksum=0  # GPS já tem DV próprio, não adicionar checksum I2of5
+            )
+
+            # Verificar largura gerada
+            barcode_width = barcode.width
+
+            print(f"[PDF] [DEBUG] Código I2of5 gerado: largura={barcode_width/mm:.1f}mm")
+
+            # Ajustar barWidth se necessário para aproximar de 150mm
+            largura_desejada = GPSEstilo.CODIGO_BARRAS_LARGURA_TOTAL  # 150mm
+            diferenca = abs(barcode_width - largura_desejada)
+
+            if diferenca > 15 * mm:  # Se diferença > 15mm, ajustar
+                fator_ajuste = largura_desejada / barcode_width
+                bar_width_ajustado = bar_width_i2of5 * fator_ajuste
+
+                # Manter dentro dos limites FEBRABAN: 0.33mm a 0.52mm
+                bar_width_minimo = 0.33 * mm
+                bar_width_maximo = 0.52 * mm
+                bar_width_ajustado = min(max(bar_width_ajustado, bar_width_minimo), bar_width_maximo)
+
+                print(f"[PDF] [DEBUG] Ajustando barWidth I2of5: {bar_width_ajustado/mm:.3f}mm (fator: {fator_ajuste:.3f})")
+
+                # Regenerar código de barras com largura ajustada
+                barcode = common.I2of5(
+                    codigo_barras,
+                    barWidth=bar_width_ajustado,
+                    barHeight=GPSEstilo.CODIGO_BARRAS_ALTURA,
+                    humanReadable=False,
+                    checksum=0
+                )
+                barcode_width = barcode.width
+                print(f"[PDF] [DEBUG] Código I2of5 ajustado: largura={barcode_width/mm:.1f}mm")
+
+            # Centraliza horizontalmente
+            x_barcode = (GPSEstilo.PAGINA_LARGURA - barcode_width) / 2
+
+            print(f"[PDF] [DEBUG] Desenhando I2of5: x={x_barcode/mm:.1f}mm, y={y_barcode_bottom/mm:.1f}mm")
+
+            barcode.drawOn(c, x_barcode, y_barcode_bottom)
+
+            # Guardar posição Y do código de barras para desenhar linha digitável abaixo
+            self._y_barcode_bottom = y_barcode_bottom
+
+            print(f"[PDF] [OK] Código de barras I2of5 desenhado com sucesso")
+            
+        except Exception as e:
+            print(f"[PDF] [ERRO] Erro ao gerar código de barras: {e}")
+            import traceback
+            print(traceback.format_exc())
+            # Fallback: desenha apenas texto
+            c.setFont("Courier", 6)
+            text_width = c.stringWidth(codigo_barras, "Courier", 6)
+            x_centro = GPSEstilo.PAGINA_LARGURA / 2
+            c.drawString(x_centro - text_width/2, y_barcode_bottom, codigo_barras)
+            self._y_barcode_bottom = y_barcode_bottom
 
 
 # FUNÇÃO DE TESTE

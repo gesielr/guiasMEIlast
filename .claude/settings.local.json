@@ -5,7 +5,11 @@
       "Bash(py verificar_dv.py)",
       "Bash(py verificar_dv_simples.py)",
       "Bash(py verificar_codigo_oficial.py:*)",
-      "Bash(py -c:*)"
+      "Bash(py -c:*)",
+      "Bash(powershell:*)",
+      "Bash(py testar_novo_gps.py)",
+      "Bash(more:*)",
+      "Bash(py verificar_linha_rejeitada.py)"
     ],
     "deny": [],
     "ask": []

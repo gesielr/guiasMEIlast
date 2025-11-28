@@ -14558,3 +14558,676 @@
 2025-11-26 23:46:46,691 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
 2025-11-26 23:46:46,691 - app.main - INFO - ================================================================================
 2025-11-26 23:46:46,692 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-11-26 23:46:48,955 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-11-26 23:46:48,956 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-11-26 23:46:48,956 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-11-26 23:46:48,960 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-11-26 23:46:48,961 - app.main - INFO -    [OK] Incluindo router Users...
+2025-11-26 23:46:48,968 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-11-26 23:46:48,970 - app.main - INFO - ================================================================================
+2025-11-26 23:46:48,971 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-11-26 23:46:48,971 - app.main - INFO - ================================================================================
+2025-11-26 23:46:48,971 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-11-26 23:46:48,972 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-11-26 23:46:48,972 - app.main - INFO - [OK] App Version: 1.0.0
+2025-11-26 23:46:48,973 - app.main - INFO - ================================================================================
+2025-11-26 23:46:48,973 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-11-26 23:46:48,974 - app.main - INFO - ================================================================================
+2025-11-27 17:13:57,954 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-11-27 17:13:57,955 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-11-27 17:13:57,956 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-11-27 17:13:57,957 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-11-27 17:13:57,958 - app.main - INFO -    [OK] Incluindo router Users...
+2025-11-27 17:13:57,959 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-11-27 17:13:57,960 - app.main - INFO - ================================================================================
+2025-11-27 17:13:57,961 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-11-27 17:13:57,961 - app.main - INFO - ================================================================================
+2025-11-27 17:13:57,961 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-11-27 17:13:57,961 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-11-27 17:13:57,961 - app.main - INFO - [OK] App Version: 1.0.0
+2025-11-27 17:13:57,961 - app.main - INFO - ================================================================================
+2025-11-27 17:13:57,961 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-11-27 17:13:57,962 - app.main - INFO - ================================================================================
+2025-11-27 17:15:19,453 - app.main - INFO - ================================================================================
+2025-11-27 17:15:19,454 - app.main - INFO - [REQUEST] POST /api/v1/guias/emitir
+2025-11-27 17:15:19,454 - app.main - INFO -    Headers: {'accept': 'application/json, text/plain, */*', 'content-type': 'application/json', 'user-agent': 'axios/1.12.1', 'content-length': '117', 'accept-encoding': 'gzip, compress, deflate, br', 'host': '127.0.0.1:8000', 'connection': 'keep-alive'}
+2025-11-27 17:15:19,455 - app.main - INFO - ================================================================================
+2025-11-27 17:15:23,433 - httpcore.connection - DEBUG - connect_tcp.started host='idvfhgznofvubscjycvt.supabase.co' port=443 local_address=None timeout=120 socket_options=None
+2025-11-27 17:15:23,454 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001E2F13B9D30>
+2025-11-27 17:15:23,455 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001E2F03F6D50> server_hostname='idvfhgznofvubscjycvt.supabase.co' timeout=120
+2025-11-27 17:15:23,487 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001E2F13C5090>
+2025-11-27 17:15:23,489 - httpcore.http2 - DEBUG - send_connection_init.started request=<Request [b'GET']>
+2025-11-27 17:15:23,490 - httpcore.http2 - DEBUG - send_connection_init.complete
+2025-11-27 17:15:23,491 - httpcore.http2 - DEBUG - send_request_headers.started request=<Request [b'GET']> stream_id=1
+2025-11-27 17:15:23,492 - hpack.hpack - DEBUG - Adding (b':method', b'GET') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,493 - hpack.hpack - DEBUG - Encoding 2 with 7 bits
+2025-11-27 17:15:23,493 - hpack.hpack - DEBUG - Adding (b':authority', b'idvfhgznofvubscjycvt.supabase.co') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,494 - hpack.hpack - DEBUG - Encoding 1 with 6 bits
+2025-11-27 17:15:23,495 - hpack.hpack - DEBUG - Encoding 24 with 7 bits
+2025-11-27 17:15:23,495 - hpack.hpack - DEBUG - Adding (b':scheme', b'https') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,496 - hpack.hpack - DEBUG - Encoding 7 with 7 bits
+2025-11-27 17:15:23,497 - hpack.hpack - DEBUG - Adding (b':path', b'//rest/v1/profiles?select=%2A&whatsapp_phone=eq.554891589495&user_type=eq.autonomo') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,498 - hpack.hpack - DEBUG - Encoding 4 with 6 bits
+2025-11-27 17:15:23,498 - hpack.hpack - DEBUG - Encoding 60 with 7 bits
+2025-11-27 17:15:23,499 - hpack.hpack - DEBUG - Adding (b'accept', b'*/*') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,500 - hpack.hpack - DEBUG - Encoding 19 with 6 bits
+2025-11-27 17:15:23,500 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:23,501 - hpack.hpack - DEBUG - Adding (b'accept-encoding', b'gzip, deflate') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,502 - hpack.hpack - DEBUG - Encoding 16 with 7 bits
+2025-11-27 17:15:23,502 - hpack.hpack - DEBUG - Adding (b'user-agent', b'python-httpx/0.28.1') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,503 - hpack.hpack - DEBUG - Encoding 58 with 6 bits
+2025-11-27 17:15:23,503 - hpack.hpack - DEBUG - Encoding 14 with 7 bits
+2025-11-27 17:15:23,504 - hpack.hpack - DEBUG - Adding (b'x-client-info', b'supabase-py/2.22.3') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,505 - hpack.hpack - DEBUG - Encoding 10 with 7 bits
+2025-11-27 17:15:23,505 - hpack.hpack - DEBUG - Encoding 13 with 7 bits
+2025-11-27 17:15:23,506 - hpack.hpack - DEBUG - Adding (b'apikey', b'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,507 - hpack.hpack - DEBUG - Encoding 5 with 7 bits
+2025-11-27 17:15:23,507 - hpack.hpack - DEBUG - Encoding 167 with 7 bits
+2025-11-27 17:15:23,508 - hpack.hpack - DEBUG - Adding (b'authorization', b'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:True, huffman:True
+2025-11-27 17:15:23,509 - hpack.hpack - DEBUG - Encoding 23 with 4 bits
+2025-11-27 17:15:23,510 - hpack.hpack - DEBUG - Encoding 172 with 7 bits
+2025-11-27 17:15:23,511 - hpack.hpack - DEBUG - Adding (b'accept-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,512 - hpack.hpack - DEBUG - Encoding 10 with 7 bits
+2025-11-27 17:15:23,513 - hpack.hpack - DEBUG - Encoding 5 with 7 bits
+2025-11-27 17:15:23,514 - hpack.hpack - DEBUG - Adding (b'content-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,515 - hpack.hpack - DEBUG - Encoding 11 with 7 bits
+2025-11-27 17:15:23,515 - hpack.hpack - DEBUG - Encoding 5 with 7 bits
+2025-11-27 17:15:23,516 - hpack.hpack - DEBUG - Encoded header block to b"\x82A\x984\x9d\xe5\x9eou\x1e^\xf6\xc6\x82t\xf4N\xe9]\x16\xd68\xc6\x82\xaeC\xff\x87D\xbca\x8b\n\x84\xb1\xdc,Wa\xe55\x05G\xf8\x82\xd0R&\x05E\x0f\xc7\x89\xc6\x94\x0e\xba\xe2\xaes\xd4X\x0b\xd9v\xdbi\xe7\xc2\xdb\xcf\xb4\xfb\x7f\x16\xa0\xb6D\x9fU\x96\x02\xf6\\v\xa4\xf5\x1e\x93\xffS\x83\xf9c\xe7\x90z\x8e\xaf\xd2g=KN\x94\xd7\xe5\x80.'\x97\x0f@\x8a\xf2\xb1(1jJ\xc6\xaaS\xff\x8dE\xb5\x8e1\xa0\xabW\xe9\x81.!.\xcf@\x85\x1df\xea__\xff(/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1f\x1f\x08\xff-\xbaQ\xd8[\x14/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1f@\x8a\x19\x08Z\xd2\xb5v\x1eSP_\x85\xae\xd8\xe81?@\x8b!\xeaIjJ\xd5\xd8yMA\x7f\x85\xae\xd8\xe81?"
+2025-11-27 17:15:23,518 - httpcore.http2 - DEBUG - send_request_headers.complete
+2025-11-27 17:15:23,519 - httpcore.http2 - DEBUG - send_request_body.started request=<Request [b'GET']> stream_id=1
+2025-11-27 17:15:23,520 - httpcore.http2 - DEBUG - send_request_body.complete
+2025-11-27 17:15:23,520 - httpcore.http2 - DEBUG - receive_response_headers.started request=<Request [b'GET']> stream_id=1
+2025-11-27 17:15:23,522 - httpcore.http2 - DEBUG - receive_remote_settings.started
+2025-11-27 17:15:23,523 - httpcore.http2 - DEBUG - receive_remote_settings.complete return_value=<RemoteSettingsChanged changed_settings:{ChangedSetting(setting=3, original_value=None, new_value=100), ChangedSetting(setting=4, original_value=65535, new_value=65536), ChangedSetting(setting=5, original_value=16384, new_value=16777215)}>
+2025-11-27 17:15:23,585 - hpack.hpack - DEBUG - Decoding b'?\xe1\x1f\x88a\x96\xdf=\xbfJ\t\xd54\x9f\xba\x82\x00\x9bP@\xb8\x16\xee\t\x951h\xdf_\x96\x1du\xd0b\r&=LtA\xea\xfbP\x93\x8e\xc4\x150Z\x99V{\\\x012v\x87%\x07\xb6Ih\x1d\x85^\x03*/*@\x85$\xabX?_\x8f|m\xb4\xd1\x026_y\xe7\xe4\x1b\xcbi\xe3\xbf@\x8a$\xab\x10d\x9c\xab!#M\xa8\x86\xbf\xcfL:2^]\xb5b\xbb\x0f)\xa8*?\xc4\x16\x82\x910*(~-Al\x89>\xab,\x05\xec\xb8\xedI\xea=\'\xf8\xf18\xd2\x81\xd7\\U\xcez\x8b\x01{.\xdbm<\xf8[y\xf6\x9fox\xa0\xa4~V\x1c\xc5\x81\x90\xb6\xcb\x80\x00>\xd45D\xa2\xd9\x0b\xba\xd8\xef\x9e\x91\x9a\xa4}\xa9]\x85\xa0\xe3\x93@\x8b!\xeaIjJ\xd5\xd8yMA\x7f\x85\xae\xd8\xe81?@\x8dDkL4\x97\xc0\xfd-\xdc\xb6 \xc7\xab\x011@\x8aDkWa\xfa\x14\x89Z\xc2\xcb\x8f4\x9d\xe5\x9eou\x1e^\xf6\xc6\x82t\xf4N\xe9@\x8aDkX^\xd6\x95\tX\xd2\x7f\x9a\x00_\x19\x1c\x95\xa5\x88G\x1cY\xd7I"\xd1\x81\xf7\xd6fV\xdb\x95\xf2\x10!m\xbf@\x90\xf2\xb1\x0fRKRVO\xaa\xca\xb1\xebI\x8fR?\x85\xa8\xe8\xa8\xd2\xcb@\x8f\xf2\xb1j\xee\x7fK\r)-5\xa5b\x1e\xda\x93\x011@\x95\xf2\xb1j\xee\x7fK[Z\x13aGJ\xc8-\x9d\xccB\xac\x93R_\x0221w\xffY\x8a"K\x14t\xc0\xbeL\xd4\xec\xeb\xef\xaf\xaf\xdc\xb97\x91\xfe\x8dwO\x0b\xbdxy(\xe7@\xb1E\xbe\xae\xfd\xaf\x9d\xb3o\x1e\xdd\x0b\x05\xd7\x1a\x13\xad6&V\n\xe0\\+\x85c\xe9k\x86k1\xb9\xf9?Dm\xedD2nD=\xb7S\xf9;g\xbf\xbb\xf7\x97,\xf9\xbbU>{\xf6s%7s]\xcb\xfbFN\xdc\xfc\x05\xfeZ:\xfa\x9d\xbd\xab\xd9\xefwwhs\xce\xa6]\x85\xf7\x19\x8f\x8ao\xe8\xef\xcf\x14\xf3{\xe3g\x0cx=\x93j\x7f}\xf2\xfd\xa5\xf9b?\xda\x95\x8d3\xc0\xc7\xda\x85\xf3Y\xac* \xdf=\xbfJ\t\xd5\xb4\x9f\xba\xc2mA\x02\xe3M\xdc\x13*b\xd1\xbf\xedI\x0fH\xcdT\x0b\xa2\xda\xc7\x18\xd0U\xc8\x7f\xb51\xa55\xea\xaa\x8f_jn)-\xb0\xbfjn\x1d%\xdcd\x96\r\'\xa8\xbf{\x8b\x84\x84-i[\x05D<\x86\xaao@\x85\x1d\tY\x1d\xc9\x90\x9d\x98?\x9b\x8d4\xcf\xf3\xf6\xa5#\x81\xe7\x1a\x00?'
+2025-11-27 17:15:23,587 - hpack.hpack - DEBUG - Decoded 4096, consumed 3 bytes
+2025-11-27 17:15:23,587 - hpack.table - DEBUG - Resizing header table to 4096 from 4096
+2025-11-27 17:15:23,587 - hpack.hpack - DEBUG - Decoded 8, consumed 1 bytes
+2025-11-27 17:15:23,588 - hpack.hpack - DEBUG - Decoded (b':status', b'200'), consumed 1
+2025-11-27 17:15:23,588 - hpack.hpack - DEBUG - Decoded 33, consumed 1 bytes
+2025-11-27 17:15:23,589 - hpack.hpack - DEBUG - Decoded 22, consumed 1 bytes
+2025-11-27 17:15:23,589 - hpack.hpack - DEBUG - Decoded (b'date', b'Thu, 27 Nov 2025 20:15:23 GMT'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:23,590 - hpack.hpack - DEBUG - Decoded 31, consumed 1 bytes
+2025-11-27 17:15:23,591 - hpack.hpack - DEBUG - Decoded 22, consumed 1 bytes
+2025-11-27 17:15:23,591 - hpack.hpack - DEBUG - Decoded (b'content-type', b'application/json; charset=utf-8'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:23,592 - hpack.hpack - DEBUG - Decoded 28, consumed 1 bytes
+2025-11-27 17:15:23,592 - hpack.hpack - DEBUG - Decoded 1, consumed 1 bytes
+2025-11-27 17:15:23,593 - hpack.hpack - DEBUG - Decoded (b'content-length', <memory at 0x000001E2F127B1C0>), total consumed 3 bytes, indexed True
+2025-11-27 17:15:23,593 - hpack.hpack - DEBUG - Decoded 54, consumed 1 bytes
+2025-11-27 17:15:23,594 - hpack.hpack - DEBUG - Decoded 7, consumed 1 bytes
+2025-11-27 17:15:23,595 - hpack.hpack - DEBUG - Decoded (b'server', b'cloudflare'), total consumed 9 bytes, indexed True
+2025-11-27 17:15:23,595 - hpack.hpack - DEBUG - Decoded 30, consumed 1 bytes
+2025-11-27 17:15:23,596 - hpack.hpack - DEBUG - Decoded 3, consumed 1 bytes
+2025-11-27 17:15:23,596 - hpack.hpack - DEBUG - Decoded (b'content-range', <memory at 0x000001E2F127B280>), total consumed 5 bytes, indexed True
+2025-11-27 17:15:23,597 - hpack.hpack - DEBUG - Decoded 5, consumed 1 bytes
+2025-11-27 17:15:23,597 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:23,598 - hpack.hpack - DEBUG - Decoded (b'cf-ray', b'9a544c1a39889da8-NVT'), total consumed 23 bytes, indexed True
+2025-11-27 17:15:23,598 - hpack.hpack - DEBUG - Decoded 10, consumed 1 bytes
+2025-11-27 17:15:23,599 - hpack.hpack - DEBUG - Decoded 6, consumed 1 bytes
+2025-11-27 17:15:23,600 - hpack.hpack - DEBUG - Decoded (b'cf-cache-status', b'DYNAMIC'), total consumed 19 bytes, indexed True
+2025-11-27 17:15:23,601 - hpack.hpack - DEBUG - Decoded 29, consumed 1 bytes
+2025-11-27 17:15:23,601 - hpack.hpack - DEBUG - Decoded 53, consumed 1 bytes
+2025-11-27 17:15:23,602 - hpack.hpack - DEBUG - Decoded (b'content-location', b'/profiles?select=%2A&user_type=eq.autonomo&whatsapp_phone=eq.554891589495'), total consumed 55 bytes, indexed True
+2025-11-27 17:15:23,602 - hpack.hpack - DEBUG - Decoded 56, consumed 1 bytes
+2025-11-27 17:15:23,603 - hpack.hpack - DEBUG - Decoded 32, consumed 1 bytes
+2025-11-27 17:15:23,603 - hpack.hpack - DEBUG - Decoded (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), total consumed 34 bytes, indexed True
+2025-11-27 17:15:23,604 - hpack.hpack - DEBUG - Decoded 11, consumed 1 bytes
+2025-11-27 17:15:23,604 - hpack.hpack - DEBUG - Decoded 5, consumed 1 bytes
+2025-11-27 17:15:23,605 - hpack.hpack - DEBUG - Decoded (b'content-profile', b'public'), total consumed 19 bytes, indexed True
+2025-11-27 17:15:23,605 - hpack.hpack - DEBUG - Decoded 13, consumed 1 bytes
+2025-11-27 17:15:23,606 - hpack.hpack - DEBUG - Decoded 1, consumed 1 bytes
+2025-11-27 17:15:23,606 - hpack.hpack - DEBUG - Decoded (b'sb-gateway-version', <memory at 0x000001E2F127B340>), total consumed 17 bytes, indexed True
+2025-11-27 17:15:23,607 - hpack.hpack - DEBUG - Decoded 10, consumed 1 bytes
+2025-11-27 17:15:23,607 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:23,608 - hpack.hpack - DEBUG - Decoded (b'sb-project-ref', b'idvfhgznofvubscjycvt'), total consumed 28 bytes, indexed True
+2025-11-27 17:15:23,608 - hpack.hpack - DEBUG - Decoded 10, consumed 1 bytes
+2025-11-27 17:15:23,608 - hpack.hpack - DEBUG - Decoded 26, consumed 1 bytes
+2025-11-27 17:15:23,609 - hpack.hpack - DEBUG - Decoded (b'sb-request-id', b'019ac6f4-cc66-77cd-b099-3f55f9cc1155'), total consumed 39 bytes, indexed True
+2025-11-27 17:15:23,609 - hpack.hpack - DEBUG - Decoded 16, consumed 1 bytes
+2025-11-27 17:15:23,610 - hpack.hpack - DEBUG - Decoded 5, consumed 1 bytes
+2025-11-27 17:15:23,611 - hpack.hpack - DEBUG - Decoded (b'x-content-type-options', b'nosniff'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:23,611 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:23,611 - hpack.hpack - DEBUG - Decoded 1, consumed 1 bytes
+2025-11-27 17:15:23,612 - hpack.hpack - DEBUG - Decoded (b'x-envoy-attempt-count', <memory at 0x000001E2F127B100>), total consumed 19 bytes, indexed True
+2025-11-27 17:15:23,612 - hpack.hpack - DEBUG - Decoded 21, consumed 1 bytes
+2025-11-27 17:15:23,613 - hpack.hpack - DEBUG - Decoded 2, consumed 1 bytes
+2025-11-27 17:15:23,613 - hpack.hpack - DEBUG - Decoded (b'x-envoy-upstream-service-time', <memory at 0x000001E2F127AEC0>), total consumed 26 bytes, indexed True
+2025-11-27 17:15:23,614 - hpack.hpack - DEBUG - Decoded 55, consumed 1 bytes
+2025-11-27 17:15:23,615 - hpack.hpack - DEBUG - Decoded 216, consumed 2 bytes
+2025-11-27 17:15:23,616 - hpack.hpack - DEBUG - Decoded (b'set-cookie', b'__cf_bm=.IKmQkzkyZJITc9j4vtUBkUxeahs2G_TnvqDo5iTaRM-1764274523-1.0.1.1-oN4UKrH6XhjsRqlAdSsAqSmXh5oDSZWWLKqnhLDrYcmBKBJZlIqYw19WMkyh5R.rzSv7l6xO37A963bVtDMvYGhgzVrUHEzcRtZzWZm9f_o; path=/; expires=Thu, 27-Nov-25 20:45:23 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None'), total consumed 219 bytes, indexed True
+2025-11-27 17:15:23,616 - hpack.hpack - DEBUG - Decoded 59, consumed 1 bytes
+2025-11-27 17:15:23,617 - hpack.hpack - DEBUG - Decoded 11, consumed 1 bytes
+2025-11-27 17:15:23,618 - hpack.hpack - DEBUG - Decoded (b'vary', b'Accept-Encoding'), total consumed 13 bytes, indexed True
+2025-11-27 17:15:23,618 - hpack.hpack - DEBUG - Decoded 5, consumed 1 bytes
+2025-11-27 17:15:23,619 - hpack.hpack - DEBUG - Decoded 16, consumed 1 bytes
+2025-11-27 17:15:23,619 - hpack.hpack - DEBUG - Decoded (b'alt-svc', b'h3=":443"; ma=86400'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:23,620 - httpcore.http2 - DEBUG - receive_response_headers.complete return_value=(200, [(b'date', b'Thu, 27 Nov 2025 20:15:23 GMT'), (b'content-type', b'application/json; charset=utf-8'), (b'content-length', b'2'), (b'server', b'cloudflare'), (b'content-range', b'*/*'), (b'cf-ray', b'9a544c1a39889da8-NVT'), (b'cf-cache-status', b'DYNAMIC'), (b'content-location', b'/profiles?select=%2A&user_type=eq.autonomo&whatsapp_phone=eq.554891589495'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'idvfhgznofvubscjycvt'), (b'sb-request-id', b'019ac6f4-cc66-77cd-b099-3f55f9cc1155'), (b'x-content-type-options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'21'), (b'set-cookie', b'__cf_bm=.IKmQkzkyZJITc9j4vtUBkUxeahs2G_TnvqDo5iTaRM-1764274523-1.0.1.1-oN4UKrH6XhjsRqlAdSsAqSmXh5oDSZWWLKqnhLDrYcmBKBJZlIqYw19WMkyh5R.rzSv7l6xO37A963bVtDMvYGhgzVrUHEzcRtZzWZm9f_o; path=/; expires=Thu, 27-Nov-25 20:45:23 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None'), (b'vary', b'Accept-Encoding'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-11-27 17:15:23,623 - httpx - INFO - HTTP Request: GET https://idvfhgznofvubscjycvt.supabase.co//rest/v1/profiles?select=%2A&whatsapp_phone=eq.554891589495&user_type=eq.autonomo "HTTP/2 200 OK"
+2025-11-27 17:15:23,624 - httpcore.http2 - DEBUG - receive_response_body.started request=<Request [b'GET']> stream_id=1
+2025-11-27 17:15:23,626 - httpcore.http2 - DEBUG - receive_response_body.complete
+2025-11-27 17:15:23,626 - httpcore.http2 - DEBUG - response_closed.started stream_id=1
+2025-11-27 17:15:23,627 - httpcore.http2 - DEBUG - response_closed.complete
+2025-11-27 17:15:23,635 - httpcore.http2 - DEBUG - send_request_headers.started request=<Request [b'GET']> stream_id=3
+2025-11-27 17:15:23,636 - hpack.hpack - DEBUG - Adding (b':method', b'GET') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,637 - hpack.hpack - DEBUG - Encoding 2 with 7 bits
+2025-11-27 17:15:23,637 - hpack.hpack - DEBUG - Adding (b':authority', b'idvfhgznofvubscjycvt.supabase.co') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,638 - hpack.hpack - DEBUG - Encoding 69 with 7 bits
+2025-11-27 17:15:23,638 - hpack.hpack - DEBUG - Adding (b':scheme', b'https') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,638 - hpack.hpack - DEBUG - Encoding 7 with 7 bits
+2025-11-27 17:15:23,639 - hpack.hpack - DEBUG - Adding (b':path', b'//rest/v1/profiles?select=%2A&whatsapp_phone=eq.5548991589495&user_type=eq.autonomo') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,639 - hpack.hpack - DEBUG - Encoding 4 with 6 bits
+2025-11-27 17:15:23,640 - hpack.hpack - DEBUG - Encoding 60 with 7 bits
+2025-11-27 17:15:23,641 - hpack.hpack - DEBUG - Adding (b'accept', b'*/*') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,641 - hpack.hpack - DEBUG - Encoding 68 with 7 bits
+2025-11-27 17:15:23,642 - hpack.hpack - DEBUG - Adding (b'accept-encoding', b'gzip, deflate') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,643 - hpack.hpack - DEBUG - Encoding 16 with 7 bits
+2025-11-27 17:15:23,643 - hpack.hpack - DEBUG - Adding (b'user-agent', b'python-httpx/0.28.1') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,644 - hpack.hpack - DEBUG - Encoding 67 with 7 bits
+2025-11-27 17:15:23,644 - hpack.hpack - DEBUG - Adding (b'x-client-info', b'supabase-py/2.22.3') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,645 - hpack.hpack - DEBUG - Encoding 66 with 7 bits
+2025-11-27 17:15:23,646 - hpack.hpack - DEBUG - Adding (b'apikey', b'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,646 - hpack.hpack - DEBUG - Encoding 65 with 7 bits
+2025-11-27 17:15:23,648 - hpack.hpack - DEBUG - Adding (b'authorization', b'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:True, huffman:True
+2025-11-27 17:15:23,648 - hpack.hpack - DEBUG - Encoding 23 with 4 bits
+2025-11-27 17:15:23,650 - hpack.hpack - DEBUG - Encoding 172 with 7 bits
+2025-11-27 17:15:23,651 - hpack.hpack - DEBUG - Adding (b'accept-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,651 - hpack.hpack - DEBUG - Encoding 64 with 7 bits
+2025-11-27 17:15:23,652 - hpack.hpack - DEBUG - Adding (b'content-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,652 - hpack.hpack - DEBUG - Encoding 63 with 7 bits
+2025-11-27 17:15:23,653 - hpack.hpack - DEBUG - Adding (b'cookie', b'__cf_bm=.IKmQkzkyZJITc9j4vtUBkUxeahs2G_TnvqDo5iTaRM-1764274523-1.0.1.1-oN4UKrH6XhjsRqlAdSsAqSmXh5oDSZWWLKqnhLDrYcmBKBJZlIqYw19WMkyh5R.rzSv7l6xO37A963bVtDMvYGhgzVrUHEzcRtZzWZm9f_o') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,653 - hpack.hpack - DEBUG - Encoding 32 with 6 bits
+2025-11-27 17:15:23,654 - hpack.hpack - DEBUG - Encoding 142 with 7 bits
+2025-11-27 17:15:23,655 - hpack.hpack - DEBUG - Encoded header block to b'\x82\xc5\x87D\xbca\x8b\n\x84\xb1\xdc,Wa\xe55\x05G\xf8\x82\xd0R&\x05E\x0f\xc7\x89\xc6\x94\x0e\xba\xe2\xaes\xd4X\x0b\xd9v\xdbi\xe7\xdf\x0bo>\xd3\xed\xfcZ\x82\xd9\x12}VX\x0b\xd9q\xda\x93\xd4zO\xc4\x90\xc3\xc2\xc1\x1f\x08\xff-\xbaQ\xd8[\x14/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1f\xc0\xbf`\xff\x0f\x8a"K\x14t\xc0\xbeL\xd4\xec\xeb\xef\xaf\xaf\xdc\xb97\x91\xfe\x8dwO\x0b\xbdxy(\xe7@\xb1E\xbe\xae\xfd\xaf\x9d\xb3o\x1e\xdd\x0b\x05\xd7\x1a\x13\xad6&V\n\xe0\\+\x85c\xe9k\x86k1\xb9\xf9?Dm\xedD2nD=\xb7S\xf9;g\xbf\xbb\xf7\x97,\xf9\xbbU>{\xf6s%7s]\xcb\xfbFN\xdc\xfc\x05\xfeZ:\xfa\x9d\xbd\xab\xd9\xefwwhs\xce\xa6]\x85\xf7\x19\x8f\x8ao\xe8\xef\xcf\x14\xf3{\xe3g\x0cx=\x93j\x7f}\xf2\xfd\xa5\xf9b?'
+2025-11-27 17:15:23,656 - httpcore.http2 - DEBUG - send_request_headers.complete
+2025-11-27 17:15:23,657 - httpcore.http2 - DEBUG - send_request_body.started request=<Request [b'GET']> stream_id=3
+2025-11-27 17:15:23,658 - httpcore.http2 - DEBUG - send_request_body.complete
+2025-11-27 17:15:23,658 - httpcore.http2 - DEBUG - receive_response_headers.started request=<Request [b'GET']> stream_id=3
+2025-11-27 17:15:23,706 - hpack.hpack - DEBUG - Decoding b"\x88\xd0\xcf\xcd^\x84\x02\xc0c\xe7\x7f\r\x8f|m\xb4\xd1\x03\x18\x08\x18\xdf\x90o-\xa7\x8e\xff\xccZ\x83\x9b\xd9\xab]\xb6b\xbb\x0f)\xa8*?\xc4\x16\x82\x910*(~-Al\x89>\xab,\x05\xec\xb8\xedI\xea='\xf8\xf18\xd2\x81\xd7\\U\xcez\x8b\x01{.\xdbm<\xfb\xe1m\xe7\xda}\xbf\xcc\xc3\xcb\xca\xc9\x7f\t\x9a\x00_\x19\x1c\x95\xa5\x88ID\xb3\xae\x8a5\x9fe\xa1\xac \xbe\xd3r\x89\xe1H\x02\x7f\xc8\xc7\x7f\x07\x015\xc4"
+2025-11-27 17:15:23,707 - hpack.hpack - DEBUG - Decoded 8, consumed 1 bytes
+2025-11-27 17:15:23,707 - hpack.hpack - DEBUG - Decoded (b':status', b'200'), consumed 1
+2025-11-27 17:15:23,708 - hpack.hpack - DEBUG - Decoded 80, consumed 1 bytes
+2025-11-27 17:15:23,708 - hpack.hpack - DEBUG - Decoded (b'date', b'Thu, 27 Nov 2025 20:15:23 GMT'), consumed 1
+2025-11-27 17:15:23,709 - hpack.hpack - DEBUG - Decoded 79, consumed 1 bytes
+2025-11-27 17:15:23,709 - hpack.hpack - DEBUG - Decoded (b'content-type', b'application/json; charset=utf-8'), consumed 1
+2025-11-27 17:15:23,710 - hpack.hpack - DEBUG - Decoded 77, consumed 1 bytes
+2025-11-27 17:15:23,710 - hpack.hpack - DEBUG - Decoded (b'server', b'cloudflare'), consumed 1
+2025-11-27 17:15:23,710 - hpack.hpack - DEBUG - Decoded 30, consumed 1 bytes
+2025-11-27 17:15:23,711 - hpack.hpack - DEBUG - Decoded 4, consumed 1 bytes
+2025-11-27 17:15:23,711 - hpack.hpack - DEBUG - Decoded (b'content-range', b'0-0/*'), total consumed 6 bytes, indexed True
+2025-11-27 17:15:23,712 - hpack.hpack - DEBUG - Decoded 76, consumed 2 bytes
+2025-11-27 17:15:23,713 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:23,713 - hpack.hpack - DEBUG - Decoded (b'cf-ray', b'9a544c1b0c1b9da8-NVT'), total consumed 18 bytes, indexed True
+2025-11-27 17:15:23,714 - hpack.hpack - DEBUG - Decoded 76, consumed 1 bytes
+2025-11-27 17:15:23,715 - hpack.hpack - DEBUG - Decoded (b'cf-cache-status', b'DYNAMIC'), consumed 1
+2025-11-27 17:15:23,715 - hpack.hpack - DEBUG - Decoded 26, consumed 1 bytes
+2025-11-27 17:15:23,716 - hpack.hpack - DEBUG - Decoded 3, consumed 1 bytes
+2025-11-27 17:15:23,716 - hpack.hpack - DEBUG - Decoded (b'content-encoding', b'gzip'), total consumed 5 bytes, indexed True
+2025-11-27 17:15:23,717 - hpack.hpack - DEBUG - Decoded 29, consumed 1 bytes
+2025-11-27 17:15:23,718 - hpack.hpack - DEBUG - Decoded 54, consumed 1 bytes
+2025-11-27 17:15:23,718 - hpack.hpack - DEBUG - Decoded (b'content-location', b'/profiles?select=%2A&user_type=eq.autonomo&whatsapp_phone=eq.5548991589495'), total consumed 56 bytes, indexed True
+2025-11-27 17:15:23,719 - hpack.hpack - DEBUG - Decoded 76, consumed 1 bytes
+2025-11-27 17:15:23,719 - hpack.hpack - DEBUG - Decoded (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), consumed 1
+2025-11-27 17:15:23,720 - hpack.hpack - DEBUG - Decoded 67, consumed 1 bytes
+2025-11-27 17:15:23,721 - hpack.hpack - DEBUG - Decoded (b'vary', b'Accept-Encoding'), consumed 1
+2025-11-27 17:15:23,721 - hpack.hpack - DEBUG - Decoded 75, consumed 1 bytes
+2025-11-27 17:15:23,722 - hpack.hpack - DEBUG - Decoded (b'content-profile', b'public'), consumed 1
+2025-11-27 17:15:23,722 - hpack.hpack - DEBUG - Decoded 74, consumed 1 bytes
+2025-11-27 17:15:23,723 - hpack.hpack - DEBUG - Decoded (b'sb-gateway-version', <memory at 0x000001E2F127B340>), consumed 1
+2025-11-27 17:15:23,723 - hpack.hpack - DEBUG - Decoded 73, consumed 1 bytes
+2025-11-27 17:15:23,724 - hpack.hpack - DEBUG - Decoded (b'sb-project-ref', b'idvfhgznofvubscjycvt'), consumed 1
+2025-11-27 17:15:23,724 - hpack.hpack - DEBUG - Decoded 72, consumed 2 bytes
+2025-11-27 17:15:23,725 - hpack.hpack - DEBUG - Decoded 26, consumed 1 bytes
+2025-11-27 17:15:23,725 - hpack.hpack - DEBUG - Decoded (b'sb-request-id', b'019ac6f4-ccf2-772b-934a-21945f282d0c'), total consumed 29 bytes, indexed True
+2025-11-27 17:15:23,726 - hpack.hpack - DEBUG - Decoded 72, consumed 1 bytes
+2025-11-27 17:15:23,726 - hpack.hpack - DEBUG - Decoded (b'x-content-type-options', b'nosniff'), consumed 1
+2025-11-27 17:15:23,727 - hpack.hpack - DEBUG - Decoded 71, consumed 1 bytes
+2025-11-27 17:15:23,727 - hpack.hpack - DEBUG - Decoded (b'x-envoy-attempt-count', <memory at 0x000001E2F127B100>), consumed 1
+2025-11-27 17:15:23,728 - hpack.hpack - DEBUG - Decoded 70, consumed 2 bytes
+2025-11-27 17:15:23,729 - hpack.hpack - DEBUG - Decoded 1, consumed 1 bytes
+2025-11-27 17:15:23,729 - hpack.hpack - DEBUG - Decoded (b'x-envoy-upstream-service-time', <memory at 0x000001E2F127B400>), total consumed 4 bytes, indexed True
+2025-11-27 17:15:23,730 - hpack.hpack - DEBUG - Decoded 68, consumed 1 bytes
+2025-11-27 17:15:23,730 - hpack.hpack - DEBUG - Decoded (b'alt-svc', b'h3=":443"; ma=86400'), consumed 1
+2025-11-27 17:15:23,733 - httpcore.http2 - DEBUG - receive_response_headers.complete return_value=(200, [(b'date', b'Thu, 27 Nov 2025 20:15:23 GMT'), (b'content-type', b'application/json; charset=utf-8'), (b'server', b'cloudflare'), (b'content-range', b'0-0/*'), (b'cf-ray', b'9a544c1b0c1b9da8-NVT'), (b'cf-cache-status', b'DYNAMIC'), (b'content-encoding', b'gzip'), (b'content-location', b'/profiles?select=%2A&user_type=eq.autonomo&whatsapp_phone=eq.5548991589495'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'idvfhgznofvubscjycvt'), (b'sb-request-id', b'019ac6f4-ccf2-772b-934a-21945f282d0c'), (b'x-content-type-options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'5'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-11-27 17:15:23,734 - httpx - INFO - HTTP Request: GET https://idvfhgznofvubscjycvt.supabase.co//rest/v1/profiles?select=%2A&whatsapp_phone=eq.5548991589495&user_type=eq.autonomo "HTTP/2 200 OK"
+2025-11-27 17:15:23,736 - httpcore.http2 - DEBUG - receive_response_body.started request=<Request [b'GET']> stream_id=3
+2025-11-27 17:15:23,738 - httpcore.http2 - DEBUG - receive_response_body.complete
+2025-11-27 17:15:23,739 - httpcore.http2 - DEBUG - response_closed.started stream_id=3
+2025-11-27 17:15:23,739 - httpcore.http2 - DEBUG - response_closed.complete
+2025-11-27 17:15:23,747 - httpcore.http2 - DEBUG - send_request_headers.started request=<Request [b'GET']> stream_id=5
+2025-11-27 17:15:23,748 - hpack.hpack - DEBUG - Adding (b':method', b'GET') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,748 - hpack.hpack - DEBUG - Encoding 2 with 7 bits
+2025-11-27 17:15:23,749 - hpack.hpack - DEBUG - Adding (b':authority', b'idvfhgznofvubscjycvt.supabase.co') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,750 - hpack.hpack - DEBUG - Encoding 71 with 7 bits
+2025-11-27 17:15:23,750 - hpack.hpack - DEBUG - Adding (b':scheme', b'https') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,751 - hpack.hpack - DEBUG - Encoding 7 with 7 bits
+2025-11-27 17:15:23,751 - hpack.hpack - DEBUG - Adding (b':path', b'//rest/v1/sal_version_history?select=%2A&effective_date=eq.2025-01-01') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,752 - hpack.hpack - DEBUG - Encoding 4 with 6 bits
+2025-11-27 17:15:23,753 - hpack.hpack - DEBUG - Encoding 49 with 7 bits
+2025-11-27 17:15:23,753 - hpack.hpack - DEBUG - Adding (b'accept', b'*/*') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,754 - hpack.hpack - DEBUG - Encoding 70 with 7 bits
+2025-11-27 17:15:23,754 - hpack.hpack - DEBUG - Adding (b'accept-encoding', b'gzip, deflate') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,755 - hpack.hpack - DEBUG - Encoding 16 with 7 bits
+2025-11-27 17:15:23,756 - hpack.hpack - DEBUG - Adding (b'user-agent', b'python-httpx/0.28.1') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,756 - hpack.hpack - DEBUG - Encoding 69 with 7 bits
+2025-11-27 17:15:23,757 - hpack.hpack - DEBUG - Adding (b'x-client-info', b'supabase-py/2.22.3') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,757 - hpack.hpack - DEBUG - Encoding 68 with 7 bits
+2025-11-27 17:15:23,758 - hpack.hpack - DEBUG - Adding (b'apikey', b'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,758 - hpack.hpack - DEBUG - Encoding 67 with 7 bits
+2025-11-27 17:15:23,759 - hpack.hpack - DEBUG - Adding (b'authorization', b'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:True, huffman:True
+2025-11-27 17:15:23,759 - hpack.hpack - DEBUG - Encoding 23 with 4 bits
+2025-11-27 17:15:23,760 - hpack.hpack - DEBUG - Encoding 172 with 7 bits
+2025-11-27 17:15:23,760 - hpack.hpack - DEBUG - Adding (b'accept-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,761 - hpack.hpack - DEBUG - Encoding 66 with 7 bits
+2025-11-27 17:15:23,761 - hpack.hpack - DEBUG - Adding (b'content-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,762 - hpack.hpack - DEBUG - Encoding 65 with 7 bits
+2025-11-27 17:15:23,763 - hpack.hpack - DEBUG - Adding (b'cookie', b'__cf_bm=.IKmQkzkyZJITc9j4vtUBkUxeahs2G_TnvqDo5iTaRM-1764274523-1.0.1.1-oN4UKrH6XhjsRqlAdSsAqSmXh5oDSZWWLKqnhLDrYcmBKBJZlIqYw19WMkyh5R.rzSv7l6xO37A963bVtDMvYGhgzVrUHEzcRtZzWZm9f_o') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:23,764 - hpack.hpack - DEBUG - Encoding 63 with 7 bits
+2025-11-27 17:15:23,765 - hpack.hpack - DEBUG - Encoded header block to b'\x82\xc7\x87D\xb1a\x8b\n\x84\xb1\xdc, tE\xdc\xb6 \xc7\xaa)\xcc\x84\x9e\xcf_\xe2\x0bAH\x98\x15\x14?\x05\x96R\x91&\xeeX\xa4\x1aK\x01{. \t\xb5\x80\x15\x80\x1f\xc6\x90\xc5\xc4\xc3\x1f\x08\xff-\xbaQ\xd8[\x14/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1f\xc2\xc1\xbf'
+2025-11-27 17:15:23,767 - httpcore.http2 - DEBUG - send_request_headers.complete
+2025-11-27 17:15:23,768 - httpcore.http2 - DEBUG - send_request_body.started request=<Request [b'GET']> stream_id=5
+2025-11-27 17:15:23,769 - httpcore.http2 - DEBUG - send_request_body.complete
+2025-11-27 17:15:23,769 - httpcore.http2 - DEBUG - receive_response_headers.started request=<Request [b'GET']> stream_id=5
+2025-11-27 17:15:23,828 - hpack.hpack - DEBUG - Decoding b'\x88\xd6\xd5\xd3\xc3\x7f\x12\x8f|m\xb4\xd1\x03\x1cenW\xe4\x1b\xcbi\xe3\xbf\xd1\xc2]\xaba\x03\xa2.\xe5\xb1\x06=QNd$\xf6z\xff\x0b,\xa5"M\xdc\xb1H4\x96\x02\xf6\\@\x13k\x00+\x00?\x08-\x05"`TP\xff\xd0\xc7\xcf\xce\xcd\x7f\r\x9a\x00_\x19\x1c\x95\xa5\x89#eY\xd9Y\x02\xd1\xba\'\xd6m\xe6\x9dxb\x19#)?\xcc\xcb\x7f\x0b\x0220\xc8'
+2025-11-27 17:15:23,829 - hpack.hpack - DEBUG - Decoded 8, consumed 1 bytes
+2025-11-27 17:15:23,830 - hpack.hpack - DEBUG - Decoded (b':status', b'200'), consumed 1
+2025-11-27 17:15:23,831 - hpack.hpack - DEBUG - Decoded 86, consumed 1 bytes
+2025-11-27 17:15:23,831 - hpack.hpack - DEBUG - Decoded (b'date', b'Thu, 27 Nov 2025 20:15:23 GMT'), consumed 1
+2025-11-27 17:15:23,832 - hpack.hpack - DEBUG - Decoded 85, consumed 1 bytes
+2025-11-27 17:15:23,832 - hpack.hpack - DEBUG - Decoded (b'content-type', b'application/json; charset=utf-8'), consumed 1
+2025-11-27 17:15:23,833 - hpack.hpack - DEBUG - Decoded 83, consumed 1 bytes
+2025-11-27 17:15:23,833 - hpack.hpack - DEBUG - Decoded (b'server', b'cloudflare'), consumed 1
+2025-11-27 17:15:23,834 - hpack.hpack - DEBUG - Decoded 67, consumed 1 bytes
+2025-11-27 17:15:23,834 - hpack.hpack - DEBUG - Decoded (b'content-range', b'0-0/*'), consumed 1
+2025-11-27 17:15:23,834 - hpack.hpack - DEBUG - Decoded 81, consumed 2 bytes
+2025-11-27 17:15:23,835 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:23,835 - hpack.hpack - DEBUG - Decoded (b'cf-ray', b'9a544c1bbe5f9da8-NVT'), total consumed 18 bytes, indexed True
+2025-11-27 17:15:23,836 - hpack.hpack - DEBUG - Decoded 81, consumed 1 bytes
+2025-11-27 17:15:23,836 - hpack.hpack - DEBUG - Decoded (b'cf-cache-status', b'DYNAMIC'), consumed 1
+2025-11-27 17:15:23,837 - hpack.hpack - DEBUG - Decoded 66, consumed 1 bytes
+2025-11-27 17:15:23,837 - hpack.hpack - DEBUG - Decoded (b'content-encoding', b'gzip'), consumed 1
+2025-11-27 17:15:23,838 - hpack.hpack - DEBUG - Decoded 29, consumed 1 bytes
+2025-11-27 17:15:23,838 - hpack.hpack - DEBUG - Decoded 43, consumed 1 bytes
+2025-11-27 17:15:23,839 - hpack.hpack - DEBUG - Decoded (b'content-location', b'/sal_version_history?effective_date=eq.2025-01-01&select=%2A'), total consumed 45 bytes, indexed True
+2025-11-27 17:15:23,839 - hpack.hpack - DEBUG - Decoded 80, consumed 1 bytes
+2025-11-27 17:15:23,840 - hpack.hpack - DEBUG - Decoded (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), consumed 1
+2025-11-27 17:15:23,841 - hpack.hpack - DEBUG - Decoded 71, consumed 1 bytes
+2025-11-27 17:15:23,841 - hpack.hpack - DEBUG - Decoded (b'vary', b'Accept-Encoding'), consumed 1
+2025-11-27 17:15:23,842 - hpack.hpack - DEBUG - Decoded 79, consumed 1 bytes
+2025-11-27 17:15:23,842 - hpack.hpack - DEBUG - Decoded (b'content-profile', b'public'), consumed 1
+2025-11-27 17:15:23,842 - hpack.hpack - DEBUG - Decoded 78, consumed 1 bytes
+2025-11-27 17:15:23,843 - hpack.hpack - DEBUG - Decoded (b'sb-gateway-version', <memory at 0x000001E2F127B340>), consumed 1
+2025-11-27 17:15:23,844 - hpack.hpack - DEBUG - Decoded 77, consumed 1 bytes
+2025-11-27 17:15:23,844 - hpack.hpack - DEBUG - Decoded (b'sb-project-ref', b'idvfhgznofvubscjycvt'), consumed 1
+2025-11-27 17:15:23,845 - hpack.hpack - DEBUG - Decoded 76, consumed 2 bytes
+2025-11-27 17:15:23,845 - hpack.hpack - DEBUG - Decoded 26, consumed 1 bytes
+2025-11-27 17:15:23,846 - hpack.hpack - DEBUG - Decoded (b'sb-request-id', b'019ac6f4-cd5e-7f30-b729-58478a2acbec'), total consumed 29 bytes, indexed True
+2025-11-27 17:15:23,846 - hpack.hpack - DEBUG - Decoded 76, consumed 1 bytes
+2025-11-27 17:15:23,847 - hpack.hpack - DEBUG - Decoded (b'x-content-type-options', b'nosniff'), consumed 1
+2025-11-27 17:15:23,848 - hpack.hpack - DEBUG - Decoded 75, consumed 1 bytes
+2025-11-27 17:15:23,848 - hpack.hpack - DEBUG - Decoded (b'x-envoy-attempt-count', <memory at 0x000001E2F127B100>), consumed 1
+2025-11-27 17:15:23,849 - hpack.hpack - DEBUG - Decoded 74, consumed 2 bytes
+2025-11-27 17:15:23,849 - hpack.hpack - DEBUG - Decoded 2, consumed 1 bytes
+2025-11-27 17:15:23,850 - hpack.hpack - DEBUG - Decoded (b'x-envoy-upstream-service-time', <memory at 0x000001E2F127B700>), total consumed 5 bytes, indexed True
+2025-11-27 17:15:23,851 - hpack.hpack - DEBUG - Decoded 72, consumed 1 bytes
+2025-11-27 17:15:23,852 - hpack.hpack - DEBUG - Decoded (b'alt-svc', b'h3=":443"; ma=86400'), consumed 1
+2025-11-27 17:15:23,852 - httpcore.http2 - DEBUG - receive_response_headers.complete return_value=(200, [(b'date', b'Thu, 27 Nov 2025 20:15:23 GMT'), (b'content-type', b'application/json; charset=utf-8'), (b'server', b'cloudflare'), (b'content-range', b'0-0/*'), (b'cf-ray', b'9a544c1bbe5f9da8-NVT'), (b'cf-cache-status', b'DYNAMIC'), (b'content-encoding', b'gzip'), (b'content-location', b'/sal_version_history?effective_date=eq.2025-01-01&select=%2A'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'idvfhgznofvubscjycvt'), (b'sb-request-id', b'019ac6f4-cd5e-7f30-b729-58478a2acbec'), (b'x-content-type-options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'20'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-11-27 17:15:23,854 - httpx - INFO - HTTP Request: GET https://idvfhgznofvubscjycvt.supabase.co//rest/v1/sal_version_history?select=%2A&effective_date=eq.2025-01-01 "HTTP/2 200 OK"
+2025-11-27 17:15:23,855 - httpcore.http2 - DEBUG - receive_response_body.started request=<Request [b'GET']> stream_id=5
+2025-11-27 17:15:23,856 - httpcore.http2 - DEBUG - receive_response_body.complete
+2025-11-27 17:15:23,856 - httpcore.http2 - DEBUG - response_closed.started stream_id=5
+2025-11-27 17:15:23,857 - httpcore.http2 - DEBUG - response_closed.complete
+2025-11-27 17:15:24,063 - GPSHybridService - INFO - [INFO] Taxa de validação configurada | taxa_validacao_percent=1.0
+2025-11-27 17:15:24,127 - PIL.PngImagePlugin - DEBUG - STREAM b'IHDR' 16 13
+2025-11-27 17:15:24,128 - PIL.PngImagePlugin - DEBUG - STREAM b'IDAT' 41 122986
+2025-11-27 17:15:25,635 - httpcore.connection - DEBUG - connect_tcp.started host='idvfhgznofvubscjycvt.supabase.co' port=443 local_address=None timeout=20 socket_options=None
+2025-11-27 17:15:25,668 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001E2F16B0B90>
+2025-11-27 17:15:25,669 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x000001E2F1399880> server_hostname='idvfhgznofvubscjycvt.supabase.co' timeout=20
+2025-11-27 17:15:25,690 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001E2F16162C0>
+2025-11-27 17:15:25,691 - httpcore.http2 - DEBUG - send_connection_init.started request=<Request [b'POST']>
+2025-11-27 17:15:25,692 - httpcore.http2 - DEBUG - send_connection_init.complete
+2025-11-27 17:15:25,693 - httpcore.http2 - DEBUG - send_request_headers.started request=<Request [b'POST']> stream_id=1
+2025-11-27 17:15:25,695 - hpack.hpack - DEBUG - Adding (b':method', b'POST') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,695 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:25,696 - hpack.hpack - DEBUG - Adding (b':authority', b'idvfhgznofvubscjycvt.supabase.co') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,696 - hpack.hpack - DEBUG - Encoding 1 with 6 bits
+2025-11-27 17:15:25,697 - hpack.hpack - DEBUG - Encoding 24 with 7 bits
+2025-11-27 17:15:25,697 - hpack.hpack - DEBUG - Adding (b':scheme', b'https') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,698 - hpack.hpack - DEBUG - Encoding 7 with 7 bits
+2025-11-27 17:15:25,699 - hpack.hpack - DEBUG - Adding (b':path', b'//storage/v1/object/guias/guias/59457a97-8a05-42cb-b697-a8ff3a3191fa/20251127_171524_gps.pdf') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,699 - hpack.hpack - DEBUG - Encoding 4 with 6 bits
+2025-11-27 17:15:25,700 - hpack.hpack - DEBUG - Encoding 65 with 7 bits
+2025-11-27 17:15:25,701 - hpack.hpack - DEBUG - Adding (b'accept', b'*/*') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,701 - hpack.hpack - DEBUG - Encoding 19 with 6 bits
+2025-11-27 17:15:25,702 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:25,703 - hpack.hpack - DEBUG - Adding (b'accept-encoding', b'gzip, deflate') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,703 - hpack.hpack - DEBUG - Encoding 16 with 7 bits
+2025-11-27 17:15:25,704 - hpack.hpack - DEBUG - Adding (b'user-agent', b'supabase-py/storage3 v2.22.3') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,704 - hpack.hpack - DEBUG - Encoding 58 with 6 bits
+2025-11-27 17:15:25,705 - hpack.hpack - DEBUG - Encoding 20 with 7 bits
+2025-11-27 17:15:25,706 - hpack.hpack - DEBUG - Adding (b'x-client-info', b'supabase-py/2.22.3') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,706 - hpack.hpack - DEBUG - Encoding 10 with 7 bits
+2025-11-27 17:15:25,707 - hpack.hpack - DEBUG - Encoding 13 with 7 bits
+2025-11-27 17:15:25,707 - hpack.hpack - DEBUG - Adding (b'apikey', b'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,708 - hpack.hpack - DEBUG - Encoding 5 with 7 bits
+2025-11-27 17:15:25,710 - hpack.hpack - DEBUG - Encoding 167 with 7 bits
+2025-11-27 17:15:25,710 - hpack.hpack - DEBUG - Adding (b'authorization', b'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:True, huffman:True
+2025-11-27 17:15:25,711 - hpack.hpack - DEBUG - Encoding 23 with 4 bits
+2025-11-27 17:15:25,712 - hpack.hpack - DEBUG - Encoding 172 with 7 bits
+2025-11-27 17:15:25,713 - hpack.hpack - DEBUG - Adding (b'cache-control', b'3600') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,714 - hpack.hpack - DEBUG - Encoding 24 with 6 bits
+2025-11-27 17:15:25,714 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:25,715 - hpack.hpack - DEBUG - Adding (b'x-upsert', b'true') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,716 - hpack.hpack - DEBUG - Encoding 6 with 7 bits
+2025-11-27 17:15:25,716 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:25,717 - hpack.hpack - DEBUG - Adding (b'content-length', b'142878') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,718 - hpack.hpack - DEBUG - Encoding 28 with 6 bits
+2025-11-27 17:15:25,719 - hpack.hpack - DEBUG - Encoding 5 with 7 bits
+2025-11-27 17:15:25,720 - hpack.hpack - DEBUG - Adding (b'content-type', b'multipart/form-data; boundary=9590af19fa5ba6f18ffa2f23511934ad') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:25,720 - hpack.hpack - DEBUG - Encoding 31 with 6 bits
+2025-11-27 17:15:25,721 - hpack.hpack - DEBUG - Encoding 45 with 7 bits
+2025-11-27 17:15:25,721 - hpack.hpack - DEBUG - Encoded header block to b'\x83A\x984\x9d\xe5\x9eou\x1e^\xf6\xc6\x82t\xf4N\xe9]\x16\xd68\xc6\x82\xaeC\xff\x87D\xc1a\x84$\xf6\x0eb\xb1\xdc,\x1e>\x85"X\x9a\xd3\r\x0cMi\x86\x86\x1b}\xa6\xdd\x1b\xee\xac\xf0\xc0\xda\xcd\x08\x91\xad\x1b\x8f\xba\xb0\xde\x96VF\xc8_\x0c\xa3`@\x13a\x08\x9d\x88.\x85\xb15\x14\xd5\xa1z\xe4\x97S\x83\xf9c\xe7\x90z\x94E\xb5\x8e1\xa0\xabW\xe9\x84$\xf6\x0eb\xb2\xa7q.!.\xcf@\x8a\xf2\xb1(1jJ\xc6\xaaS\xff\x8dE\xb5\x8e1\xa0\xabW\xe9\x81.!.\xcf@\x85\x1df\xea__\xff(/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1f\x1f\x08\xff-\xbaQ\xd8[\x14/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1fX\x83e\xc0\x03@\x86\xf2\xb5\xb5\xa0\xb6\'\x83M\x96\x97\\\x85\x0bBy\xd7\xbf_\xad\xa6\xda\x12j\xc7bX\x94\xf6R\xb4\x83H\xfe\xd4\x8c\xf6\xd5 \xec\xf5\x03\xed\xbe\x01\xca\x17\xe5\x1bq\x8d\xc9B\xf4\xb2\x8cR\x89\x96\xc2\x17\xd9hr\x7f'
+2025-11-27 17:15:25,723 - httpcore.http2 - DEBUG - send_request_headers.complete
+2025-11-27 17:15:25,723 - httpcore.http2 - DEBUG - send_request_body.started request=<Request [b'POST']> stream_id=1
+2025-11-27 17:15:25,727 - httpcore.http2 - DEBUG - receive_remote_settings.started
+2025-11-27 17:15:25,728 - httpcore.http2 - DEBUG - receive_remote_settings.complete return_value=<RemoteSettingsChanged changed_settings:{ChangedSetting(setting=3, original_value=None, new_value=100), ChangedSetting(setting=4, original_value=65535, new_value=65536), ChangedSetting(setting=5, original_value=16384, new_value=16777215)}>
+2025-11-27 17:15:25,755 - httpcore.http2 - DEBUG - send_request_body.complete
+2025-11-27 17:15:25,756 - httpcore.http2 - DEBUG - receive_response_headers.started request=<Request [b'POST']> stream_id=1
+2025-11-27 17:15:26,283 - hpack.hpack - DEBUG - Decoding b'?\xe1\x1f\x88a\x96\xdf=\xbfJ\t\xd54\x9f\xba\x82\x00\x9bP@\xb8\x16\xee\t\xb51h\xdf_\x96\x1du\xd0b\r&=LtA\xea\xfbP\x93\x8e\xc4\x150Z\x99V{Z\x83\x9b\xd9\xab@\x85$\xabX?_\x8f|m\xb4\xd1\x04\xec\xb2\x16Y^\x95\xb5\xb4\xf1\xdf@\x8a$\xab\x10d\x9c\xab!#M\xa8\x86\xbf\xcfL:2^T\x01*x\xa0\xa4~V\x1c\xc5\x81\x90\xb6\xcb\x80\x00>\xd45D\xa2\xd9\x0b\xba\xd8\xef\x9e\x91\x9a\xa4}\xa9]\x85\xa0\xe3\x93@\x8bDkL4\x97\xc0\xfd-I\xe4/\x84\x90\xd6\x14\x89@\x8dDkL4\x97\xc0\xfd-\xdc\xb6 \xc7\xab\x011@\x8aDkWa\xfa\x14\x89Z\xc2\xcb\x8f4\x9d\xe5\x9eou\x1e^\xf6\xc6\x82t\xf4N\xe9@\x8aDkX^\xd6\x95\tX\xd2\x7f\x9a\x00_\x19\x1c\x95\xa5\xa4m\xb7\x96u\xe7\xc6\xb3\xcd\x92E\x9e\x91\xa1\xb6\xf8_\x902Kw\xffW\x8a"K\x14t\xc1\x8b\x9f\xbc\xae]\xcb\xd7\xbd\x0b\xd3}|oK\x97B\xf7\xfd\xe0\x87\x8c\xde\xb8.\x8d\xaf\xea\xd3\xcc\xfb6\xe6\xde\xbe\xa4,\x17\\hN\xb4\xd8\x9bX+\x81p\xae\x15\x89\xdc7\xfcg\xcf\xde\x9b\xf9\xbaI-\xe1\xe1\xc1\xdb\xbdI_\xc5\x99\xed\x9c.s\x97\xdem\x01?LStt\x13\x0f\xbb_\x95\xd3^=l\xf0\xeb\x8b\xa5~:\xd2\xca\xfc\xca\xe4\xd5\xca*\xbb\x9f\x85\xd4\xa7\xac\xfbn\xc9\xbc\xbb\x1f\xd5\xe6\xefBGK\xe6\xb3\xd7\xe3\xa6\xd1\xcfL\xec\xf3\xfbR\xb1\xa6x\x18\xfbP\xbek5\x85D\x1b\xe7\xb7\xe9A:\xb6\x93\xf7XM\xa8 \\i\xbb\x82mLZ7\xfd\xa9!\xe9\x19\xaa\x81t[X\xe3\x1a\n\xb9\x0f\xf6\xa64\xa6\xbdUQ\xeb\xedM\xc5%\xb6\x17\xedM\xc3\xa4\xbb\x8c\x92\xc1\xa4\xf5\x17{\x8b\x84\x84-i[\x05D<\x86\xaaov\x87%\x07\xb6Ih\x1d\x85@\x85\x1d\tY\x1d\xc9\x90\x9d\x98?\x9b\x8d4\xcf\xf3\xf6\xa5#\x81\xe7\x1a\x00?'
+2025-11-27 17:15:26,284 - hpack.hpack - DEBUG - Decoded 4096, consumed 3 bytes
+2025-11-27 17:15:26,285 - hpack.table - DEBUG - Resizing header table to 4096 from 4096
+2025-11-27 17:15:26,285 - hpack.hpack - DEBUG - Decoded 8, consumed 1 bytes
+2025-11-27 17:15:26,286 - hpack.hpack - DEBUG - Decoded (b':status', b'200'), consumed 1
+2025-11-27 17:15:26,286 - hpack.hpack - DEBUG - Decoded 33, consumed 1 bytes
+2025-11-27 17:15:26,287 - hpack.hpack - DEBUG - Decoded 22, consumed 1 bytes
+2025-11-27 17:15:26,288 - hpack.hpack - DEBUG - Decoded (b'date', b'Thu, 27 Nov 2025 20:15:25 GMT'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:26,288 - hpack.hpack - DEBUG - Decoded 31, consumed 1 bytes
+2025-11-27 17:15:26,289 - hpack.hpack - DEBUG - Decoded 22, consumed 1 bytes
+2025-11-27 17:15:26,289 - hpack.hpack - DEBUG - Decoded (b'content-type', b'application/json; charset=utf-8'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:26,290 - hpack.hpack - DEBUG - Decoded 26, consumed 1 bytes
+2025-11-27 17:15:26,291 - hpack.hpack - DEBUG - Decoded 3, consumed 1 bytes
+2025-11-27 17:15:26,291 - hpack.hpack - DEBUG - Decoded (b'content-encoding', b'gzip'), total consumed 5 bytes, indexed True
+2025-11-27 17:15:26,292 - hpack.hpack - DEBUG - Decoded 5, consumed 1 bytes
+2025-11-27 17:15:26,293 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:26,293 - hpack.hpack - DEBUG - Decoded (b'cf-ray', b'9a544c27fdeff8f5-NVT'), total consumed 23 bytes, indexed True
+2025-11-27 17:15:26,294 - hpack.hpack - DEBUG - Decoded 10, consumed 1 bytes
+2025-11-27 17:15:26,294 - hpack.hpack - DEBUG - Decoded 6, consumed 1 bytes
+2025-11-27 17:15:26,295 - hpack.hpack - DEBUG - Decoded (b'cf-cache-status', b'DYNAMIC'), total consumed 19 bytes, indexed True
+2025-11-27 17:15:26,296 - hpack.hpack - DEBUG - Decoded 20, consumed 1 bytes
+2025-11-27 17:15:26,297 - hpack.hpack - DEBUG - Decoded 1, consumed 1 bytes
+2025-11-27 17:15:26,297 - hpack.hpack - DEBUG - Decoded (b'access-control-allow-origin', <memory at 0x000001E2F165C1C0>), total consumed 3 bytes, indexed True
+2025-11-27 17:15:26,297 - hpack.hpack - DEBUG - Decoded 56, consumed 1 bytes
+2025-11-27 17:15:26,298 - hpack.hpack - DEBUG - Decoded 32, consumed 1 bytes
+2025-11-27 17:15:26,299 - hpack.hpack - DEBUG - Decoded (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), total consumed 34 bytes, indexed True
+2025-11-27 17:15:26,299 - hpack.hpack - DEBUG - Decoded 11, consumed 1 bytes
+2025-11-27 17:15:26,300 - hpack.hpack - DEBUG - Decoded 4, consumed 1 bytes
+2025-11-27 17:15:26,300 - hpack.hpack - DEBUG - Decoded (b'sb-gateway-mode', b'direct'), total consumed 18 bytes, indexed True
+2025-11-27 17:15:26,301 - hpack.hpack - DEBUG - Decoded 13, consumed 1 bytes
+2025-11-27 17:15:26,302 - hpack.hpack - DEBUG - Decoded 1, consumed 1 bytes
+2025-11-27 17:15:26,303 - hpack.hpack - DEBUG - Decoded (b'sb-gateway-version', <memory at 0x000001E2F165C280>), total consumed 17 bytes, indexed True
+2025-11-27 17:15:26,303 - hpack.hpack - DEBUG - Decoded 10, consumed 1 bytes
+2025-11-27 17:15:26,304 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:26,305 - hpack.hpack - DEBUG - Decoded (b'sb-project-ref', b'idvfhgznofvubscjycvt'), total consumed 28 bytes, indexed True
+2025-11-27 17:15:26,305 - hpack.hpack - DEBUG - Decoded 10, consumed 1 bytes
+2025-11-27 17:15:26,306 - hpack.hpack - DEBUG - Decoded 26, consumed 1 bytes
+2025-11-27 17:15:26,306 - hpack.hpack - DEBUG - Decoded (b'sb-request-id', b'019ac6f4-d558-789a-85cd-8d4a5919d1df'), total consumed 39 bytes, indexed True
+2025-11-27 17:15:26,307 - hpack.hpack - DEBUG - Decoded 55, consumed 1 bytes
+2025-11-27 17:15:26,307 - hpack.hpack - DEBUG - Decoded 214, consumed 2 bytes
+2025-11-27 17:15:26,308 - hpack.hpack - DEBUG - Decoded (b'set-cookie', b'__cf_bm=GYzJ6BJkvl.mD.H8fJM.DzEAVgyU.sR9ONYoQRKT.Os-1764274525-1.0.1.1-cv1DwLLvmDKjdfCaFEqvnt.wrLuh16YfzKM1ojGgj70gav4XpmpHP3UkGjpwkm3.Ye6gpf2nvoUBttkhRBdTeQ9OxBjcbm9iryX7iMYNh3Y; path=/; expires=Thu, 27-Nov-25 20:45:25 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None'), total consumed 217 bytes, indexed True
+2025-11-27 17:15:26,309 - hpack.hpack - DEBUG - Decoded 59, consumed 1 bytes
+2025-11-27 17:15:26,309 - hpack.hpack - DEBUG - Decoded 11, consumed 1 bytes
+2025-11-27 17:15:26,310 - hpack.hpack - DEBUG - Decoded (b'vary', b'Accept-Encoding'), total consumed 13 bytes, indexed True
+2025-11-27 17:15:26,310 - hpack.hpack - DEBUG - Decoded 54, consumed 1 bytes
+2025-11-27 17:15:26,311 - hpack.hpack - DEBUG - Decoded 7, consumed 1 bytes
+2025-11-27 17:15:26,312 - hpack.hpack - DEBUG - Decoded (b'server', b'cloudflare'), total consumed 9 bytes, indexed True
+2025-11-27 17:15:26,313 - hpack.hpack - DEBUG - Decoded 5, consumed 1 bytes
+2025-11-27 17:15:26,313 - hpack.hpack - DEBUG - Decoded 16, consumed 1 bytes
+2025-11-27 17:15:26,314 - hpack.hpack - DEBUG - Decoded (b'alt-svc', b'h3=":443"; ma=86400'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:26,315 - httpcore.http2 - DEBUG - receive_response_headers.complete return_value=(200, [(b'date', b'Thu, 27 Nov 2025 20:15:25 GMT'), (b'content-type', b'application/json; charset=utf-8'), (b'content-encoding', b'gzip'), (b'cf-ray', b'9a544c27fdeff8f5-NVT'), (b'cf-cache-status', b'DYNAMIC'), (b'access-control-allow-origin', b'*'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'sb-gateway-mode', b'direct'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'idvfhgznofvubscjycvt'), (b'sb-request-id', b'019ac6f4-d558-789a-85cd-8d4a5919d1df'), (b'set-cookie', b'__cf_bm=GYzJ6BJkvl.mD.H8fJM.DzEAVgyU.sR9ONYoQRKT.Os-1764274525-1.0.1.1-cv1DwLLvmDKjdfCaFEqvnt.wrLuh16YfzKM1ojGgj70gav4XpmpHP3UkGjpwkm3.Ye6gpf2nvoUBttkhRBdTeQ9OxBjcbm9iryX7iMYNh3Y; path=/; expires=Thu, 27-Nov-25 20:45:25 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None'), (b'vary', b'Accept-Encoding'), (b'server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-11-27 17:15:26,317 - httpx - INFO - HTTP Request: POST https://idvfhgznofvubscjycvt.supabase.co//storage/v1/object/guias/guias/59457a97-8a05-42cb-b697-a8ff3a3191fa/20251127_171524_gps.pdf "HTTP/2 200 OK"
+2025-11-27 17:15:26,317 - httpcore.http2 - DEBUG - receive_response_body.started request=<Request [b'POST']> stream_id=1
+2025-11-27 17:15:26,319 - httpcore.http2 - DEBUG - receive_response_body.complete
+2025-11-27 17:15:26,319 - httpcore.http2 - DEBUG - response_closed.started stream_id=1
+2025-11-27 17:15:26,320 - httpcore.http2 - DEBUG - response_closed.complete
+2025-11-27 17:15:26,324 - httpcore.http2 - DEBUG - send_request_headers.started request=<Request [b'POST']> stream_id=7
+2025-11-27 17:15:26,325 - hpack.hpack - DEBUG - Adding (b':method', b'POST') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,326 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:26,327 - hpack.hpack - DEBUG - Adding (b':authority', b'idvfhgznofvubscjycvt.supabase.co') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,327 - hpack.hpack - DEBUG - Encoding 72 with 7 bits
+2025-11-27 17:15:26,328 - hpack.hpack - DEBUG - Adding (b':scheme', b'https') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,329 - hpack.hpack - DEBUG - Encoding 7 with 7 bits
+2025-11-27 17:15:26,329 - hpack.hpack - DEBUG - Adding (b':path', b'//rest/v1/guias_inss') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,329 - hpack.hpack - DEBUG - Encoding 4 with 6 bits
+2025-11-27 17:15:26,330 - hpack.hpack - DEBUG - Encoding 14 with 7 bits
+2025-11-27 17:15:26,330 - hpack.hpack - DEBUG - Adding (b'accept', b'*/*') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,331 - hpack.hpack - DEBUG - Encoding 71 with 7 bits
+2025-11-27 17:15:26,332 - hpack.hpack - DEBUG - Adding (b'accept-encoding', b'gzip, deflate') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,332 - hpack.hpack - DEBUG - Encoding 16 with 7 bits
+2025-11-27 17:15:26,332 - hpack.hpack - DEBUG - Adding (b'user-agent', b'python-httpx/0.28.1') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,333 - hpack.hpack - DEBUG - Encoding 70 with 7 bits
+2025-11-27 17:15:26,333 - hpack.hpack - DEBUG - Adding (b'prefer', b'return=representation') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,334 - hpack.hpack - DEBUG - Encoding 5 with 7 bits
+2025-11-27 17:15:26,335 - hpack.hpack - DEBUG - Encoding 15 with 7 bits
+2025-11-27 17:15:26,335 - hpack.hpack - DEBUG - Adding (b'x-client-info', b'supabase-py/2.22.3') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,336 - hpack.hpack - DEBUG - Encoding 70 with 7 bits
+2025-11-27 17:15:26,336 - hpack.hpack - DEBUG - Adding (b'apikey', b'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,337 - hpack.hpack - DEBUG - Encoding 69 with 7 bits
+2025-11-27 17:15:26,338 - hpack.hpack - DEBUG - Adding (b'authorization', b'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:True, huffman:True
+2025-11-27 17:15:26,339 - hpack.hpack - DEBUG - Encoding 23 with 4 bits
+2025-11-27 17:15:26,339 - hpack.hpack - DEBUG - Encoding 172 with 7 bits
+2025-11-27 17:15:26,340 - hpack.hpack - DEBUG - Adding (b'accept-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,341 - hpack.hpack - DEBUG - Encoding 68 with 7 bits
+2025-11-27 17:15:26,341 - hpack.hpack - DEBUG - Adding (b'content-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,342 - hpack.hpack - DEBUG - Encoding 67 with 7 bits
+2025-11-27 17:15:26,342 - hpack.hpack - DEBUG - Adding (b'cookie', b'__cf_bm=.IKmQkzkyZJITc9j4vtUBkUxeahs2G_TnvqDo5iTaRM-1764274523-1.0.1.1-oN4UKrH6XhjsRqlAdSsAqSmXh5oDSZWWLKqnhLDrYcmBKBJZlIqYw19WMkyh5R.rzSv7l6xO37A963bVtDMvYGhgzVrUHEzcRtZzWZm9f_o') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,343 - hpack.hpack - DEBUG - Encoding 65 with 7 bits
+2025-11-27 17:15:26,344 - hpack.hpack - DEBUG - Adding (b'content-length', b'423') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,344 - hpack.hpack - DEBUG - Encoding 28 with 6 bits
+2025-11-27 17:15:26,345 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:26,346 - hpack.hpack - DEBUG - Adding (b'content-type', b'application/json') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,346 - hpack.hpack - DEBUG - Encoding 31 with 6 bits
+2025-11-27 17:15:26,347 - hpack.hpack - DEBUG - Encoding 11 with 7 bits
+2025-11-27 17:15:26,347 - hpack.hpack - DEBUG - Encoded header block to b'\x83\xc8\x87D\x8ea\x8b\n\x84\xb1\xdc,Mi\x86\x88\x8dR\x11\xc7\x90\xc6@\x85\xae\xc2\xca[?\x8f\xb0\xa9\xb6\xca\xa0\xb0\xb5\xd8T\x16\xa4\x8d&=_\xc6\xc5\x1f\x08\xff-\xbaQ\xd8[\x14/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1f\xc4\xc3\xc1\\\x83hL\xff_\x8b\x1du\xd0b\r&=LtA\xea'
+2025-11-27 17:15:26,349 - httpcore.http2 - DEBUG - send_request_headers.complete
+2025-11-27 17:15:26,350 - httpcore.http2 - DEBUG - send_request_body.started request=<Request [b'POST']> stream_id=7
+2025-11-27 17:15:26,351 - httpcore.http2 - DEBUG - send_request_body.complete
+2025-11-27 17:15:26,351 - httpcore.http2 - DEBUG - receive_response_headers.started request=<Request [b'POST']> stream_id=7
+2025-11-27 17:15:26,448 - hpack.hpack - DEBUG - Decoding b'N\x82\x10\x03a\x96\xdf=\xbfJ\t\xd54\x9f\xba\x82\x00\x9bP@\xb8\x16\xee\t\xc51h\xdf\xdb\xd9\xd8\x7f\x18\x8f|m\xb4\xd1\x05\x19d+\xaf\xc87\x96\xd3\xc7\x7f\xd7\xc8\xd5\xcc\xd4@\x8d\xae\xc2\xca[\x0bQ\n\xb0\xeb\xae\x83\x16O\x8f\xb0\xa9\xb6\xca\xa0\xb0\xb5\xd8T\x16\xa4\x8d&=_\xd4\xd3\x7f\x13\x9a\x00_\x19\x1c\x95\xa5\xa4u\xd7Vu\xc7\x80\xb4n\x15\xf5\x9a\x1be\x08\x9d\x8c\x03\x8d\xef\xd2\xd1\x7f\x11\x0250\xce'
+2025-11-27 17:15:26,449 - hpack.hpack - DEBUG - Decoded 14, consumed 1 bytes
+2025-11-27 17:15:26,450 - hpack.hpack - DEBUG - Decoded 2, consumed 1 bytes
+2025-11-27 17:15:26,450 - hpack.hpack - DEBUG - Decoded (b':status', b'201'), total consumed 4 bytes, indexed True
+2025-11-27 17:15:26,451 - hpack.hpack - DEBUG - Decoded 33, consumed 1 bytes
+2025-11-27 17:15:26,451 - hpack.hpack - DEBUG - Decoded 22, consumed 1 bytes
+2025-11-27 17:15:26,452 - hpack.hpack - DEBUG - Decoded (b'date', b'Thu, 27 Nov 2025 20:15:26 GMT'), total consumed 24 bytes, indexed True
+2025-11-27 17:15:26,453 - hpack.hpack - DEBUG - Decoded 91, consumed 1 bytes
+2025-11-27 17:15:26,453 - hpack.hpack - DEBUG - Decoded (b'content-type', b'application/json; charset=utf-8'), consumed 1
+2025-11-27 17:15:26,454 - hpack.hpack - DEBUG - Decoded 89, consumed 1 bytes
+2025-11-27 17:15:26,454 - hpack.hpack - DEBUG - Decoded (b'server', b'cloudflare'), consumed 1
+2025-11-27 17:15:26,455 - hpack.hpack - DEBUG - Decoded 88, consumed 1 bytes
+2025-11-27 17:15:26,456 - hpack.hpack - DEBUG - Decoded (b'content-range', <memory at 0x000001E2F127B280>), consumed 1
+2025-11-27 17:15:26,457 - hpack.hpack - DEBUG - Decoded 87, consumed 2 bytes
+2025-11-27 17:15:26,457 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:26,458 - hpack.hpack - DEBUG - Decoded (b'cf-ray', b'9a544c2bede79da8-NVT'), total consumed 18 bytes, indexed True
+2025-11-27 17:15:26,458 - hpack.hpack - DEBUG - Decoded 87, consumed 1 bytes
+2025-11-27 17:15:26,459 - hpack.hpack - DEBUG - Decoded (b'cf-cache-status', b'DYNAMIC'), consumed 1
+2025-11-27 17:15:26,459 - hpack.hpack - DEBUG - Decoded 72, consumed 1 bytes
+2025-11-27 17:15:26,460 - hpack.hpack - DEBUG - Decoded (b'content-encoding', b'gzip'), consumed 1
+2025-11-27 17:15:26,460 - hpack.hpack - DEBUG - Decoded 85, consumed 1 bytes
+2025-11-27 17:15:26,461 - hpack.hpack - DEBUG - Decoded (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), consumed 1
+2025-11-27 17:15:26,462 - hpack.hpack - DEBUG - Decoded 76, consumed 1 bytes
+2025-11-27 17:15:26,462 - hpack.hpack - DEBUG - Decoded (b'vary', b'Accept-Encoding'), consumed 1
+2025-11-27 17:15:26,463 - hpack.hpack - DEBUG - Decoded 84, consumed 1 bytes
+2025-11-27 17:15:26,464 - hpack.hpack - DEBUG - Decoded (b'content-profile', b'public'), consumed 1
+2025-11-27 17:15:26,464 - hpack.hpack - DEBUG - Decoded 13, consumed 1 bytes
+2025-11-27 17:15:26,465 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:26,465 - hpack.hpack - DEBUG - Decoded (b'preference-applied', b'return=representation'), total consumed 31 bytes, indexed True
+2025-11-27 17:15:26,466 - hpack.hpack - DEBUG - Decoded 84, consumed 1 bytes
+2025-11-27 17:15:26,467 - hpack.hpack - DEBUG - Decoded (b'sb-gateway-version', <memory at 0x000001E2F127B340>), consumed 1
+2025-11-27 17:15:26,468 - hpack.hpack - DEBUG - Decoded 83, consumed 1 bytes
+2025-11-27 17:15:26,468 - hpack.hpack - DEBUG - Decoded (b'sb-project-ref', b'idvfhgznofvubscjycvt'), consumed 1
+2025-11-27 17:15:26,469 - hpack.hpack - DEBUG - Decoded 82, consumed 2 bytes
+2025-11-27 17:15:26,470 - hpack.hpack - DEBUG - Decoded 26, consumed 1 bytes
+2025-11-27 17:15:26,470 - hpack.hpack - DEBUG - Decoded (b'sb-request-id', b'019ac6f4-d777-7680-b6e9-4a5e127b0ab8'), total consumed 29 bytes, indexed True
+2025-11-27 17:15:26,471 - hpack.hpack - DEBUG - Decoded 82, consumed 1 bytes
+2025-11-27 17:15:26,471 - hpack.hpack - DEBUG - Decoded (b'x-content-type-options', b'nosniff'), consumed 1
+2025-11-27 17:15:26,471 - hpack.hpack - DEBUG - Decoded 81, consumed 1 bytes
+2025-11-27 17:15:26,472 - hpack.hpack - DEBUG - Decoded (b'x-envoy-attempt-count', <memory at 0x000001E2F127B100>), consumed 1
+2025-11-27 17:15:26,472 - hpack.hpack - DEBUG - Decoded 80, consumed 2 bytes
+2025-11-27 17:15:26,473 - hpack.hpack - DEBUG - Decoded 2, consumed 1 bytes
+2025-11-27 17:15:26,473 - hpack.hpack - DEBUG - Decoded (b'x-envoy-upstream-service-time', <memory at 0x000001E2F165C7C0>), total consumed 5 bytes, indexed True
+2025-11-27 17:15:26,474 - hpack.hpack - DEBUG - Decoded 78, consumed 1 bytes
+2025-11-27 17:15:26,474 - hpack.hpack - DEBUG - Decoded (b'alt-svc', b'h3=":443"; ma=86400'), consumed 1
+2025-11-27 17:15:26,475 - httpcore.http2 - DEBUG - receive_response_headers.complete return_value=(201, [(b'date', b'Thu, 27 Nov 2025 20:15:26 GMT'), (b'content-type', b'application/json; charset=utf-8'), (b'server', b'cloudflare'), (b'content-range', b'*/*'), (b'cf-ray', b'9a544c2bede79da8-NVT'), (b'cf-cache-status', b'DYNAMIC'), (b'content-encoding', b'gzip'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'preference-applied', b'return=representation'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'idvfhgznofvubscjycvt'), (b'sb-request-id', b'019ac6f4-d777-7680-b6e9-4a5e127b0ab8'), (b'x-content-type-options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'50'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-11-27 17:15:26,476 - httpx - INFO - HTTP Request: POST https://idvfhgznofvubscjycvt.supabase.co//rest/v1/guias_inss "HTTP/2 201 Created"
+2025-11-27 17:15:26,477 - httpcore.http2 - DEBUG - receive_response_body.started request=<Request [b'POST']> stream_id=7
+2025-11-27 17:15:26,479 - httpcore.http2 - DEBUG - receive_response_body.complete
+2025-11-27 17:15:26,480 - httpcore.http2 - DEBUG - response_closed.started stream_id=7
+2025-11-27 17:15:26,480 - httpcore.http2 - DEBUG - response_closed.complete
+2025-11-27 17:15:26,487 - httpcore.http2 - DEBUG - send_request_headers.started request=<Request [b'POST']> stream_id=9
+2025-11-27 17:15:26,488 - hpack.hpack - DEBUG - Adding (b':method', b'POST') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,489 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:26,489 - hpack.hpack - DEBUG - Adding (b':authority', b'idvfhgznofvubscjycvt.supabase.co') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,490 - hpack.hpack - DEBUG - Encoding 76 with 7 bits
+2025-11-27 17:15:26,490 - hpack.hpack - DEBUG - Adding (b':scheme', b'https') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,491 - hpack.hpack - DEBUG - Encoding 7 with 7 bits
+2025-11-27 17:15:26,491 - hpack.hpack - DEBUG - Adding (b':path', b'//rest/v1/guias_inss') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,492 - hpack.hpack - DEBUG - Encoding 65 with 7 bits
+2025-11-27 17:15:26,492 - hpack.hpack - DEBUG - Adding (b'accept', b'*/*') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,493 - hpack.hpack - DEBUG - Encoding 74 with 7 bits
+2025-11-27 17:15:26,493 - hpack.hpack - DEBUG - Adding (b'accept-encoding', b'gzip, deflate') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,493 - hpack.hpack - DEBUG - Encoding 16 with 7 bits
+2025-11-27 17:15:26,494 - hpack.hpack - DEBUG - Adding (b'user-agent', b'python-httpx/0.28.1') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,494 - hpack.hpack - DEBUG - Encoding 73 with 7 bits
+2025-11-27 17:15:26,495 - hpack.hpack - DEBUG - Adding (b'prefer', b'return=representation') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,495 - hpack.hpack - DEBUG - Encoding 64 with 7 bits
+2025-11-27 17:15:26,496 - hpack.hpack - DEBUG - Adding (b'x-client-info', b'supabase-py/2.22.3') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,496 - hpack.hpack - DEBUG - Encoding 72 with 7 bits
+2025-11-27 17:15:26,497 - hpack.hpack - DEBUG - Adding (b'apikey', b'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,497 - hpack.hpack - DEBUG - Encoding 71 with 7 bits
+2025-11-27 17:15:26,497 - hpack.hpack - DEBUG - Adding (b'authorization', b'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkdmZoZ3pub2Z2dWJzY2p5Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwNzM4MTAsImV4cCI6MjA3NjY0OTgxMH0.6SPpbl-2BQmTzfInEa8qQouBqssvy0b-AYOjmY5J2Iw') to the header table, sensitive:True, huffman:True
+2025-11-27 17:15:26,498 - hpack.hpack - DEBUG - Encoding 23 with 4 bits
+2025-11-27 17:15:26,499 - hpack.hpack - DEBUG - Encoding 172 with 7 bits
+2025-11-27 17:15:26,499 - hpack.hpack - DEBUG - Adding (b'accept-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,500 - hpack.hpack - DEBUG - Encoding 70 with 7 bits
+2025-11-27 17:15:26,500 - hpack.hpack - DEBUG - Adding (b'content-profile', b'public') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,502 - hpack.hpack - DEBUG - Encoding 69 with 7 bits
+2025-11-27 17:15:26,503 - hpack.hpack - DEBUG - Adding (b'cookie', b'__cf_bm=.IKmQkzkyZJITc9j4vtUBkUxeahs2G_TnvqDo5iTaRM-1764274523-1.0.1.1-oN4UKrH6XhjsRqlAdSsAqSmXh5oDSZWWLKqnhLDrYcmBKBJZlIqYw19WMkyh5R.rzSv7l6xO37A963bVtDMvYGhgzVrUHEzcRtZzWZm9f_o') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,503 - hpack.hpack - DEBUG - Encoding 67 with 7 bits
+2025-11-27 17:15:26,504 - hpack.hpack - DEBUG - Adding (b'content-length', b'883') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,504 - hpack.hpack - DEBUG - Encoding 28 with 6 bits
+2025-11-27 17:15:26,504 - hpack.hpack - DEBUG - Encoding 3 with 7 bits
+2025-11-27 17:15:26,505 - hpack.hpack - DEBUG - Adding (b'content-type', b'application/json') to the header table, sensitive:False, huffman:True
+2025-11-27 17:15:26,505 - hpack.hpack - DEBUG - Encoding 63 with 7 bits
+2025-11-27 17:15:26,505 - hpack.hpack - DEBUG - Encoded header block to b'\x83\xcc\x87\xc1\xca\x90\xc9\xc0\xc8\xc7\x1f\x08\xff-\xbaQ\xd8[\x14/\xac\xb3\xc7\x88\x86\xd4l\xb98{\xc8\x1d&\xc8\x8c\x95ml\x97\xb29\x93\xad\x7f\x9coe}r\xfa\xcbY\x19\xd0mF\xcb\xeeO\xcb\xb3\xf3\xa7\x0f\xbf\xdd\xd9\x11\x92\xac\xb4~\x9b#\x99)\xa3\xac\x94\xfe\x9f\xf5\x9a\xed\x8c_\xa2\x93\x96_|\xc5[|\xd9\xfd\x06Cx1)}\x1f\xbb\xb29\x92\x9c6\xc6&\x8d\x9e\xf6Z\xf9\xfel6\xae\x98\x19\xd3\xd3\x07\x8d>\xf45\xa3|(\xc9O\x16\x89{#\x9a:B\xce\x9e\x9c\xc1\xab|\xdetc\x02\xeen\xd7\\t,+\xbb)\xdf\xee\\\x95`\x1b\xdd\xb6\x1e\xdb\xbd\x90\x8e\xfe\x81\x1a\xd0\xf3\xd5\xd2\x9em\xe5\x16O\x1f\xc6\xc5\xc3\\\x83y\xe6\x7f\xbf'
+2025-11-27 17:15:26,506 - httpcore.http2 - DEBUG - send_request_headers.complete
+2025-11-27 17:15:26,507 - httpcore.http2 - DEBUG - send_request_body.started request=<Request [b'POST']> stream_id=9
+2025-11-27 17:15:26,508 - httpcore.http2 - DEBUG - send_request_body.complete
+2025-11-27 17:15:26,509 - httpcore.http2 - DEBUG - receive_response_headers.started request=<Request [b'POST']> stream_id=9
+2025-11-27 17:15:26,554 - hpack.hpack - DEBUG - Decoding b'\xc3\xc2\xdf\xdd\xdc\x7f\x1c\x8f|m\xb4\xd1\x04I\x1eh\xaf\xc87\x96\xd3\xc7\x7f\xdb\xcc\xd9\xd0\xd8\xc1\xd7\xd6\x7f\x16\x99\x00_\x19\x1c\x95\xa5\xa4x!Y\xd9F\x05\x9e\x96R,\x01\x00\x11\x82@\xcaB\x17\xd5\xd4\x7f\x14\x016\xd1'
+2025-11-27 17:15:26,554 - hpack.hpack - DEBUG - Decoded 67, consumed 1 bytes
+2025-11-27 17:15:26,555 - hpack.hpack - DEBUG - Decoded (b':status', b'201'), consumed 1
+2025-11-27 17:15:26,555 - hpack.hpack - DEBUG - Decoded 66, consumed 1 bytes
+2025-11-27 17:15:26,555 - hpack.hpack - DEBUG - Decoded (b'date', b'Thu, 27 Nov 2025 20:15:26 GMT'), consumed 1
+2025-11-27 17:15:26,556 - hpack.hpack - DEBUG - Decoded 95, consumed 1 bytes
+2025-11-27 17:15:26,556 - hpack.hpack - DEBUG - Decoded (b'content-type', b'application/json; charset=utf-8'), consumed 1
+2025-11-27 17:15:26,557 - hpack.hpack - DEBUG - Decoded 93, consumed 1 bytes
+2025-11-27 17:15:26,558 - hpack.hpack - DEBUG - Decoded (b'server', b'cloudflare'), consumed 1
+2025-11-27 17:15:26,558 - hpack.hpack - DEBUG - Decoded 92, consumed 1 bytes
+2025-11-27 17:15:26,559 - hpack.hpack - DEBUG - Decoded (b'content-range', <memory at 0x000001E2F127B280>), consumed 1
+2025-11-27 17:15:26,559 - hpack.hpack - DEBUG - Decoded 91, consumed 2 bytes
+2025-11-27 17:15:26,559 - hpack.hpack - DEBUG - Decoded 15, consumed 1 bytes
+2025-11-27 17:15:26,560 - hpack.hpack - DEBUG - Decoded (b'cf-ray', b'9a544c2cd84e9da8-NVT'), total consumed 18 bytes, indexed True
+2025-11-27 17:15:26,561 - hpack.hpack - DEBUG - Decoded 91, consumed 1 bytes
+2025-11-27 17:15:26,561 - hpack.hpack - DEBUG - Decoded (b'cf-cache-status', b'DYNAMIC'), consumed 1
+2025-11-27 17:15:26,562 - hpack.hpack - DEBUG - Decoded 76, consumed 1 bytes
+2025-11-27 17:15:26,562 - hpack.hpack - DEBUG - Decoded (b'content-encoding', b'gzip'), consumed 1
+2025-11-27 17:15:26,563 - hpack.hpack - DEBUG - Decoded 89, consumed 1 bytes
+2025-11-27 17:15:26,563 - hpack.hpack - DEBUG - Decoded (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), consumed 1
+2025-11-27 17:15:26,564 - hpack.hpack - DEBUG - Decoded 80, consumed 1 bytes
+2025-11-27 17:15:26,564 - hpack.hpack - DEBUG - Decoded (b'vary', b'Accept-Encoding'), consumed 1
+2025-11-27 17:15:26,564 - hpack.hpack - DEBUG - Decoded 88, consumed 1 bytes
+2025-11-27 17:15:26,565 - hpack.hpack - DEBUG - Decoded (b'content-profile', b'public'), consumed 1
+2025-11-27 17:15:26,565 - hpack.hpack - DEBUG - Decoded 65, consumed 1 bytes
+2025-11-27 17:15:26,565 - hpack.hpack - DEBUG - Decoded (b'preference-applied', b'return=representation'), consumed 1
+2025-11-27 17:15:26,566 - hpack.hpack - DEBUG - Decoded 87, consumed 1 bytes
+2025-11-27 17:15:26,566 - hpack.hpack - DEBUG - Decoded (b'sb-gateway-version', <memory at 0x000001E2F127B340>), consumed 1
+2025-11-27 17:15:26,566 - hpack.hpack - DEBUG - Decoded 86, consumed 1 bytes
+2025-11-27 17:15:26,567 - hpack.hpack - DEBUG - Decoded (b'sb-project-ref', b'idvfhgznofvubscjycvt'), consumed 1
+2025-11-27 17:15:26,567 - hpack.hpack - DEBUG - Decoded 85, consumed 2 bytes
+2025-11-27 17:15:26,568 - hpack.hpack - DEBUG - Decoded 25, consumed 1 bytes
+2025-11-27 17:15:26,569 - hpack.hpack - DEBUG - Decoded (b'sb-request-id', b'019ac6f4-d811-7fa0-8ffc-0200b0d1fcce'), total consumed 28 bytes, indexed True
+2025-11-27 17:15:26,570 - hpack.hpack - DEBUG - Decoded 85, consumed 1 bytes
+2025-11-27 17:15:26,570 - hpack.hpack - DEBUG - Decoded (b'x-content-type-options', b'nosniff'), consumed 1
+2025-11-27 17:15:26,571 - hpack.hpack - DEBUG - Decoded 84, consumed 1 bytes
+2025-11-27 17:15:26,571 - hpack.hpack - DEBUG - Decoded (b'x-envoy-attempt-count', <memory at 0x000001E2F127B100>), consumed 1
+2025-11-27 17:15:26,572 - hpack.hpack - DEBUG - Decoded 83, consumed 2 bytes
+2025-11-27 17:15:26,572 - hpack.hpack - DEBUG - Decoded 1, consumed 1 bytes
+2025-11-27 17:15:26,573 - hpack.hpack - DEBUG - Decoded (b'x-envoy-upstream-service-time', <memory at 0x000001E2F165C880>), total consumed 4 bytes, indexed True
+2025-11-27 17:15:26,573 - hpack.hpack - DEBUG - Decoded 81, consumed 1 bytes
+2025-11-27 17:15:26,574 - hpack.hpack - DEBUG - Decoded (b'alt-svc', b'h3=":443"; ma=86400'), consumed 1
+2025-11-27 17:15:26,575 - httpcore.http2 - DEBUG - receive_response_headers.complete return_value=(201, [(b'date', b'Thu, 27 Nov 2025 20:15:26 GMT'), (b'content-type', b'application/json; charset=utf-8'), (b'server', b'cloudflare'), (b'content-range', b'*/*'), (b'cf-ray', b'9a544c2cd84e9da8-NVT'), (b'cf-cache-status', b'DYNAMIC'), (b'content-encoding', b'gzip'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'preference-applied', b'return=representation'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'idvfhgznofvubscjycvt'), (b'sb-request-id', b'019ac6f4-d811-7fa0-8ffc-0200b0d1fcce'), (b'x-content-type-options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'6'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-11-27 17:15:26,576 - httpx - INFO - HTTP Request: POST https://idvfhgznofvubscjycvt.supabase.co//rest/v1/guias_inss "HTTP/2 201 Created"
+2025-11-27 17:15:26,577 - httpcore.http2 - DEBUG - receive_response_body.started request=<Request [b'POST']> stream_id=9
+2025-11-27 17:15:26,578 - httpcore.http2 - DEBUG - receive_response_body.complete
+2025-11-27 17:15:26,579 - httpcore.http2 - DEBUG - response_closed.started stream_id=9
+2025-11-27 17:15:26,579 - httpcore.http2 - DEBUG - response_closed.complete
+2025-11-27 17:15:26,582 - app.main - INFO - ================================================================================
+2025-11-27 17:15:26,582 - app.main - INFO - [RESPONSE] Status 200
+2025-11-27 17:15:26,583 - app.main - INFO -    Tempo: 7.127s
+2025-11-27 17:15:26,583 - app.main - INFO - ================================================================================
+2025-11-27 17:21:23,993 - app.main - INFO - ================================================================================
+2025-11-27 17:21:23,993 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-11-27 17:21:23,994 - app.main - INFO - ================================================================================
+2025-11-27 17:21:23,994 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-11-27 17:21:25,664 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-11-27 17:21:25,665 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-11-27 17:21:25,665 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-11-27 17:21:25,668 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-11-27 17:21:25,668 - app.main - INFO -    [OK] Incluindo router Users...
+2025-11-27 17:21:25,669 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-11-27 17:21:25,671 - app.main - INFO - ================================================================================
+2025-11-27 17:21:25,671 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-11-27 17:21:25,671 - app.main - INFO - ================================================================================
+2025-11-27 17:21:25,671 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-11-27 17:21:25,672 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-11-27 17:21:25,672 - app.main - INFO - [OK] App Version: 1.0.0
+2025-11-27 17:21:25,672 - app.main - INFO - ================================================================================
+2025-11-27 17:21:25,672 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-11-27 17:21:25,672 - app.main - INFO - ================================================================================
+2025-11-27 17:25:30,544 - app.main - INFO - ================================================================================
+2025-11-27 17:25:30,544 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-11-27 17:25:30,545 - app.main - INFO - ================================================================================
+2025-11-27 17:25:30,545 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-11-27 17:25:31,637 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-11-27 17:25:31,639 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-11-27 17:25:31,639 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-11-27 17:25:31,641 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-11-27 17:25:31,642 - app.main - INFO -    [OK] Incluindo router Users...
+2025-11-27 17:25:31,643 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-11-27 17:25:31,644 - app.main - INFO - ================================================================================
+2025-11-27 17:25:31,645 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-11-27 17:25:31,645 - app.main - INFO - ================================================================================
+2025-11-27 17:25:31,645 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-11-27 17:25:31,646 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-11-27 17:25:31,646 - app.main - INFO - [OK] App Version: 1.0.0
+2025-11-27 17:25:31,646 - app.main - INFO - ================================================================================
+2025-11-27 17:25:31,646 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-11-27 17:25:31,646 - app.main - INFO - ================================================================================
+2025-11-27 17:26:26,988 - app.main - INFO - ================================================================================
+2025-11-27 17:26:26,988 - app.main - INFO - [STOP] INICIANDO SHUTDOWN DO LIFESPAN
+2025-11-27 17:26:26,989 - app.main - INFO - ================================================================================
+2025-11-27 17:26:26,989 - app.main - INFO - [OK] SHUTDOWN COMPLETO
+2025-11-27 17:26:28,057 - app.main - INFO - [DEBUG] Adding DebugMiddleware...
+2025-11-27 17:26:28,058 - app.main - INFO - [ROUTERS] Incluindo routers...
+2025-11-27 17:26:28,059 - app.main - INFO -    [OK] Incluindo router INSS...
+2025-11-27 17:26:28,062 - app.main - INFO -    [OK] Incluindo router Webhook...
+2025-11-27 17:26:28,063 - app.main - INFO -    [OK] Incluindo router Users...
+2025-11-27 17:26:28,064 - app.main - INFO - [OK] Todos os routers incluidos com sucesso
+2025-11-27 17:26:28,065 - app.main - INFO - ================================================================================
+2025-11-27 17:26:28,065 - app.main - INFO - [START] INICIANDO LIFESPAN CONTEXT MANAGER
+2025-11-27 17:26:28,066 - app.main - INFO - ================================================================================
+2025-11-27 17:26:28,066 - app.main - INFO - [CONFIG] Carregando configuracoes...
+2025-11-27 17:26:28,066 - app.main - INFO - [OK] App Name: INSS Guias API
+2025-11-27 17:26:28,066 - app.main - INFO - [OK] App Version: 1.0.0
+2025-11-27 17:26:28,066 - app.main - INFO - ================================================================================
+2025-11-27 17:26:28,067 - app.main - INFO - [OK] LIFESPAN STARTUP COMPLETO - SERVIDOR PRONTO
+2025-11-27 17:26:28,067 - app.main - INFO - ================================================================================

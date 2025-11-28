@@ -1,0 +1,117 @@
+Traceback (most recent call last):
+  File "C:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI02\apps\backend\inss\testar_novo_gps.py", line 161, in <module>
+    testar_geracao_completa()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI02\apps\backend\inss\testar_novo_gps.py", line 101, in testar_geracao_completa
+    resultado = CodigoBarrasGPS.gerar(
+        codigo_pagamento="1163",
+    ...<2 lines>...
+        nit="27317621955"
+    )
+  File "C:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI02\apps\backend\inss\app\services\codigo_barras_gps.py", line 212, in gerar
+    linha_digitavel = cls.gerar_linha_digitavel(codigo_completo)
+  File "C:\Users\carlo\OneDrive\Área de Trabalho\Curso\Projetos Pessoais\Inss - Guias\guiasMEI02\apps\backend\inss\app\services\codigo_barras_gps.py", line 264, in gerar_linha_digitavel
+    print(f"   Campo {(i//11)+1}: {campo_dados} \u2192 DV: {campo_dv} \u2192 {campo_formatado}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\carlo\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 24: character maps to <undefined>
+
+====================================================================================================
+TESTES DE VALIDACAO - NOVAS MUDANCAS GPS
+====================================================================================================
+====================================================================================================
+TESTE: COMPARAÇÃO DV MÓDULO 10 vs MÓDULO 11 - LINHA DIGITÁVEL GPS
+====================================================================================================
+
+Código de barras (44 dígitos): 85810000001669802701163000173176219552025113
+ID de Valor (pos 3): 8
+
+Campos (11 dígitos cada):
+  Campo 1: 85810000001
+  Campo 2: 66980270116
+  Campo 3: 30001731762
+  Campo 4: 19552025113
+
+----------------------------------------------------------------------------------------------------
+METODO ANTIGO: DV MODULO 10 (INCORRETO PARA GPS)
+----------------------------------------------------------------------------------------------------
+  Campo 1: 85810000001 -> DV Mod10: 8 -> 85810000001-8
+  Campo 2: 66980270116 -> DV Mod10: 1 -> 66980270116-1
+  Campo 3: 30001731762 -> DV Mod10: 3 -> 30001731762-3
+  Campo 4: 19552025113 -> DV Mod10: 1 -> 19552025113-1
+
+Linha digitável Mod10: 85810000001-8 66980270116-1 30001731762-3 19552025113-1
+Total: 48 dígitos
+
+----------------------------------------------------------------------------------------------------
+METODO NOVO: DV MODULO 11 (CORRETO PARA GPS/ARRECADACAO)
+----------------------------------------------------------------------------------------------------
+  Campo 1: 85810000001 -> DV Mod11: 3 -> 85810000001-3
+  Campo 2: 66980270116 -> DV Mod11: 2 -> 66980270116-2
+  Campo 3: 30001731762 -> DV Mod11: 1 -> 30001731762-1
+  Campo 4: 19552025113 -> DV Mod11: 2 -> 19552025113-2
+
+Linha digitável Mod11: 85810000001-3 66980270116-2 30001731762-1 19552025113-2
+Total: 48 dígitos
+
+====================================================================================================
+COMPARAÇÃO:
+====================================================================================================
+
+Módulo 10 (antigo): 85810000001-8 66980270116-1 30001731762-3 19552025113-1
+Módulo 11 (novo):   85810000001-3 66980270116-2 30001731762-1 19552025113-2
+
+OK: As linhas sao DIFERENTES! DVs foram alterados corretamente.
+
+Diferencas por campo:
+  Campo 1: 85810000001-8 (Mod10) -> 85810000001-3 (Mod11)
+  Campo 2: 66980270116-1 (Mod10) -> 66980270116-2 (Mod11)
+  Campo 3: 30001731762-3 (Mod10) -> 30001731762-1 (Mod11)
+  Campo 4: 19552025113-1 (Mod10) -> 19552025113-2 (Mod11)
+
+
+
+====================================================================================================
+TESTE: GERAÇÃO COMPLETA GPS COM MÓDULO 11
+====================================================================================================
+
+================================================================================
+[GPS] DEBUG - GERANDO GPS
+================================================================================
+   Valor recebido: R$ 166.98 (tipo: <class 'float'>)
+   Código pagamento: 1163
+   NIT recebido: 27317621955
+   Competência: 11/2025
+
+CONVERSAO PARA CENTAVOS:
+   Valor em reais: R$ 166.98
+   Valor em centavos: 16698
+   Valor formatado (11 dig): 00000016698
+
+ID VALOR:
+   ID Valor: 8 (faixa: R$ 100,00 - R$ 999,99)
+   NIT limpo: 27317621955 (11 dígitos)
+   NIT 10 dígitos: 7317621955
+   Competência codificada: 2025113 (formato YYYYMM3)
+   Código sem DV: 8580000001669802701163000173176219552025113
+   Comprimento sem DV: 43 dígitos
+   DV Geral calculado: 1
+
+CODIGO DE BARRAS (44 DIGITOS):
+   85810000001669802701163000173176219552025113
+   Comprimento: 44 digitos
+
+VALIDACAO DA ESTRUTURA:
+   Pos 1: 8 (deve ser 8) OK
+   Pos 2: 5 (deve ser 5) OK
+   Pos 3: 8 (ID = 8) OK
+   Pos 4: 1 (DV = 1) OK
+   Pos 5-15: 00000016698 (valor) OK
+   Pos 16-19: 0270 (0270) OK
+   Código de barras (44 dig): 85810000001669802701163000173176219552025113
+   ID de Valor: 8
+   Método DV: Módulo 11 (Arrecadação/GPS)
+
+ERRO durante os testes: 'charmap' codec can't encode character '\u2192' in position 24: character maps to <undefined>
